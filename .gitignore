@@ -1,0 +1,23 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+.mypy_cache/
+.ruff_cache/
+.pytest_cache/
+.coverage
+coverage.xml
+htmlcov/
+dist/
+
+# 비밀 정보
+.env
+.env.*
+!.env.example
+
+# 하네스 런타임 상태 (protected.sha 사본은 .claude/protected.sha.lock으로 추적)
+.claude/state/
+.claude/settings.local.json
+
+# 사용자 개인 파일
+/자투리
