@@ -1,0 +1,11 @@
+{
+  "coverage": 100.0,
+  "skipped": 0,
+  "suppressions": {
+    "type: ignore": 0,
+    "noqa": 0,
+    "pragma: no cover": 0
+  },
+  "eval": null,
+  "deterministic_verified": false
+}
