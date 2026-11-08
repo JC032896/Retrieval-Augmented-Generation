@@ -20,7 +20,9 @@ line-length = 100
 target-version = "py312"
 
 [tool.ruff.lint]
-select = ["E", "F", "W", "I", "B", "UP", "SIM"]
+select = ["E", "F", "W", "I", "B", "UP", "SIM", "PGH", "RUF100"]
+# PGH003: 코드 없는 `# type: ignore` 금지, PGH004: 코드 없는 `# noqa` 금지
+# RUF100: 쓸모없어진 `# noqa` 금지
 
 [tool.mypy]
 python_version = "3.12"
@@ -28,6 +30,7 @@ strict = true
 files = ["src", "tests"]
 mypy_path = "src"
 explicit_package_bases = true
+enable_error_code = ["ignore-without-code"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
