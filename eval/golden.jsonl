@@ -1,0 +1,70 @@
+{"id": "g001", "type": "general", "user": "kim", "question": "기본 근무시간과 점심 휴게시간은 어떻게 돼?", "answer": "오전 9시부터 오후 6시까지이고, 휴게시간은 낮 12시부터 오후 1시까지다.", "evidence": [{"file": "02_employment_rules.md", "section": "제5조 (근무시간)"}]}
+{"id": "g002", "type": "general", "user": "jung", "question": "출근 시간을 직접 고를 수 있어? 언제부터 언제까지야?", "answer": "오전 8시부터 10시 사이에서 고를 수 있고, 퇴근은 출근 9시간 후다.", "evidence": [{"file": "02_employment_rules.md", "section": "제12조 (시차출퇴근제)"}]}
+{"id": "g003", "type": "general", "user": "park", "question": "입사한 지 두 달 됐는데 재택근무 할 수 있나요?", "answer": "할 수 없다. 입사 후 3개월이 지나지 않은 직원은 재택근무를 할 수 없다.", "evidence": [{"file": "02_employment_rules.md", "section": "제12조의3 (재택근무)"}]}
+{"id": "g004", "type": "general", "user": "choi", "question": "연차휴가는 최대 며칠까지 늘어나?", "answer": "근속에 따라 2년마다 1일씩 가산되며 최대 25일이다.", "evidence": [{"file": "02_employment_rules.md", "section": "제15조 (연차휴가)"}]}
+{"id": "g005", "type": "general", "user": "lee", "question": "연차는 며칠 전까지 신청해야 해?", "answer": "사용하려는 날의 3일 전까지 신청해야 한다.", "evidence": [{"file": "02_employment_rules.md", "section": "제15조 (연차휴가)"}]}
+{"id": "g006", "type": "general", "user": "jung", "question": "반차는 몇 시간 단위야?", "answer": "4시간 단위로 나누어 쓸 수 있다.", "evidence": [{"file": "02_employment_rules.md", "section": "제16조 (반차)"}]}
+{"id": "g007", "type": "general", "user": "kim", "question": "배우자가 출산하면 휴가를 며칠 받아?", "answer": "유급 경조휴가 20일을 받는다.", "evidence": [{"file": "02_employment_rules.md", "section": "제20조 (경조휴가)"}]}
+{"id": "g008", "type": "general", "user": "park", "question": "징계에는 어떤 종류가 있어?", "answer": "견책, 감봉, 정직, 해고의 4종류다.", "evidence": [{"file": "02_employment_rules.md", "section": "제25조 (징계의 종류)"}]}
+{"id": "g009", "type": "general", "user": "han", "question": "인사평가는 1년에 몇 번, 언제 해?", "answer": "연 2회, 매년 6월과 12월에 한다.", "evidence": [{"file": "02_employment_rules.md", "section": "제30조 (인사평가)"}]}
+{"id": "g010", "type": "general", "user": "kim", "question": "식대는 얼마 나와?", "answer": "월 20만 원을 급여와 함께 지급한다.", "evidence": [{"file": "03_benefits.md", "section": "식대와 통신비"}]}
+{"id": "g011", "type": "general", "user": "jung", "question": "자기계발비 한도는 얼마고, 남으면 내년으로 넘어가?", "answer": "연 100만 원 한도이고, 쓰지 않은 금액은 이월되지 않는다.", "evidence": [{"file": "03_benefits.md", "section": "자기계발비"}]}
+{"id": "g012", "type": "general", "user": "lee", "question": "배우자도 건강검진 지원을 받을 수 있어?", "answer": "만 40세 이상인 배우자는 2년에 1회 지원받는다.", "evidence": [{"file": "03_benefits.md", "section": "건강검진"}]}
+{"id": "g013", "type": "general", "user": "choi", "question": "결혼하면 경조금은 얼마 받아?", "answer": "본인 결혼 경조금은 100만 원이다.", "evidence": [{"file": "03_benefits.md", "section": "경조금"}]}
+{"id": "g014", "type": "general", "user": "park", "question": "회사 콘도는 얼마에 몇 번 쓸 수 있어?", "answer": "강릉과 제주 제휴 콘도를 1박 2만 원에, 1인당 연 2회까지 이용할 수 있다.", "evidence": [{"file": "03_benefits.md", "section": "휴양시설"}]}
+{"id": "g015", "type": "general", "user": "kim", "question": "10년 근속하면 어떤 포상이 있어?", "answer": "리프레시 휴가 10일과 포상금 300만 원을 받는다.", "evidence": [{"file": "03_benefits.md", "section": "장기근속 포상"}]}
+{"id": "g016", "type": "general", "user": "jung", "question": "로그인을 계속 틀리면 계정이 잠겨? 얼마 동안?", "answer": "5회 연속 실패하면 30분 동안 잠긴다.", "evidence": [{"file": "04_it_security_policy.md", "section": "SEC-PW-02 계정 잠금"}]}
+{"id": "g017", "type": "general", "user": "lee", "question": "개인 휴대폰으로 사내 메신저를 쓰려면 어떻게 해야 해?", "answer": "먼저 MDM에 등록해야 한다. 등록하지 않은 기기로는 메일과 메신저에 접속할 수 없다.", "evidence": [{"file": "04_it_security_policy.md", "section": "SEC-DEV-01 개인 기기"}]}
+{"id": "g018", "type": "general", "user": "park", "question": "피싱 메일을 열어버렸어. 어디에 언제까지 신고해야 해?", "answer": "1시간 이내에 security@hanbit-soft.example 또는 내선 7777로 신고한다.", "evidence": [{"file": "04_it_security_policy.md", "section": "보안 사고 신고"}]}
+{"id": "g019", "type": "general", "user": "kim", "question": "자리를 비우면 화면이 몇 분 뒤에 자동으로 잠겨?", "answer": "5분 동안 입력이 없으면 자동으로 잠긴다.", "evidence": [{"file": "04_it_security_policy.md", "section": "SEC-DATA-05 화면 잠금"}]}
+{"id": "g020", "type": "general", "user": "choi", "question": "부산으로 출장 가면 숙박비는 얼마까지 돼?", "answer": "광역시이므로 1박 12만 원 한도다.", "evidence": [{"file": "05_travel_expense_rules.md", "section": "국내 출장"}]}
+{"id": "g021", "type": "general", "user": "jung", "question": "당일치기 출장도 일비가 나와?", "answer": "숙박비는 없고 일비의 절반을 지급한다.", "evidence": [{"file": "05_travel_expense_rules.md", "section": "국내 출장"}]}
+{"id": "g022", "type": "general", "user": "lee", "question": "미국 출장 갈 때 직원 숙박비 한도는?", "answer": "A 지역이므로 1박 200달러 한도다.", "evidence": [{"file": "05_travel_expense_rules.md", "section": "해외 출장"}]}
+{"id": "g023", "type": "general", "user": "han", "question": "임원은 해외 출장 때 비즈니스석을 탈 수 있어?", "answer": "비행 시간이 6시간 이상이면 비즈니스석을 탈 수 있다.", "evidence": [{"file": "05_travel_expense_rules.md", "section": "해외 출장"}]}
+{"id": "g024", "type": "general", "user": "kim", "question": "출장비 정산은 언제까지 해야 해?", "answer": "돌아온 날로부터 7일 이내에 HB-Expense에 영수증을 올리고 신청한다.", "evidence": [{"file": "05_travel_expense_rules.md", "section": "정산"}]}
+{"id": "g025", "type": "general", "user": "park", "question": "해외 출장은 누구한테 언제까지 승인받아야 해?", "answer": "임원의 승인을 받아야 하고, 출발 2주 전까지 신청한다.", "evidence": [{"file": "05_travel_expense_rules.md", "section": "사전 승인"}]}
+{"id": "g026", "type": "general", "user": "jung", "question": "재택근무 신청은 언제까지 어디서 해?", "answer": "전날 오후 6시까지 HB-HR의 근무 신청 메뉴에서 한다.", "evidence": [{"file": "06_remote_work_guide.md", "section": "신청 방법"}]}
+{"id": "g027", "type": "general", "user": "kim", "question": "재택근무 중에 메시지는 얼마 안에 답해야 해?", "answer": "30분 이내에 응답해야 한다.", "evidence": [{"file": "06_remote_work_guide.md", "section": "근무 수칙"}]}
+{"id": "g028", "type": "general", "user": "choi", "question": "재택근무용 모니터를 지원받을 수 있어?", "answer": "모니터 1대를 무상으로 대여받을 수 있고, HB-HR 장비 대여 메뉴에서 신청하면 일주일 안에 배송된다.", "evidence": [{"file": "06_remote_work_guide.md", "section": "장비 지원"}]}
+{"id": "g029", "type": "general", "user": "jung", "question": "우리 회사는 언제 어디서 설립됐어?", "answer": "2015년 3월 서울 성동구에서 설립됐다.", "evidence": [{"file": "01_company_intro.md", "section": "개요"}]}
+{"id": "g030", "type": "general", "user": "lee", "question": "한빛워크 Enterprise 요금제에는 뭐가 포함돼?", "answer": "SSO, 감사 로그, 전용 고객 지원이 포함된다.", "evidence": [{"file": "01_company_intro.md", "section": "한빛워크"}]}
+{"id": "g031", "type": "general", "user": "kim", "question": "PR을 병합하려면 몇 명의 승인이 필요해?", "answer": "리뷰어 2명의 승인이 필요하다.", "evidence": [{"file": "07_coding_conventions.md", "section": "코드 리뷰"}]}
+{"id": "g032", "type": "general", "user": "lee", "question": "정기 배포는 언제 해? 금요일에도 해?", "answer": "매주 화요일과 목요일 오후 2시에 하고, 금요일과 공휴일 전날에는 하지 않는다.", "evidence": [{"file": "07_coding_conventions.md", "section": "배포"}]}
+{"id": "g033", "type": "general", "user": "kim", "question": "온콜 교대는 언제고 수당은 얼마야?", "answer": "매주 월요일 오전 10시에 교대하고, 주당 15만 원을 받는다.", "evidence": [{"file": "08_incident_response.md", "section": "온콜"}]}
+{"id": "g034", "type": "general", "user": "lee", "question": "장애 사후 분석 문서는 언제까지 써야 해?", "answer": "INC-P1과 INC-P2는 복구 후 5영업일 이내에 작성한다.", "evidence": [{"file": "08_incident_response.md", "section": "사후 분석"}]}
+{"id": "g035", "type": "general", "user": "jung", "question": "Enterprise 요금제 가격과 최소 계약 조건은?", "answer": "사용자당 월 15,000원이고, 최소 100명에 1년 약정이다.", "evidence": [{"file": "09_sales_proposal_guide.md", "section": "표준 가격"}]}
+{"id": "g036", "type": "general", "user": "jung", "question": "15% 할인은 누가 승인해?", "answer": "10% 초과 20% 이하이므로 영업팀장이 승인한다.", "evidence": [{"file": "09_sales_proposal_guide.md", "section": "할인 권한"}]}
+{"id": "g037", "type": "general", "user": "choi", "question": "법인카드 영수증은 며칠 안에 올려야 해?", "answer": "사용 후 3일 이내에 HB-Expense에 올린다.", "evidence": [{"file": "10_finance_voucher_process.md", "section": "법인카드"}]}
+{"id": "g038", "type": "general", "user": "han", "question": "인사평가에서 B등급을 받으면 연봉이 얼마나 올라?", "answer": "연봉 인상률 4%, 성과급은 기본 연봉의 6%다.", "evidence": [{"file": "11_performance_review.md", "section": "보상 반영"}]}
+{"id": "g039", "type": "general", "user": "choi", "question": "2026년 마케팅 예산은 얼마야?", "answer": "18억 원이며, 상반기에 60%, 하반기에 40%를 배정한다.", "evidence": [{"file": "12_budget_plan_2026.md", "section": "비용 예산"}, {"file": "12_budget_plan_2026.md", "section": "집행 원칙"}]}
+{"id": "g040", "type": "general", "user": "han", "question": "디바이스 사업 희망퇴직 위로금은 얼마로 정했어?", "answer": "기본 연봉의 6개월분이다.", "evidence": [{"file": "15_executive_minutes.md", "section": "안건 1: 한빛디바이스 사업 정리"}]}
+{"id": "c001", "type": "code", "user": "kim", "question": "제12조의3에서 정한 재택근무 횟수 한도는?", "answer": "팀장 승인을 받아 주 2회까지다.", "evidence": [{"file": "02_employment_rules.md", "section": "제12조의3 (재택근무)"}]}
+{"id": "c002", "type": "code", "user": "lee", "question": "제12조의2는 무슨 제도에 대한 조항이야?", "answer": "개발팀 직원에게 적용되는 1개월 단위 선택적 근로시간제다.", "evidence": [{"file": "02_employment_rules.md", "section": "제12조의2 (선택적 근로시간제)"}]}
+{"id": "c003", "type": "code", "user": "jung", "question": "SEC-PW-01 기준 비밀번호 최소 길이와 변경 주기는?", "answer": "12자 이상이고 90일마다 변경해야 한다.", "evidence": [{"file": "04_it_security_policy.md", "section": "SEC-PW-01 비밀번호 규칙"}]}
+{"id": "c004", "type": "code", "user": "park", "question": "SEC-MFA-01은 어떤 접속에 적용돼?", "answer": "VPN 접속, 사외에서의 메일 접속, 관리자 콘솔 접속이다.", "evidence": [{"file": "04_it_security_policy.md", "section": "SEC-MFA-01 다단계 인증"}]}
+{"id": "c005", "type": "code", "user": "choi", "question": "SEC-DATA-03에서 금지하는 건 뭐야?", "answer": "고객 개인정보가 담긴 파일을 USB 등 외부 저장 장치로 옮기는 것이다.", "evidence": [{"file": "04_it_security_policy.md", "section": "SEC-DATA-03 개인정보 반출 금지"}]}
+{"id": "c006", "type": "code", "user": "kim", "question": "INC-P1 장애는 몇 분 안에 대응하고 누구에게 보고해?", "answer": "15분 이내에 대응하고 CTO와 대표에게 보고한다.", "evidence": [{"file": "08_incident_response.md", "section": "장애 등급"}]}
+{"id": "c007", "type": "code", "user": "lee", "question": "INC-P3 등급의 기준과 최초 대응 시간은?", "answer": "우회 방법이 있는 일부 기능 장애이고, 4시간 이내에 대응한다.", "evidence": [{"file": "08_incident_response.md", "section": "장애 등급"}]}
+{"id": "c008", "type": "code", "user": "choi", "question": "KPI-2026-A 목표는 얼마야?", "answer": "연매출 320억 원으로, 2025년 271억 원 대비 18% 성장이다.", "evidence": [{"file": "12_budget_plan_2026.md", "section": "핵심 지표 (KPI)"}]}
+{"id": "c009", "type": "code", "user": "han", "question": "KPI-2026-C 목표 중 금융과 제조 업종에서 몇 곳을 확보해야 해?", "answer": "신규 Enterprise 고객사 40곳 중 25곳이다.", "evidence": [{"file": "12_budget_plan_2026.md", "section": "핵심 지표 (KPI)"}, {"file": "13_sales_targets_2026.md", "section": "담당자별 목표"}]}
+{"id": "c010", "type": "code", "user": "choi", "question": "계정과목 812는 뭐야?", "answer": "여비교통비로, 출장비와 택시비가 해당한다.", "evidence": [{"file": "10_finance_voucher_process.md", "section": "주요 계정과목 코드"}]}
+{"id": "u001", "type": "unanswerable", "user": "kim", "question": "회사 주차 지원 있어?", "answer": null, "evidence": []}
+{"id": "u002", "type": "unanswerable", "user": "jung", "question": "사내 동호회 지원금은 얼마야?", "answer": null, "evidence": []}
+{"id": "u003", "type": "unanswerable", "user": "lee", "question": "육아휴직은 최대 몇 년까지 쓸 수 있어?", "answer": null, "evidence": []}
+{"id": "u004", "type": "unanswerable", "user": "park", "question": "야근하고 택시 타면 회사가 지원해줘?", "answer": null, "evidence": []}
+{"id": "u005", "type": "unanswerable", "user": "choi", "question": "2025년 영업이익은 얼마였어?", "answer": null, "evidence": []}
+{"id": "u006", "type": "unanswerable", "user": "han", "question": "일본 법인 설립에 드는 총비용은 얼마로 예상돼?", "answer": null, "evidence": []}
+{"id": "u007", "type": "unanswerable", "user": "kim", "question": "Java 코드는 어떤 코딩 규칙을 따라야 해?", "answer": null, "evidence": []}
+{"id": "u008", "type": "unanswerable", "user": "jung", "question": "Standard 요금제 할인 프로모션은 언제까지야?", "answer": null, "evidence": []}
+{"id": "u009", "type": "unanswerable", "user": "park", "question": "퇴직금은 어떻게 계산해?", "answer": null, "evidence": []}
+{"id": "u010", "type": "unanswerable", "user": "lee", "question": "INC-P5 등급 장애의 대응 기준은?", "answer": null, "evidence": []}
+{"id": "p001", "type": "permission", "user": "park", "question": "인사평가 등급별 배분 비율이 어떻게 돼?", "answer": null, "evidence": [], "trap_files": ["11_performance_review.md"]}
+{"id": "p002", "type": "permission", "user": "lee", "question": "평가에서 B등급 받으면 연봉 몇 % 올라?", "answer": null, "evidence": [], "trap_files": ["11_performance_review.md"]}
+{"id": "p003", "type": "permission", "user": "kim", "question": "사원 직급 연봉 범위가 얼마야?", "answer": null, "evidence": [], "trap_files": ["14_salary_table.md"]}
+{"id": "p004", "type": "permission", "user": "jung", "question": "올해 분기별 영업 목표가 얼마야?", "answer": null, "evidence": [], "trap_files": ["13_sales_targets_2026.md"]}
+{"id": "p005", "type": "permission", "user": "jung", "question": "영업 인센티브는 어떤 기준으로 받아?", "answer": null, "evidence": [], "trap_files": ["13_sales_targets_2026.md"]}
+{"id": "p006", "type": "permission", "user": "lee", "question": "KPI-2026-A 매출 목표가 얼마야?", "answer": null, "evidence": [], "trap_files": ["12_budget_plan_2026.md", "13_sales_targets_2026.md"]}
+{"id": "p007", "type": "permission", "user": "kim", "question": "한빛디바이스 사업은 앞으로 어떻게 돼?", "answer": null, "evidence": [], "trap_files": ["15_executive_minutes.md"]}
+{"id": "p008", "type": "permission", "user": "choi", "question": "희망퇴직 위로금은 얼마야?", "answer": null, "evidence": [], "trap_files": ["15_executive_minutes.md"]}
+{"id": "p009", "type": "permission", "user": "park", "question": "INC-P1 장애는 몇 분 안에 대응해야 해?", "answer": null, "evidence": [], "trap_files": ["08_incident_response.md"]}
+{"id": "p010", "type": "permission", "user": "han", "question": "PR 병합에 필요한 승인 인원은?", "answer": null, "evidence": [], "trap_files": ["07_coding_conventions.md"]}
