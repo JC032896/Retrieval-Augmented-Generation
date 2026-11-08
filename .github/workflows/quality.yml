@@ -1,0 +1,40 @@
+name: quality
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  quality:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      PYTHONUTF8: "1"
+    steps:
+      - uses: actions/checkout@v4
+
+      # protected.py와 metrics.py는 venv가 아닌 시스템 Python(-I -S)으로 실행한다
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - uses: astral-sh/setup-uv@v6
+
+      # 커밋된 lock 파일을 그대로 믿지 않고, 보호 경로의 해시를 직접 다시 계산해 비교한다
+      - name: 보호 경로 무결성 (해시 재계산)
+        run: python3 -I -S .claude/scripts/protected.py check --ci
+
+      - name: 의존성 설치
+        run: uv sync --frozen
+
+      - name: 품질 게이트 --full
+        run: bash .claude/scripts/quality_gate.sh --full
+
+      - name: 게이트 로그
+        if: always()
+        run: cat .claude/state/gate.log || true

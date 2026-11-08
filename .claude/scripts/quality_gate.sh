@@ -100,7 +100,11 @@ check "보호 경로 무결성" 60 "${PROTECTED[@]}" check
 
 # ---------- 2. 훅을 끄는 설정 / venv 시작 코드 ----------
 check "훅 설정" 30 "${PROTECTED[@]}" hooks-check
-check "venv 시작 코드" 60 "${PROTECTED[@]}" venv-check
+if [ "${CI:-}" = "true" ]; then
+  skip "venv 시작 코드" "CI: venv를 lock에서 새로 만들었으므로 생략"
+else
+  check "venv 시작 코드" 60 "${PROTECTED[@]}" venv-check
+fi
 
 # ---------- 3. lock 파일 일치 (uv.lock은 보호 경로가 아닌 대신 pyproject와 일치해야 한다) ----------
 check "lock 일치" 60 "${UV[@]}" lock --check --quiet

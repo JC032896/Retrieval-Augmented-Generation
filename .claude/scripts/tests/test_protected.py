@@ -313,7 +313,7 @@ class RestoreStateFromLock(ProjectFixture):
     def test_restores_when_lock_matches_head(self) -> None:
         result = self.run_protected("check")
         self.assertEqual(result.returncode, 0, result.stdout)
-        self.assertIn("복원", result.stdout)
+        self.assertIn("복원", result.stderr)  # stdout은 경로 목록 등으로 쓰이므로 알림은 stderr
         self.assertTrue((self.root / ".claude/state/protected.sha").is_file())
 
     def test_does_not_restore_when_lock_differs_from_head(self) -> None:

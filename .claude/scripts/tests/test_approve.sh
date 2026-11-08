@@ -55,6 +55,8 @@ protected() { (cd "$SB" && "${SYSPY[@]}" .claude/scripts/protected.py "$@" | tr 
 
 # ---------------------------------------------------------------- 1. 기준 없음
 new_sandbox t1
+# 원본에는 이미 승인된 기준(lock, baseline)이 커밋되어 있으므로, 최초 승인 전 상태를 만들기 위해 지운다
+(cd "$SB" && git rm -q .claude/protected.sha.lock eval/baseline.json && git commit -qm "기준 없음 상태")
 manifest=$(protected list | cut -c67- | sed 's/#.*//' | sort -u)
 changed=$(protected changed | sort -u)
 if [ -n "$changed" ] && [ "$changed" = "$manifest" ]; then
@@ -185,7 +187,8 @@ else
 fi
 
 in_sb git config user.email "someone@gmail.com"
-in_sb git rm -q eval/baseline.json && in_sb git commit -qm "baseline 제거" --no-verify
+# -f: make_baseline이 Windows에서 CRLF로 쓴 파일을 git이 "수정됨"으로 보기 때문
+in_sb git rm -qf eval/baseline.json && in_sb git commit -qm "baseline 제거" --no-verify
 out=$(cd "$SB" && bash .claude/scripts/make_baseline.sh 2>&1); rc=$?
 if [ "$rc" -ne 0 ] && [ ! -f "$SB/eval/baseline.json" ]; then
   ok "make_baseline에서 approve가 중단되면 baseline.json 되돌림"
@@ -238,6 +241,17 @@ else
   ng "venv sitecustomize 미실행" "control=$control marker=$([ -f "$marker" ] && echo 생김 || echo 없음) rc=$rc"$'\n'"$out"
 fi
 rm -f "$SB/$site/sitecustomize.py"
+
+# ---------------------------------------------------------------- 12. state 없이 lock만 커밋된 상태 (새 clone)
+# 회귀: lock에서 복원할 때의 알림이 changed 출력(경로 목록)에 섞여 git add가 실패하던 문제
+rm -f "$SB/.claude/state/protected.sha" "$SB/.claude/state/venv_startup.sha"
+sed -i 's/== 200/== 201/' "$SB/tests/test_main.py"
+out=$(approve --yes); rc=$?
+if [ "$rc" -eq 0 ] && grep -q "커밋 완료" <<<"$out" && ! grep -q "pathspec" <<<"$out"; then
+  ok "state 없이 lock만 있을 때(새 clone) approve --yes 정상 동작"
+else
+  ng "state 없이 lock만 있을 때 approve --yes" "rc=$rc"$'\n'"$out"
+fi
 
 # ---------------------------------------------------------------- 결과
 echo

@@ -215,8 +215,9 @@ def _outside_settings() -> list[tuple[str, Path]]:
         drop_in = d / "managed-settings.d"
         if drop_in.is_dir():
             sources += [("managed", f) for f in sorted(drop_in.glob("*.json"))]
-    cfg = _config_dir()
-    sources += [("user", cfg / "settings.json"), ("user", cfg / "settings.local.json")]
+    # CLAUDE_CONFIG_DIR가 있어도 기본 위치(~/.claude)를 함께 본다
+    for cfg in dict.fromkeys([_config_dir(), Path.home() / ".claude"]):
+        sources += [("user", cfg / "settings.json"), ("user", cfg / "settings.local.json")]
     return sources
 
 
@@ -376,7 +377,8 @@ def _restore_state_from_lock() -> None:
         return
     STATE_SHA.parent.mkdir(parents=True, exist_ok=True)
     STATE_SHA.write_text(LOCK.read_text(encoding="utf-8"), encoding="utf-8", newline="\n")
-    print("알림: 보호 기준이 없어 HEAD에 커밋된 lock 파일에서 복원했습니다")
+    # stdout은 changed 명령의 경로 목록으로 쓰이므로 알림은 stderr로 보낸다
+    print("알림: 보호 기준이 없어 HEAD에 커밋된 lock 파일에서 복원했습니다", file=sys.stderr)
 
 
 # ---------------------------------------------------------------- 명령
