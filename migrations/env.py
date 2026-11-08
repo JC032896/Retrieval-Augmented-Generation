@@ -3,7 +3,7 @@
 from logging.config import fileConfig
 
 from alembic import context
-from sqlalchemy import create_engine, pool
+from sqlalchemy import Connection, create_engine, pool
 
 from rag_service.config import get_settings
 from rag_service.db.models import Base
@@ -28,11 +28,20 @@ def run_migrations_offline() -> None:
 
 
 def run_migrations_online() -> None:
+    # 테스트는 config.attributes["connection"]으로 테스트 DB 연결을 넘겨준다
+    connection = config.attributes.get("connection")
+    if connection is not None:
+        _run(connection)
+        return
     engine = create_engine(get_settings().database_url, poolclass=pool.NullPool)
-    with engine.connect() as connection:
-        context.configure(connection=connection, target_metadata=target_metadata)
-        with context.begin_transaction():
-            context.run_migrations()
+    with engine.connect() as new_connection:
+        _run(new_connection)
+
+
+def _run(connection: Connection) -> None:
+    context.configure(connection=connection, target_metadata=target_metadata)
+    with context.begin_transaction():
+        context.run_migrations()
 
 
 if context.is_offline_mode():
