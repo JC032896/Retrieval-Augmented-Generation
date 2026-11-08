@@ -4,7 +4,12 @@ version = "0.1.0"
 description = "권한 인식 한국어 문서 질의 서비스 (RAG)"
 requires-python = ">=3.12,<3.13"
 dependencies = [
+    "alembic>=1.20.1",
     "fastapi>=0.162.2",
+    "pgvector>=0.5.1",
+    "psycopg[binary]>=3.3.8",
+    "pydantic-settings>=2.16.2",
+    "sqlalchemy>=2.1.8",
     "uvicorn[standard]>=0.54.0",
 ]
 
