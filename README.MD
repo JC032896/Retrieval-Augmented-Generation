@@ -97,7 +97,7 @@
 
 ## 5. 로드맵
 
-- [ ] **0단계: 환경 구축**: Docker Compose(Postgres + pgvector), FastAPI 기본 구조, DB 스키마
+- [x] **0단계: 환경 구축**: Docker Compose(Postgres + pgvector), FastAPI 기본 구조, DB 스키마
 - [ ] **1단계: 문서 수집**: PDF, DOCX, MD 파싱 → 제목 기준 청킹 → Kiwi 토큰화와 임베딩 → 권한 정보와 함께 저장
 - [ ] **2단계: 평가 데이터셋**: 샘플 문서와 사용자/권한 설정, 골든 데이터셋 첫 버전 (구현 전에 먼저 만든다)
 - [ ] **3단계: 검색**: 벡터 검색 → BM25 추가 → RRF → 리랭커. 단계마다 평가해서 비교표 작성

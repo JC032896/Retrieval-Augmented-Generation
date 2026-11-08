@@ -1,0 +1,42 @@
+# 가상 회사 "한빛소프트"의 조직과 사용자. 평가(권한 함정 질문)와 데모에 쓴다.
+# 보안 등급(clearance_level, security_level): 0 공개, 1 사내, 2 대외비, 3 기밀
+
+departments: [경영진, 인사팀, 재무팀, 개발팀, 영업팀]
+roles: [사원, 팀장, 임원]
+
+users:
+  - id: kim
+    name: 김사원
+    department: 개발팀
+    role: 사원
+    clearance_level: 1  # 일반 직원 기준
+
+  - id: lee
+    name: 이팀장
+    department: 개발팀
+    role: 팀장
+    clearance_level: 2  # 팀장이지만 다른 부서의 대외비는 볼 수 없다
+
+  - id: park
+    name: 박인사
+    department: 인사팀
+    role: 사원
+    clearance_level: 1  # 부서는 맞지만 등급이 부족해서 인사 대외비를 볼 수 없다
+
+  - id: choi
+    name: 최재무
+    department: 재무팀
+    role: 팀장
+    clearance_level: 2  # 재무 대외비(예산 계획)를 볼 수 있다
+
+  - id: jung
+    name: 정영업
+    department: 영업팀
+    role: 사원
+    clearance_level: 1  # 개발팀 문서와 영업 대외비는 볼 수 없다
+
+  - id: han
+    name: 한임원
+    department: 경영진
+    role: 임원
+    clearance_level: 3  # 기밀까지 볼 수 있지만, 임원을 허용하지 않은 부서 문서(07~10)는 볼 수 없다

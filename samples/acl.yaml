@@ -1,0 +1,87 @@
+# 문서별 열람 권한. 규칙: (부서가 departments에 있음 OR 역할이 roles에 있음)
+#                         AND 사용자 clearance_level >= 문서 security_level
+# 전 직원 공개 문서는 roles에 모든 역할을 적는다.
+
+documents:
+  # 전 직원
+  - file: 01_company_intro.md
+    title: 회사 소개
+    security_level: 0
+    roles: [사원, 팀장, 임원]
+
+  - file: 02_employment_rules.md
+    title: 취업규칙
+    security_level: 1
+    roles: [사원, 팀장, 임원]
+
+  - file: 03_benefits.md
+    title: 복리후생 안내
+    security_level: 1
+    roles: [사원, 팀장, 임원]
+
+  - file: 04_it_security_policy.md
+    title: IT 보안 정책
+    security_level: 1
+    roles: [사원, 팀장, 임원]
+
+  - file: 05_travel_expense_rules.md
+    title: 출장비 규정
+    security_level: 1
+    roles: [사원, 팀장, 임원]
+
+  - file: 06_remote_work_guide.md
+    title: 재택근무 가이드
+    security_level: 1
+    roles: [사원, 팀장, 임원]
+
+  # 부서 문서 (사내)
+  - file: 07_coding_conventions.md
+    title: 개발 코딩 컨벤션
+    security_level: 1
+    departments: [개발팀]
+
+  - file: 08_incident_response.md
+    title: 장애 대응 매뉴얼
+    security_level: 1
+    departments: [개발팀]
+
+  - file: 09_sales_proposal_guide.md
+    title: 영업 제안서 작성 가이드
+    security_level: 1
+    departments: [영업팀]
+
+  - file: 10_finance_voucher_process.md
+    title: 전표 처리 절차
+    security_level: 1
+    departments: [재무팀]
+
+  # 대외비: 해당 부서 + 임원 (부서원도 등급 2 이상이어야 함)
+  - file: 11_performance_review.md
+    title: 인사평가 기준
+    security_level: 2
+    departments: [인사팀]
+    roles: [임원]
+
+  - file: 12_budget_plan_2026.md
+    title: 2026 예산 계획
+    security_level: 2
+    departments: [재무팀]
+    roles: [임원]
+
+  - file: 13_sales_targets_2026.md
+    title: 2026 영업 실적 목표
+    security_level: 2
+    departments: [영업팀]
+    roles: [임원]
+
+  # 기밀
+  - file: 14_salary_table.md
+    title: 연봉 테이블
+    security_level: 3
+    departments: [인사팀]
+    roles: [임원]
+
+  - file: 15_executive_minutes.md
+    title: 임원회의록
+    security_level: 3
+    roles: [임원]
