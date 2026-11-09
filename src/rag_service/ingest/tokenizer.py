@@ -36,16 +36,20 @@ class KoreanTokenizer:
         self._kiwi = kiwi or _kiwi()
 
     def tokenize(self, text: str) -> list[str]:
-        tokens: list[str] = []
-        position = 0
-        for match in _CODE.finditer(text):
-            tokens += self._morphemes(text[position : match.start()])
-            tokens.append(_normalize_code(match.group()))
-            position = match.end()
-        tokens += self._morphemes(text[position:])
-        return tokens
+        # 코드를 잘라 내고 나머지를 따로 분석하면 "제12조의2는"의 "는"처럼 코드 뒤 조사가
+        # 홀로 남아 동사("늘다")로 잘못 분석된다. 코드 자리에 영문 자리표시자를 넣고 문장 전체를
+        # 한 번에 분석한 뒤 되돌린다. 영문 한 단어는 Kiwi가 외국어(SL) 하나로 보고 뒤의 조사를
+        # 정상적으로 떼어 낸다.
+        codes: dict[str, str] = {}
 
-    def _morphemes(self, text: str) -> list[str]:
+        def hide(match: re.Match[str]) -> str:
+            key = f"zq{_letters(len(codes))}zq"
+            codes[key] = _normalize_code(match.group())
+            return key
+
+        return self._morphemes(_CODE.sub(hide, text), codes)
+
+    def _morphemes(self, text: str, codes: dict[str, str]) -> list[str]:
         if not text.strip():
             return []
         tokens: list[str] = []
@@ -57,6 +61,10 @@ class KoreanTokenizer:
             compound.clear()
 
         for token in self._kiwi.tokenize(text):
+            if token.form in codes:
+                close_compound()
+                tokens.append(codes[token.form])
+                continue
             adjacent = bool(compound) and compound[-1].start + compound[-1].len == token.start
             if token.tag in _COMPOUND_TAGS and (adjacent or not compound):
                 compound.append(token)
@@ -72,6 +80,16 @@ class KoreanTokenizer:
 
 def _normalize_code(code: str) -> str:
     return re.sub(r"\s+", "", code).lower()
+
+
+def _letters(index: int) -> str:
+    """0 → a, 25 → z, 26 → ba ... (자리표시자에 숫자를 쓰면 Kiwi가 영문과 숫자로 쪼갠다)"""
+    letters = ""
+    while True:
+        index, rest = divmod(index, 26)
+        letters = chr(ord("a") + rest) + letters
+        if index == 0:
+            return letters
 
 
 def to_tsvector_literal(tokens: Iterable[str]) -> str:
