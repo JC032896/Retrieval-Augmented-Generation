@@ -85,3 +85,40 @@ documents:
     title: 임원회의록
     security_level: 3
     roles: [임원]
+
+  # 헷갈리는 문서 (검색 평가의 난이도를 위해 추가): 폐지된 구버전, 비슷한 코드 체계, 같은 주제의 다른 내용
+  - file: 16_travel_expense_rules_2025.md
+    title: 출장비 규정 (2025년판, 폐지)
+    security_level: 1
+    roles: [사원, 팀장, 임원]
+
+  - file: 17_remote_work_pilot_2023.md
+    title: 재택근무 시범 운영 안내 (2023년, 종료)
+    security_level: 1
+    roles: [사원, 팀장, 임원]
+
+  - file: 18_it_security_annex.md
+    title: IT 보안 정책 부속서
+    security_level: 1
+    roles: [사원, 팀장, 임원]
+
+  - file: 19_device_incident_manual.md
+    title: 한빛디바이스 단말기 장애 처리 기준
+    security_level: 1
+    departments: [개발팀, 영업팀]
+
+  - file: 20_sales_proposal_guide_2024.md
+    title: 영업 제안서 작성 가이드 (2024년판, 폐지)
+    security_level: 1
+    departments: [영업팀]
+
+  - file: 21_kpi_results_2025.md
+    title: 2025 경영 실적 보고
+    security_level: 2
+    departments: [재무팀]
+    roles: [임원]
+
+  - file: 22_health_checkup_booking.md
+    title: 건강검진 예약 안내
+    security_level: 1
+    roles: [사원, 팀장, 임원]
