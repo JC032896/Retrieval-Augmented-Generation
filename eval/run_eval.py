@@ -5,6 +5,8 @@
   uv run python eval/run_eval.py --json OUT.json  JSON으로도 저장 (quality_gate --full이 실행)
   uv run python eval/run_eval.py --update-cache   캐시에 없는 임베딩을 BGE-M3로 계산해 갱신
                                                   (eval/cache는 보호 경로라 사용자 승인 필요)
+  uv run python eval/run_eval.py --retriever vector  검색기 선택 (vector, keyword, hybrid)
+  uv run python eval/run_eval.py --compare           세 검색기를 모두 평가해 비교표를 출력
 
 이 파일은 채점 코드라서 보호 경로다. 결과 JSON 규약은 .claude/scripts/metrics.py 참고.
 
@@ -13,6 +15,8 @@
 - 임베딩은 eval/cache/embeddings.json의 캐시만 쓴다(모델 없이 CI에서도 돈다). 캐시에 없는 텍스트가
   있으면 실패한다. 청킹이나 질문이 바뀌면 --update-cache로 캐시를 다시 만든다.
 - 벡터 검색은 HNSW 없이 정확한 전체 비교(flat)로 해서 실행할 때마다 결과가 같다.
+- 검색은 서비스와 같은 rag_service.retrieval.search.search를 쓴다. 기본 검색기(DEFAULT_RETRIEVER)는
+  게이트가 baseline과 비교하는 검색기다. 다른 검색기가 더 나아지면 바꾸고 baseline을 다시 만든다.
 
 지표
 - recall_at_5: 답이 있는 질문(general, code, paraphrase)마다 정답 위치(file, section) 중
@@ -47,7 +51,7 @@ from rag_service.db.models import EMBEDDING_DIM
 from rag_service.ingest.embedder import DEFAULT_MODEL, Embedder, SentenceTransformerEmbedder
 from rag_service.ingest.pipeline import ingest_corpus
 from rag_service.ingest.tokenizer import KoreanTokenizer
-from rag_service.retrieval.vector import vector_search
+from rag_service.retrieval.search import RETRIEVERS, Retriever, search
 
 ROOT = Path(__file__).resolve().parents[1]
 GOLDEN = ROOT / "eval" / "golden.jsonl"
@@ -56,6 +60,8 @@ SAMPLES = ROOT / "samples"
 ALEMBIC_INI = ROOT / "alembic.ini"
 EVAL_DATABASE = "rag_eval"
 
+# 2026-11-09 비교: vector MRR 0.927 > hybrid(RRF 1:1) 0.863 > keyword 0.784 → vector 유지
+DEFAULT_RETRIEVER: Retriever = "vector"
 RECALL_K = 5
 RANK_DEPTH = 10  # MRR과 권한 유출을 볼 검색 결과 개수
 ANSWERABLE_TYPES = ("general", "code", "paraphrase")
@@ -102,7 +108,8 @@ def load_golden(path: Path) -> list[GoldenItem]:
 
 
 def file_sha256(path: Path) -> str:
-    return hashlib.sha256(path.read_bytes()).hexdigest()
+    # 줄바꿈(CRLF/LF)만 다른 같은 내용은 같은 해시가 되게 한다 (Windows와 CI의 체크아웃 차이)
+    return hashlib.sha256(path.read_bytes().replace(b"\r\n", b"\n")).hexdigest()
 
 
 # ---------------------------------------------------------------- 채점 (순수 함수)
@@ -170,7 +177,7 @@ class EmbeddingCache:
         vectors = {key: self._vectors[key] for key in sorted(self._used)}
         payload = {"model": self.model, "dim": EMBEDDING_DIM, "vectors": vectors}
         self.path.parent.mkdir(parents=True, exist_ok=True)
-        self.path.write_text(json.dumps(payload, indent=0) + "\n", encoding="utf-8")
+        self.path.write_text(json.dumps(payload, indent=0) + "\n", encoding="utf-8", newline="\n")
 
 
 class CachedEmbedder:
@@ -224,11 +231,16 @@ def prepare_database(database: str = EVAL_DATABASE) -> Engine:
 
 
 def evaluate(
-    engine: Engine, corpus: Corpus, golden: Sequence[GoldenItem], embedder: Embedder
+    engine: Engine,
+    corpus: Corpus,
+    golden: Sequence[GoldenItem],
+    embedder: Embedder,
+    retriever: Retriever = DEFAULT_RETRIEVER,
 ) -> dict[str, Any]:
+    tokenizer = KoreanTokenizer()
     with Session(engine) as session, session.begin():
         session.execute(text("TRUNCATE documents, users RESTART IDENTITY CASCADE"))
-        ingest_corpus(session, corpus, embedder=embedder, tokenizer=KoreanTokenizer())
+        ingest_corpus(session, corpus, embedder=embedder, tokenizer=tokenizer)
 
     query_vectors = embedder.embed([item.question for item in golden])
     recalls: dict[str, float] = {}
@@ -238,7 +250,16 @@ def evaluate(
     with Session(engine) as session, session.begin():
         for item, vector in zip(golden, query_vectors, strict=True):
             user = corpus.user(item.user)
-            hits = vector_search(session, vector, user, limit=RANK_DEPTH, exact=True)
+            hits = search(
+                session,
+                query=item.question,
+                query_vector=vector,
+                viewer=user,
+                tokenizer=tokenizer,
+                retriever=retriever,
+                limit=RANK_DEPTH,
+                exact=True,
+            )
             leaks[item.id] = count_leaks([hit.file for hit in hits], corpus.visible_files(user))
             if item.answerable:
                 ranked = [(hit.file, hit.section) for hit in hits]
@@ -268,7 +289,7 @@ def evaluate(
         "golden_sha": file_sha256(GOLDEN),
         "embedding_cache": True,
         "index": "flat",
-        "retriever": "vector",
+        "retriever": retriever,
         "by_type": by_type,
         "missed_at_5": sorted(i for i, value in recalls.items() if value < 1.0),
         "missed_at_1": sorted(i for i, value in firsts.items() if value < 1.0),
@@ -294,18 +315,42 @@ def format_report(result: dict[str, Any]) -> str:
     return "\n".join(lines)
 
 
+def format_comparison(results: Sequence[dict[str, Any]]) -> str:
+    """README 실험 결과 표에 옮길 수 있는 Markdown 표."""
+    lines = [
+        "| 검색기 | Recall@5 | MRR | Hit@1 | Hit@1 (paraphrase) | Hit@1 (code) | 권한 유출 |",
+        "|---|---|---|---|---|---|---|",
+    ]
+    for r in results:
+        by_type = r["by_type"]
+        lines.append(
+            f"| {r['retriever']} | {r['recall_at_5']:.3f} | {r['mrr']:.3f} | {r['hit_at_1']:.3f} "
+            f"| {by_type['paraphrase']['hit_at_1']:.3f} | {by_type['code']['hit_at_1']:.3f} "
+            f"| {r['acl_leaks']} |"
+        )
+    return "\n".join(lines)
+
+
 def main(argv: Sequence[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="골든 데이터셋으로 검색을 평가한다.")
     parser.add_argument("--json", type=Path, help="결과 JSON을 저장할 경로")
     parser.add_argument(
         "--update-cache", action="store_true", help="캐시에 없는 임베딩을 BGE-M3로 계산해 저장"
     )
+    parser.add_argument("--retriever", choices=RETRIEVERS, default=DEFAULT_RETRIEVER, help="검색기")
+    parser.add_argument("--compare", action="store_true", help="모든 검색기를 평가해 비교")
     args = parser.parse_args(argv)
 
     cache = EmbeddingCache(CACHE, DEFAULT_MODEL)
     fallback = SentenceTransformerEmbedder() if args.update_cache else None
     embedder = CachedEmbedder(cache, fallback)
-    result = evaluate(prepare_database(), load_corpus(SAMPLES), load_golden(GOLDEN), embedder)
+    engine, corpus, golden = prepare_database(), load_corpus(SAMPLES), load_golden(GOLDEN)
+    if args.compare:
+        print(
+            format_comparison([evaluate(engine, corpus, golden, embedder, r) for r in RETRIEVERS])
+        )
+        return 0
+    result = evaluate(engine, corpus, golden, embedder, args.retriever)
     if args.update_cache:
         cache.save()
 

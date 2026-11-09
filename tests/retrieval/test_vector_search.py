@@ -1,7 +1,7 @@
 from pathlib import Path
 
 import pytest
-from sqlalchemy import select
+from sqlalchemy import select, text
 from sqlalchemy.orm import Session
 
 from rag_service.corpus import Corpus, load_corpus
@@ -31,10 +31,13 @@ def _any_vector() -> list[float]:
 
 @pytest.mark.parametrize("user_id", ["kim", "lee", "park", "choi", "jung", "han"])
 def test_sql_filter_matches_can_view(db_session: Session, corpus: Corpus, user_id: str) -> None:
-    """SQL 권한 필터가 corpus.can_view와 정확히 같은 문서만 보여 주는지 사용자마다 확인한다."""
+    """SQL 권한 필터가 corpus.can_view와 정확히 같은 문서만 보여 주는지 사용자마다 확인한다.
+
+    근사 검색(HNSW)은 모든 결과를 보장하지 않으므로 정확한 전체 비교로 검사한다.
+    """
     user = corpus.user(user_id)
 
-    hits = vector_search(db_session, _any_vector(), user, limit=1000)
+    hits = vector_search(db_session, _any_vector(), user, limit=1000, exact=True)
 
     assert {hit.file for hit in hits} == corpus.visible_files(user)
 
@@ -52,18 +55,26 @@ def test_identical_vector_ranks_first_with_full_score(db_session: Session, corpu
     assert len(hits) == 3
 
 
-def test_exact_search_gives_same_order(db_session: Session, corpus: Corpus) -> None:
-    user = corpus.user("han")
-    vector = _any_vector()
+@pytest.mark.parametrize("user_id", ["park", "han"])
+def test_index_scan_still_fills_limit_after_permission_filter(
+    db_session: Session, corpus: Corpus, user_id: str
+) -> None:
+    """HNSW 인덱스를 쓰는 실행 계획에서도 권한 필터 뒤 결과가 limit만큼 채워지는지 확인한다.
 
-    approximate = vector_search(db_session, vector, user, limit=10)
-    exact = vector_search(db_session, vector, user, limit=10, exact=True)
+    iterative scan이 없으면 HNSW는 후보 40개(ef_search)만 보고 필터를 적용해서, 권한이 좁은
+    사용자는 결과가 limit보다 적게 나왔다 (2026-11-09 CI 실패의 원인).
+    """
+    # 테스트 데이터가 작아서 Postgres가 순차 스캔을 고르므로, 인덱스 순서를 쓰는 계획을 강제한다
+    db_session.execute(text("SET LOCAL enable_seqscan = off"))
+    db_session.execute(text("SET LOCAL enable_sort = off"))
 
-    assert [hit.chunk_id for hit in exact] == [hit.chunk_id for hit in approximate]
+    hits = vector_search(db_session, _any_vector(), corpus.user(user_id), limit=50)
+
+    assert len(hits) == 50
 
 
 def test_pdf_hits_carry_page(db_session: Session, corpus: Corpus) -> None:
-    hits = vector_search(db_session, _any_vector(), corpus.user("kim"), limit=1000)
+    hits = vector_search(db_session, _any_vector(), corpus.user("kim"), limit=1000, exact=True)
 
     pages = {hit.section: hit.page for hit in hits if hit.file.endswith(".pdf")}
     assert pages == {"사전 승인": 1, "국내 출장": 1, "해외 출장": 2, "정산": 2}
