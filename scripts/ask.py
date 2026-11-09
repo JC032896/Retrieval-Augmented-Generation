@@ -22,6 +22,7 @@ from sqlalchemy.orm import Session
 
 from rag_service.answer.generate import DEFAULT_CONTEXT_SIZE, answer_question
 from rag_service.answer.llm import ClaudeLLM, estimate_cost
+from rag_service.answer.verify import verify_answer
 from rag_service.config import get_settings
 from rag_service.corpus import load_corpus
 from rag_service.ingest.embedder import SentenceTransformerEmbedder
@@ -101,6 +102,15 @@ def main() -> int:
         print(f"  [{citation.number}] {where}  ({citation.file})")
     if answer.invalid_citations:
         print(f"  근거에 없는 인용 번호: {list(answer.invalid_citations)}")
+    if not answer.refused:
+        verification = verify_answer(
+            answer.text, answer.context, question=args.question, tokenizer=tokenizer
+        )
+        if verification.verified:
+            print("\n인용 검증: 통과")
+        for check in verification.problems:
+            numbers = f" {list(check.unsupported_numbers)}" if check.unsupported_numbers else ""
+            print(f"\n인용 검증 경고 ({check.status}{numbers}): {check.text}")
     if answer.completion is not None:
         c = answer.completion
         cost = _cost(c.model, c.input_tokens, c.output_tokens)
