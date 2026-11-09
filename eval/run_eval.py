@@ -39,6 +39,8 @@
   인용한 비율. 인용이 없으면 0.
 - citation_precision: 같은 질문들에서 인용한 조각 중 정답 위치인 비율의 평균. 인용이 없으면 0.
 - invalid_citations: 근거 조각 범위를 벗어난 인용 번호 개수의 합.
+- verified_rate: 답한 답이 있는 질문 중 인용 검증(rag_service.answer.verify)을 모든 문장이 통과한
+  비율. 실패한 문장 수는 problem_sentences에 상태별로 센다.
 """
 
 from __future__ import annotations
@@ -50,6 +52,7 @@ import json
 import struct
 import sys
 import threading
+from collections import Counter
 from collections.abc import Mapping, Sequence
 from concurrent.futures import ThreadPoolExecutor
 from dataclasses import asdict, dataclass
@@ -63,6 +66,7 @@ from sqlalchemy.orm import Session
 
 from rag_service.answer.generate import Answer, answer_question
 from rag_service.answer.llm import LLM, ClaudeLLM, Completion, Effort, estimate_cost
+from rag_service.answer.verify import verify_answer
 from rag_service.config import get_settings
 from rag_service.corpus import Corpus, load_corpus
 from rag_service.db.models import EMBEDDING_DIM
@@ -184,6 +188,20 @@ def score_answers(golden: Sequence[GoldenItem], answers: Mapping[str, Answer]) -
         hits[item.id] = 1.0 if correct else 0.0
         precisions[item.id] = correct / len(cited) if cited else 0.0
 
+    tokenizer = KoreanTokenizer()
+    verifications = {
+        item.id: verify_answer(
+            answers[item.id].text,
+            answers[item.id].context,
+            question=item.question,
+            tokenizer=tokenizer,
+        )
+        for item in answered
+    }
+    problem_sentences = Counter(
+        check.status for v in verifications.values() for check in v.problems
+    )
+
     completions = [a.completion for a in answers.values() if a.completion is not None]
     input_tokens = sum(c.input_tokens for c in completions)
     output_tokens = sum(c.output_tokens for c in completions)
@@ -195,6 +213,8 @@ def score_answers(golden: Sequence[GoldenItem], answers: Mapping[str, Answer]) -
         "citation_hit": mean(list(hits.values())),
         "citation_precision": mean(list(precisions.values())),
         "invalid_citations": sum(len(a.invalid_citations) for a in answers.values()),
+        "verified_rate": mean([float(v.verified) for v in verifications.values()]),
+        "problem_sentences": dict(sorted(problem_sentences.items())),
         "llm_calls": len(completions),
         "input_tokens": input_tokens,
         "output_tokens": output_tokens,
@@ -204,6 +224,7 @@ def score_answers(golden: Sequence[GoldenItem], answers: Mapping[str, Answer]) -
         "false_refusals": sorted(item.id for item in answerable if answers[item.id].refused),
         "uncited": sorted(item.id for item in answered if not answers[item.id].citations),
         "citation_missed": sorted(i for i, value in hits.items() if not value),
+        "unverified": sorted(i for i, v in verifications.items() if not v.verified),
     }
 
 
@@ -576,7 +597,21 @@ def _answer_report(answer: dict[str, Any]) -> list[str]:
         f"{answer['citation_precision']:.4f}, 범위 밖 번호 {answer['invalid_citations']}개",
         f"  인용 없는 답: {', '.join(answer['uncited']) or '없음'}",
         f"  정답 위치를 인용하지 않은 답: {', '.join(answer['citation_missed']) or '없음'}",
+        f"  인용 검증 통과 {answer['verified_rate']:.4f} "
+        f"(실패: {', '.join(answer['unverified']) or '없음'}, 문장 {answer['problem_sentences']})",
     ]
+
+
+def format_verification_comparison(answers: Sequence[dict[str, Any]]) -> str:
+    """모델별 인용 검증 결과 (Markdown). answers는 evaluate_answers의 결과들."""
+    lines = ["| 모델 | 인용 검증 통과 | 실패한 답 | 실패 문장 (상태별) |", "|---|---|---|---|"]
+    for a in answers:
+        problems = ", ".join(f"{k} {v}" for k, v in a["problem_sentences"].items()) or "-"
+        lines.append(
+            f"| {a['model']} | {a['verified_rate']:.3f} "
+            f"| {', '.join(a['unverified']) or '-'} | {problems} |"
+        )
+    return "\n".join(lines)
 
 
 def format_comparison(results: Sequence[dict[str, Any]]) -> str:
@@ -655,6 +690,8 @@ def main(argv: Sequence[str] | None = None) -> int:
         if args.update_cache:
             answer_cache.save()
         print(format_model_comparison(answers, len(golden)))
+        print()
+        print(format_verification_comparison(answers))
         return 0
 
     if args.compare:
