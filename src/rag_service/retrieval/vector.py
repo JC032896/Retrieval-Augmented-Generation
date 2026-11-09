@@ -7,6 +7,8 @@ ef_search(40)개만 보고 그중 WHERE 권한 필터를 통과한 것만 돌려
 결과가 limit보다 훨씬 적게 나오고 정답이 빠질 수 있다 (2026-11-09 CI에서 발견: 볼 수 있는 문서
 16개 중 9개만 나옴). pgvector 0.8의 iterative scan을 켜서 필터 후 결과가 모자라면 그래프를 더
 탐색하게 한다. 그래도 근사 검색이라 모든 결과를 보장하지는 않는다.
+
+current_only=True면 폐지(superseded) 문서의 조각을 뺀다 (access.scope_filter).
 """
 
 from collections.abc import Sequence
@@ -15,7 +17,7 @@ from sqlalchemy import select, text
 from sqlalchemy.orm import Session
 
 from rag_service.db.models import Chunk, Document
-from rag_service.retrieval.access import Viewer, access_filter
+from rag_service.retrieval.access import Viewer, scope_filter
 from rag_service.retrieval.hits import HIT_COLUMNS, SearchHit, to_hit
 
 __all__ = ["SearchHit", "vector_search"]
@@ -28,6 +30,7 @@ def vector_search(
     *,
     limit: int = 10,
     exact: bool = False,
+    current_only: bool = False,
 ) -> list[SearchHit]:
     if limit <= 0:
         raise ValueError("limit은 양수여야 합니다")
@@ -43,7 +46,7 @@ def vector_search(
     rows = session.execute(
         select(*HIT_COLUMNS, distance)
         .join(Document, Document.id == Chunk.document_id)
-        .where(access_filter(viewer))
+        .where(scope_filter(viewer, current_only=current_only))
         .order_by(distance, Chunk.id)  # 거리가 같으면 id 순으로 고정
         .limit(limit)
     ).all()

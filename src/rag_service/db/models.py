@@ -34,6 +34,9 @@ _LEVEL_RANGE = f"BETWEEN {MIN_SECURITY_LEVEL} AND {MAX_SECURITY_LEVEL}"
 
 ACL_KINDS = ("department", "role")
 
+# 문서 수명: current 현행, superseded 폐지되었거나 새 판으로 대체됨 (기록으로만 남긴다)
+DOCUMENT_STATUSES = ("current", "superseded")
+
 
 class Base(DeclarativeBase):
     pass
@@ -43,12 +46,18 @@ class Document(Base):
     __tablename__ = "documents"
     __table_args__ = (
         CheckConstraint(f"security_level {_LEVEL_RANGE}", name="ck_documents_security_level"),
+        CheckConstraint(
+            "status IN (" + ", ".join(f"'{status}'" for status in DOCUMENT_STATUSES) + ")",
+            name="ck_documents_status",
+        ),
     )
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     title: Mapped[str] = mapped_column(Text)
     source_path: Mapped[str] = mapped_column(Text, unique=True)
     security_level: Mapped[int] = mapped_column(Integer)
+    # 권한과 달리 조각에 복사하지 않는다. 새 판이 나오면 이 한 행만 바꾸면 된다
+    status: Mapped[str] = mapped_column(Text, server_default=text("'current'"))
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
 
 

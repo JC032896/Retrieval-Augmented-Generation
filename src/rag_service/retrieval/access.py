@@ -8,9 +8,9 @@
 
 from typing import Protocol
 
-from sqlalchemy import ColumnElement, and_, or_
+from sqlalchemy import ColumnElement, and_, or_, select
 
-from rag_service.db.models import Chunk
+from rag_service.db.models import Chunk, Document
 
 
 class Viewer(Protocol):
@@ -32,3 +32,15 @@ def access_filter(viewer: Viewer) -> ColumnElement[bool]:
         ),
         Chunk.security_level <= viewer.clearance_level,
     )
+
+
+def scope_filter(viewer: Viewer, *, current_only: bool) -> ColumnElement[bool]:
+    """권한 필터에, current_only면 현행 문서 조건을 더한다.
+
+    문서 수명은 권한이 아니라 "지금 유효한 문서인가"의 문제다. 폐지 문서도 권한이 있으면 볼 수
+    있지만, 기본 검색에서는 후보에서 빼서 구버전이 1위를 차지하지 않게 한다.
+    """
+    if not current_only:
+        return access_filter(viewer)
+    current = select(Document.id).where(Document.status == "current")
+    return and_(access_filter(viewer), Chunk.document_id.in_(current))

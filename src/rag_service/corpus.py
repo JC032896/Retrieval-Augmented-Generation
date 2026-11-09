@@ -2,7 +2,8 @@
 
 파일 구성 (samples/ 참고):
   org.yaml   departments, roles, users
-  acl.yaml   documents: 문서 파일별 제목, 보안 등급, 열람 가능한 부서와 역할
+  acl.yaml   documents: 문서 파일별 제목, 보안 등급, 열람 가능한 부서와 역할,
+             수명(status: current 기본값, superseded 폐지/대체)
   docs/      문서 본문
 
 권한 규칙은 can_view 하나로 정의한다. 검색 SQL의 권한 필터와 평가의 유출 검사는
@@ -11,7 +12,7 @@
 
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Annotated, Any
+from typing import Annotated, Any, Literal
 
 import yaml
 from pydantic import BaseModel, ConfigDict, Field
@@ -19,6 +20,7 @@ from pydantic import BaseModel, ConfigDict, Field
 from rag_service.db.models import MAX_SECURITY_LEVEL, MIN_SECURITY_LEVEL
 from rag_service.ingest.parsers import SUPPORTED_SUFFIXES
 
+DocumentStatus = Literal["current", "superseded"]  # db.models.DOCUMENT_STATUSES와 같다
 SecurityLevel = Annotated[int, Field(ge=MIN_SECURITY_LEVEL, le=MAX_SECURITY_LEVEL)]
 
 
@@ -46,6 +48,7 @@ class DocumentEntry(_Strict):
     security_level: SecurityLevel
     departments: list[str] = []
     roles: list[str] = []
+    status: DocumentStatus = "current"
 
 
 class AclFile(_Strict):

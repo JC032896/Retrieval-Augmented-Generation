@@ -11,6 +11,9 @@
   정하므로 RRF로 합칠 필요가 없고, BM25는 벡터가 놓친 후보를 더하는 역할만 한다.
 
 어느 방식이든 권한 필터는 각 검색 SQL의 WHERE 절에서 먼저 적용된다.
+
+폐지(superseded) 문서는 기본으로 뺀다. 리랭커는 "질문과 관련 있는가"만 보므로 같은 주제의 구버전을
+현행판만큼 높게 평가한다. 지난 규정을 찾는 경우에만 include_superseded=True로 포함한다.
 """
 
 from collections.abc import Sequence
@@ -46,27 +49,32 @@ def search(
     limit: int = 10,
     exact: bool = False,
     reranker: Reranker | None = None,
+    include_superseded: bool = False,
 ) -> list[SearchHit]:
-    if retriever == "vector":
-        return vector_search(session, query_vector, viewer, limit=limit, exact=exact)
-    if retriever == "keyword":
-        return keyword_search(session, tokenizer.tokenize(query), viewer, limit=limit)
-    if retriever == "hybrid":
-        return hybrid_search(
-            vector_search(session, query_vector, viewer, limit=HYBRID_CANDIDATES, exact=exact),
-            keyword_search(session, tokenizer.tokenize(query), viewer, limit=HYBRID_CANDIDATES),
-            limit=limit,
+    current_only = not include_superseded
+
+    def vector(n: int) -> list[SearchHit]:
+        return vector_search(
+            session, query_vector, viewer, limit=n, exact=exact, current_only=current_only
         )
+
+    def keyword(n: int) -> list[SearchHit]:
+        return keyword_search(
+            session, tokenizer.tokenize(query), viewer, limit=n, current_only=current_only
+        )
+
+    if retriever == "vector":
+        return vector(limit)
+    if retriever == "keyword":
+        return keyword(limit)
+    if retriever == "hybrid":
+        return hybrid_search(vector(HYBRID_CANDIDATES), keyword(HYBRID_CANDIDATES), limit=limit)
     if retriever in RERANKED_RETRIEVERS:
         if reranker is None:
             raise ValueError(f"{retriever} 검색기에는 reranker가 필요합니다")
-        candidates = vector_search(
-            session, query_vector, viewer, limit=RERANK_CANDIDATES, exact=exact
-        )
+        candidates = vector(RERANK_CANDIDATES)
         if retriever == "hybrid_rerank":
-            keyword_hits = keyword_search(
-                session, tokenizer.tokenize(query), viewer, limit=RERANK_CANDIDATES
-            )
+            keyword_hits = keyword(RERANK_CANDIDATES)
             seen = {hit.chunk_id for hit in candidates}
             candidates += [hit for hit in keyword_hits if hit.chunk_id not in seen]
         return rerank(query, candidates, reranker, limit=limit)

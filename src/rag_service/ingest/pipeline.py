@@ -4,6 +4,7 @@
   지우고 새로 넣는다 (ON DELETE CASCADE).
 - 코퍼스에서 빠진 문서는 DB에서도 지운다.
 - 권한 정보(부서, 역할, 보안 등급)는 document_acl에 원본을, chunks에 사본을 저장한다.
+- 문서 수명(현행/폐지)은 documents에만 저장한다.
 - 커밋은 호출하는 쪽에서 한다. 전체를 한 트랜잭션으로 묶으면 중간에 실패해도 DB가
   반쯤 바뀐 상태로 남지 않는다.
 """
@@ -69,7 +70,10 @@ def ingest_document(
 
     session.execute(delete(Document).where(Document.source_path == entry.file))
     document = Document(
-        title=entry.title, source_path=entry.file, security_level=entry.security_level
+        title=entry.title,
+        source_path=entry.file,
+        security_level=entry.security_level,
+        status=entry.status,
     )
     session.add(document)
     session.flush()  # document.id를 받아온다
