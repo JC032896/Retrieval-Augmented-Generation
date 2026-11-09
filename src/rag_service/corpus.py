@@ -17,6 +17,7 @@ import yaml
 from pydantic import BaseModel, ConfigDict, Field
 
 from rag_service.db.models import MAX_SECURITY_LEVEL, MIN_SECURITY_LEVEL
+from rag_service.ingest.parsers import SUPPORTED_SUFFIXES
 
 SecurityLevel = Annotated[int, Field(ge=MIN_SECURITY_LEVEL, le=MAX_SECURITY_LEVEL)]
 
@@ -118,7 +119,9 @@ def _validate(corpus: Corpus) -> None:
     listed = {doc.file for doc in corpus.documents}
     docs_dir = corpus.root / "docs"
     errors += [
-        f"{p.name}: acl.yaml에 없음" for p in sorted(docs_dir.glob("*.md")) if p.name not in listed
+        f"{p.name}: acl.yaml에 없음"
+        for p in sorted(docs_dir.iterdir())
+        if p.suffix.lower() in SUPPORTED_SUFFIXES and p.name not in listed
     ]
 
     if errors:

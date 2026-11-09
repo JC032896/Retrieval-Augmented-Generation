@@ -16,7 +16,7 @@ from sqlalchemy.orm import Session
 
 from rag_service.corpus import Corpus, DocumentEntry
 from rag_service.db.models import Chunk, Document, DocumentAcl
-from rag_service.ingest.chunker import DEFAULT_MAX_CHARS, chunk_markdown
+from rag_service.ingest.chunker import DEFAULT_MAX_CHARS, chunk_document
 from rag_service.ingest.embedder import Embedder
 from rag_service.ingest.tokenizer import KoreanTokenizer, to_tsvector_literal
 
@@ -62,8 +62,7 @@ def ingest_document(
     max_chars: int = DEFAULT_MAX_CHARS,
 ) -> int:
     """문서 하나를 (다시) 저장하고 조각 개수를 돌려준다."""
-    markdown = corpus.doc_path(entry).read_text(encoding="utf-8")
-    pieces = chunk_markdown(markdown, max_chars=max_chars)
+    pieces = chunk_document(corpus.doc_path(entry), max_chars=max_chars)
     vectors = embedder.embed([piece.text for piece in pieces])
     if len(vectors) != len(pieces):
         raise ValueError(f"{entry.file}: 조각 {len(pieces)}개에 벡터 {len(vectors)}개가 왔습니다")
@@ -87,7 +86,7 @@ def ingest_document(
             document_id=document.id,
             chunk_index=piece.index,
             content=piece.text,
-            page=None,  # Markdown에는 페이지가 없다
+            page=piece.page,  # PDF만 페이지가 있다
             section=piece.section or None,
             tokens=cast(to_tsvector_literal(tokenizer.tokenize(piece.text)), TSVECTOR),
             embedding=vector,

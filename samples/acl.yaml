@@ -14,7 +14,7 @@ documents:
     security_level: 1
     roles: [사원, 팀장, 임원]
 
-  - file: 03_benefits.md
+  - file: 03_benefits.docx
     title: 복리후생 안내
     security_level: 1
     roles: [사원, 팀장, 임원]
@@ -24,7 +24,7 @@ documents:
     security_level: 1
     roles: [사원, 팀장, 임원]
 
-  - file: 05_travel_expense_rules.md
+  - file: 05_travel_expense_rules.pdf
     title: 출장비 규정
     security_level: 1
     roles: [사원, 팀장, 임원]
