@@ -17,6 +17,13 @@ FALLBACK_BETA = "server-side-fallback-2026-07-01"
 # 사고(thinking) 토큰도 max_tokens에 들어간다. 실제로 쓴 만큼만 과금되므로 넉넉히 둔다
 DEFAULT_MAX_TOKENS = 16000
 
+# 공개 표준 요금 (100만 토큰당 입력, 출력 달러, 2026-11 기준). 비용 추정용
+MODEL_PRICES: dict[str, tuple[float, float]] = {
+    "claude-opus-5-5": (4.0, 20.0),
+    "claude-sonnet-5-5": (2.0, 10.0),
+    "claude-haiku-5-5": (0.1, 0.5),
+}
+
 
 @dataclass(frozen=True)
 class Completion:
@@ -24,6 +31,14 @@ class Completion:
     model: str  # 실제로 답한 모델 (대체 모델이 답했으면 그 모델)
     input_tokens: int
     output_tokens: int
+
+
+def estimate_cost(model: str, input_tokens: int, output_tokens: int) -> float | None:
+    """달러 비용 추정. 요금표에 없는 모델은 None."""
+    if model not in MODEL_PRICES:
+        return None
+    input_price, output_price = MODEL_PRICES[model]
+    return (input_tokens * input_price + output_tokens * output_price) / 1_000_000
 
 
 class LLMError(RuntimeError):

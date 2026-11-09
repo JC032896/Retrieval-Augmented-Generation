@@ -21,7 +21,7 @@ from sqlalchemy import create_engine, text
 from sqlalchemy.orm import Session
 
 from rag_service.answer.generate import DEFAULT_CONTEXT_SIZE, answer_question
-from rag_service.answer.llm import ClaudeLLM
+from rag_service.answer.llm import ClaudeLLM, estimate_cost
 from rag_service.config import get_settings
 from rag_service.corpus import load_corpus
 from rag_service.ingest.embedder import SentenceTransformerEmbedder
@@ -31,12 +31,6 @@ from rag_service.retrieval.rerank import CrossEncoderReranker
 from rag_service.retrieval.search import search
 
 ROOT = Path(__file__).resolve().parents[1]
-# 공개 표준 요금 (100만 토큰당 입력, 출력 달러). 표에 없는 모델은 비용을 표시하지 않는다
-PRICES = {
-    "claude-opus-5-5": (4.0, 20.0),
-    "claude-sonnet-5-5": (2.0, 10.0),
-    "claude-haiku-5-5": (0.1, 0.5),
-}
 
 
 def main() -> int:
@@ -119,11 +113,8 @@ def _page(page: int | None) -> str | None:
 
 
 def _cost(model: str, input_tokens: int, output_tokens: int) -> str:
-    if model not in PRICES:
-        return ""
-    input_price, output_price = PRICES[model]
-    dollars = (input_tokens * input_price + output_tokens * output_price) / 1_000_000
-    return f", 약 ${dollars:.4f}"
+    dollars = estimate_cost(model, input_tokens, output_tokens)
+    return "" if dollars is None else f", 약 ${dollars:.4f}"
 
 
 if __name__ == "__main__":
