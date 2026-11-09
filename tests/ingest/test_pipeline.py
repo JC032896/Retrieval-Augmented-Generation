@@ -33,9 +33,9 @@ def test_ingest_stores_documents_acl_and_chunks(db_session: Session, corpus: Cor
     stats = ingest_corpus(db_session, corpus, embedder=FakeEmbedder(), tokenizer=tokenizer)
     db_session.commit()
 
-    assert stats.documents == 15
+    assert stats.documents == 22
     assert stats.removed == 0
-    assert db_session.scalar(select(func.count()).select_from(Document)) == 15
+    assert db_session.scalar(select(func.count()).select_from(Document)) == 22
     assert db_session.scalar(select(func.count()).select_from(Chunk)) == stats.chunks
     acl_rows = sum(len(d.departments) + len(d.roles) for d in corpus.documents)
     assert db_session.scalar(select(func.count()).select_from(DocumentAcl)) == acl_rows
@@ -76,7 +76,7 @@ def test_reingest_replaces_instead_of_duplicating(db_session: Session, corpus: C
 
     _ingest(db_session, corpus)
 
-    assert db_session.scalar(select(func.count()).select_from(Document)) == 15
+    assert db_session.scalar(select(func.count()).select_from(Document)) == 22
     assert db_session.scalar(select(func.count()).select_from(Chunk)) == chunk_count
     assert first_ids.isdisjoint(db_session.scalars(select(Document.id)))
 

@@ -15,9 +15,11 @@
 - 벡터 검색은 HNSW 없이 정확한 전체 비교(flat)로 해서 실행할 때마다 결과가 같다.
 
 지표
-- recall_at_5: 답이 있는 질문(general, code)마다 정답 위치(file, section) 중 상위 5개 안에 나온
-  비율을 구해 평균한다.
+- recall_at_5: 답이 있는 질문(general, code, paraphrase)마다 정답 위치(file, section) 중
+  상위 5개 안에 나온 비율을 구해 평균한다.
 - mrr: 답이 있는 질문마다 첫 정답 위치의 순위 역수(상위 10개 안, 없으면 0)를 평균한다.
+- hit_at_1 (참고용, 게이트 비교 대상 아님): 답이 있는 질문 중 1위가 정답인 비율.
+  Recall@5가 1.0에 가까울 때 검색기 사이의 차이를 보여 준다.
 - acl_leaks: 모든 질문의 상위 10개 결과 중 질문한 사용자가 볼 수 없는 문서의 조각 수. 반드시 0.
 """
 
@@ -56,7 +58,7 @@ EVAL_DATABASE = "rag_eval"
 
 RECALL_K = 5
 RANK_DEPTH = 10  # MRR과 권한 유출을 볼 검색 결과 개수
-ANSWERABLE_TYPES = ("general", "code")
+ANSWERABLE_TYPES = ("general", "code", "paraphrase")
 
 
 # ---------------------------------------------------------------- 골든 데이터셋
@@ -231,6 +233,7 @@ def evaluate(
     query_vectors = embedder.embed([item.question for item in golden])
     recalls: dict[str, float] = {}
     ranks: dict[str, float] = {}
+    firsts: dict[str, float] = {}  # 1위가 정답이면 1
     leaks: dict[str, int] = {}
     with Session(engine) as session, session.begin():
         for item, vector in zip(golden, query_vectors, strict=True):
@@ -241,6 +244,7 @@ def evaluate(
                 ranked = [(hit.file, hit.section) for hit in hits]
                 recalls[item.id] = recall_at_k(ranked, item.evidence, RECALL_K)
                 ranks[item.id] = reciprocal_rank(ranked, item.evidence, RANK_DEPTH)
+                firsts[item.id] = reciprocal_rank(ranked, item.evidence, 1)
 
     def mean(values: Sequence[float]) -> float:
         return round(sum(values) / len(values), 4)
@@ -250,6 +254,7 @@ def evaluate(
             "n": len(ids),
             "recall_at_5": mean([recalls[i] for i in ids]),
             "mrr": mean([ranks[i] for i in ids]),
+            "hit_at_1": mean([firsts[i] for i in ids]),
         }
         for kind in ANSWERABLE_TYPES
         if (ids := [item.id for item in golden if item.type == kind])
@@ -258,6 +263,7 @@ def evaluate(
         "n_questions": len(recalls),
         "recall_at_5": mean(list(recalls.values())),
         "mrr": mean(list(ranks.values())),
+        "hit_at_1": mean(list(firsts.values())),
         "acl_leaks": sum(leaks.values()),
         "golden_sha": file_sha256(GOLDEN),
         "embedding_cache": True,
@@ -265,6 +271,7 @@ def evaluate(
         "retriever": "vector",
         "by_type": by_type,
         "missed_at_5": sorted(i for i, value in recalls.items() if value < 1.0),
+        "missed_at_1": sorted(i for i, value in firsts.items() if value < 1.0),
         "leaked": sorted(i for i, value in leaks.items() if value),
     }
 
@@ -273,14 +280,17 @@ def format_report(result: dict[str, Any]) -> str:
     lines = [
         f"검색기: {result['retriever']} ({result['index']})",
         f"답이 있는 질문 {result['n_questions']}개: "
-        f"Recall@5 {result['recall_at_5']:.4f}, MRR {result['mrr']:.4f}",
+        f"Recall@5 {result['recall_at_5']:.4f}, MRR {result['mrr']:.4f}, "
+        f"Hit@1 {result['hit_at_1']:.4f}",
     ]
     for kind, row in result["by_type"].items():
         lines.append(
-            f"  {kind:<8} {row['n']:>3}개: Recall@5 {row['recall_at_5']:.4f}, MRR {row['mrr']:.4f}"
+            f"  {kind:<10} {row['n']:>3}개: Recall@5 {row['recall_at_5']:.4f}, "
+            f"MRR {row['mrr']:.4f}, Hit@1 {row['hit_at_1']:.4f}"
         )
     lines.append(f"권한 유출: {result['acl_leaks']}건 {result['leaked'] or ''}".rstrip())
     lines.append(f"상위 5개에서 정답을 놓친 질문: {', '.join(result['missed_at_5']) or '없음'}")
+    lines.append(f"1위가 정답이 아닌 질문: {', '.join(result['missed_at_1']) or '없음'}")
     return "\n".join(lines)
 
 

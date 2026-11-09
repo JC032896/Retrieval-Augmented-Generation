@@ -19,16 +19,22 @@ SHARED = {
     "04_it_security_policy.md",
     "05_travel_expense_rules.pdf",
     "06_remote_work_guide.md",
+    "16_travel_expense_rules_2025.md",
+    "17_remote_work_pilot_2023.md",
+    "18_it_security_annex.md",
+    "22_health_checkup_booking.md",
 }
+DEVICE = "19_device_incident_manual.md"  # 개발팀, 영업팀
 
 # 권한 함정 질문의 기준이 되는 열람 가능 문서 목록.
 # acl.yaml이나 org.yaml을 바꾸면 여기도 바뀌어야 한다.
 EXPECTED_VISIBLE = {
-    "kim": SHARED | {"07_coding_conventions.md", "08_incident_response.md"},
-    "lee": SHARED | {"07_coding_conventions.md", "08_incident_response.md"},
+    "kim": SHARED | {"07_coding_conventions.md", "08_incident_response.md", DEVICE},
+    "lee": SHARED | {"07_coding_conventions.md", "08_incident_response.md", DEVICE},
     "park": SHARED,
-    "choi": SHARED | {"10_finance_voucher_process.md", "12_budget_plan_2026.md"},
-    "jung": SHARED | {"09_sales_proposal_guide.md"},
+    "choi": SHARED
+    | {"10_finance_voucher_process.md", "12_budget_plan_2026.md", "21_kpi_results_2025.md"},
+    "jung": SHARED | {"09_sales_proposal_guide.md", DEVICE, "20_sales_proposal_guide_2024.md"},
     "han": SHARED
     | {
         "11_performance_review.md",
@@ -36,6 +42,7 @@ EXPECTED_VISIBLE = {
         "13_sales_targets_2026.md",
         "14_salary_table.md",
         "15_executive_minutes.md",
+        "21_kpi_results_2025.md",
     },
 }
 
@@ -72,7 +79,7 @@ def test_clearance_must_reach_security_level() -> None:
 def test_sample_corpus_loads() -> None:
     corpus = load_corpus(SAMPLES)
 
-    assert len(corpus.documents) == 15
+    assert len(corpus.documents) == 22
     assert {user.id for user in corpus.org.users} == set(EXPECTED_VISIBLE)
 
 

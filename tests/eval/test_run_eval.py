@@ -53,8 +53,8 @@ def test_count_leaks_counts_invisible_files() -> None:
 def test_golden_file_loads_with_expected_types() -> None:
     golden = load_golden(GOLDEN)
 
-    assert len(golden) == 70
-    assert sum(item.answerable for item in golden) == 50
+    assert len(golden) == 95
+    assert sum(item.answerable for item in golden) == 75
     assert all(item.trap_files for item in golden if item.type == "permission")
     assert all(item.evidence for item in golden if item.answerable)
 
@@ -109,9 +109,9 @@ def test_evaluate_reports_metrics_and_no_leaks(db_engine: Engine, tmp_path: Path
 
     result = evaluate(db_engine, load_corpus(SAMPLES), load_golden(GOLDEN), embedder)
 
-    assert result["n_questions"] == 50
+    assert result["n_questions"] == 75
     assert result["acl_leaks"] == 0
-    assert 0.0 <= result["recall_at_5"] <= 1.0
-    assert set(result["by_type"]) == {"general", "code"}
+    assert 0.0 <= result["hit_at_1"] <= result["recall_at_5"] <= 1.0
+    assert set(result["by_type"]) == {"general", "code", "paraphrase"}
     assert (result["embedding_cache"], result["index"]) == (True, "flat")
     assert "권한 유출: 0건" in format_report(result)

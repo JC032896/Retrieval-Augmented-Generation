@@ -21,8 +21,8 @@ def test_cli_ingests_corpus_and_reports(
     exit_code = cli.main([str(SAMPLES)], embedder_factory=FakeEmbedder, engine=db_engine)
 
     assert exit_code == 0
-    assert "문서 15개" in capsys.readouterr().out
-    assert db_session.scalar(select(func.count()).select_from(Document)) == 15
+    assert "문서 22개" in capsys.readouterr().out
+    assert db_session.scalar(select(func.count()).select_from(Document)) == 22
 
 
 def test_cli_rejects_invalid_corpus_before_loading_model(tmp_path: Path) -> None:
