@@ -9,8 +9,8 @@
   "eval": {
     "n_questions": 75,
     "recall_at_5": 1.0,
-    "mrr": 0.94,
-    "hit_at_1": 0.88,
+    "mrr": 0.98,
+    "hit_at_1": 0.96,
     "acl_leaks": 0,
     "golden_sha": "7ce479e261f1ca7416b76c0d616a5dda3cf8a79a23d51cc22b39cddc1fefac9d",
     "embedding_cache": true,
@@ -20,8 +20,8 @@
       "general": {
         "n": 40,
         "recall_at_5": 1.0,
-        "mrr": 0.95,
-        "hit_at_1": 0.9
+        "mrr": 0.9875,
+        "hit_at_1": 0.975
       },
       "code": {
         "n": 15,
@@ -32,20 +32,14 @@
       "paraphrase": {
         "n": 20,
         "recall_at_5": 1.0,
-        "mrr": 0.9,
-        "hit_at_1": 0.8
+        "mrr": 0.975,
+        "hit_at_1": 0.95
       }
     },
     "missed_at_5": [],
     "missed_at_1": [
       "c006",
-      "g021",
-      "g023",
       "g029",
-      "g036",
-      "v010",
-      "v011",
-      "v012",
       "v019"
     ],
     "leaked": []
