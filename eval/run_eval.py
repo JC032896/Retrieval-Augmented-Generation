@@ -3,17 +3,19 @@
 사용법:
   uv run python eval/run_eval.py                  결과 표를 출력
   uv run python eval/run_eval.py --json OUT.json  JSON으로도 저장 (quality_gate --full이 실행)
-  uv run python eval/run_eval.py --update-cache   캐시에 없는 임베딩을 BGE-M3로 계산해 갱신
-                                                  (eval/cache는 보호 경로라 사용자 승인 필요)
-  uv run python eval/run_eval.py --retriever vector  검색기 선택 (vector, keyword, hybrid)
-  uv run python eval/run_eval.py --compare           세 검색기를 모두 평가해 비교표를 출력
+  uv run python eval/run_eval.py --update-cache   캐시에 없는 임베딩과 리랭커 점수를 모델로
+                                                  계산해 갱신 (eval/cache는 보호 경로라 사용자
+                                                  승인 필요. --compare와 함께 쓰면 모든 검색기분)
+  uv run python eval/run_eval.py --retriever vector  검색기 선택 (search.py의 Retriever 참고)
+  uv run python eval/run_eval.py --compare           모든 검색기를 평가해 비교표를 출력
 
 이 파일은 채점 코드라서 보호 경로다. 결과 JSON 규약은 .claude/scripts/metrics.py 참고.
 
 평가 방법
 - 샘플 코퍼스를 평가 전용 DB(rag_eval)에 새로 수집한 뒤, 질문마다 질문한 사용자의 권한으로 검색한다.
-- 임베딩은 eval/cache/embeddings.json의 캐시만 쓴다(모델 없이 CI에서도 돈다). 캐시에 없는 텍스트가
-  있으면 실패한다. 청킹이나 질문이 바뀌면 --update-cache로 캐시를 다시 만든다.
+- 임베딩은 eval/cache/embeddings.json, 리랭커 점수는 eval/cache/rerank_scores.json의 캐시만
+  쓴다(모델 없이 CI에서도 돈다). 캐시에 없는 항목이 있으면 실패한다. 청킹이나 질문이 바뀌면
+  --update-cache로 캐시를 다시 만든다.
 - 벡터 검색은 HNSW 없이 정확한 전체 비교(flat)로 해서 실행할 때마다 결과가 같다.
 - 검색은 서비스와 같은 rag_service.retrieval.search.search를 쓴다. 기본 검색기(DEFAULT_RETRIEVER)는
   게이트가 baseline과 비교하는 검색기다. 다른 검색기가 더 나아지면 바꾸고 baseline을 다시 만든다.
@@ -51,17 +53,21 @@ from rag_service.db.models import EMBEDDING_DIM
 from rag_service.ingest.embedder import DEFAULT_MODEL, Embedder, SentenceTransformerEmbedder
 from rag_service.ingest.pipeline import ingest_corpus
 from rag_service.ingest.tokenizer import KoreanTokenizer
-from rag_service.retrieval.search import RETRIEVERS, Retriever, search
+from rag_service.retrieval.rerank import DEFAULT_RERANK_MODEL, CrossEncoderReranker, Reranker
+from rag_service.retrieval.search import RERANKED_RETRIEVERS, RETRIEVERS, Retriever, search
 
 ROOT = Path(__file__).resolve().parents[1]
 GOLDEN = ROOT / "eval" / "golden.jsonl"
 CACHE = ROOT / "eval" / "cache" / "embeddings.json"
+RERANK_CACHE = ROOT / "eval" / "cache" / "rerank_scores.json"
 SAMPLES = ROOT / "samples"
 ALEMBIC_INI = ROOT / "alembic.ini"
 EVAL_DATABASE = "rag_eval"
 
-# 2026-11-09 비교: vector MRR 0.927 > hybrid(RRF 1:1) 0.863 > keyword 0.784 → vector 유지
-DEFAULT_RETRIEVER: Retriever = "vector"
+# 2026-11-09 비교: vector_rerank MRR 0.940 = hybrid_rerank 0.940 > vector 0.927
+#   > hybrid(RRF 1:1) 0.863 > keyword 0.784. 합집합 후보는 효과가 없어 더 싼 vector_rerank를 쓴다
+DEFAULT_RETRIEVER: Retriever = "vector_rerank"
+ALL_RETRIEVERS: tuple[Retriever, ...] = (*RETRIEVERS, *RERANKED_RETRIEVERS)
 RECALL_K = 5
 RANK_DEPTH = 10  # MRR과 권한 유출을 볼 검색 결과 개수
 ANSWERABLE_TYPES = ("general", "code", "paraphrase")
@@ -204,6 +210,64 @@ class CachedEmbedder:
         return [vector for vector in vectors if vector is not None]
 
 
+class RerankCache:
+    """(질문, 조각)별 리랭커 점수. 키는 sha256(모델 이름 + 질문 + 조각)."""
+
+    def __init__(self, path: Path, model: str) -> None:
+        self.path = path
+        self.model = model
+        data: dict[str, Any] = {}
+        if path.is_file():
+            data = json.loads(path.read_text(encoding="utf-8"))
+        if data and data.get("model") != model:
+            raise ValueError(f"캐시 모델 {data.get('model')}이 {model}과 다릅니다")
+        self._scores: dict[str, float] = dict(data.get("scores", {}))
+        self._used: set[str] = set()
+
+    def _key(self, query: str, passage: str) -> str:
+        return hashlib.sha256(f"{self.model}\0{query}\0{passage}".encode()).hexdigest()
+
+    def get(self, query: str, passage: str) -> float | None:
+        key = self._key(query, passage)
+        if key in self._scores:
+            self._used.add(key)
+        return self._scores.get(key)
+
+    def put(self, query: str, passage: str, score: float) -> None:
+        key = self._key(query, passage)
+        self._scores[key] = score
+        self._used.add(key)
+
+    def save(self) -> None:
+        """이번 실행에서 쓴 항목만 남겨 저장한다."""
+        scores = {key: self._scores[key] for key in sorted(self._used)}
+        payload = {"model": self.model, "scores": scores}
+        self.path.parent.mkdir(parents=True, exist_ok=True)
+        self.path.write_text(json.dumps(payload, indent=0) + "\n", encoding="utf-8", newline="\n")
+
+
+class CachedReranker:
+    """캐시에서 점수를 꺼낸다. fallback이 있으면 캐시에 없는 쌍을 계산해 캐시에 넣는다."""
+
+    def __init__(self, cache: RerankCache, fallback: Reranker | None = None) -> None:
+        self.cache = cache
+        self.fallback = fallback
+
+    def score(self, query: str, passages: Sequence[str]) -> list[float]:
+        missing = [p for p in dict.fromkeys(passages) if self.cache.get(query, p) is None]
+        if missing:
+            if self.fallback is None:
+                raise CacheMissError(
+                    f"리랭커 점수 캐시에 없는 (질문, 조각) 쌍이 {len(missing)}개 있습니다. "
+                    "`uv run python eval/run_eval.py --update-cache`로 캐시를 다시 만들고 "
+                    "사용자 승인을 받으세요."
+                )
+            for passage, value in zip(missing, self.fallback.score(query, missing), strict=True):
+                self.cache.put(query, passage, value)
+        scores = [self.cache.get(query, p) for p in passages]
+        return [value for value in scores if value is not None]
+
+
 # ---------------------------------------------------------------- 평가 실행
 
 
@@ -236,6 +300,7 @@ def evaluate(
     golden: Sequence[GoldenItem],
     embedder: Embedder,
     retriever: Retriever = DEFAULT_RETRIEVER,
+    reranker: Reranker | None = None,
 ) -> dict[str, Any]:
     tokenizer = KoreanTokenizer()
     with Session(engine) as session, session.begin():
@@ -259,6 +324,7 @@ def evaluate(
                 retriever=retriever,
                 limit=RANK_DEPTH,
                 exact=True,
+                reranker=reranker,
             )
             leaks[item.id] = count_leaks([hit.file for hit in hits], corpus.visible_files(user))
             if item.answerable:
@@ -337,23 +403,28 @@ def main(argv: Sequence[str] | None = None) -> int:
     parser.add_argument(
         "--update-cache", action="store_true", help="캐시에 없는 임베딩을 BGE-M3로 계산해 저장"
     )
-    parser.add_argument("--retriever", choices=RETRIEVERS, default=DEFAULT_RETRIEVER, help="검색기")
+    parser.add_argument(
+        "--retriever", choices=ALL_RETRIEVERS, default=DEFAULT_RETRIEVER, help="검색기"
+    )
     parser.add_argument("--compare", action="store_true", help="모든 검색기를 평가해 비교")
     args = parser.parse_args(argv)
 
     cache = EmbeddingCache(CACHE, DEFAULT_MODEL)
-    fallback = SentenceTransformerEmbedder() if args.update_cache else None
-    embedder = CachedEmbedder(cache, fallback)
+    embedder = CachedEmbedder(cache, SentenceTransformerEmbedder() if args.update_cache else None)
+    rerank_cache = RerankCache(RERANK_CACHE, DEFAULT_RERANK_MODEL)
+    reranker = CachedReranker(rerank_cache, CrossEncoderReranker() if args.update_cache else None)
     engine, corpus, golden = prepare_database(), load_corpus(SAMPLES), load_golden(GOLDEN)
-    if args.compare:
-        print(
-            format_comparison([evaluate(engine, corpus, golden, embedder, r) for r in RETRIEVERS])
-        )
-        return 0
-    result = evaluate(engine, corpus, golden, embedder, args.retriever)
+
+    retrievers = ALL_RETRIEVERS if args.compare else (args.retriever,)
+    results = [evaluate(engine, corpus, golden, embedder, r, reranker) for r in retrievers]
     if args.update_cache:
         cache.save()
+        rerank_cache.save()
+    if args.compare:
+        print(format_comparison(results))
+        return 0
 
+    result = results[0]
     print(format_report(result))
     if args.json:
         args.json.parent.mkdir(parents=True, exist_ok=True)

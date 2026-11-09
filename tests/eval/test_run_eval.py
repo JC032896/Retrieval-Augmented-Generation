@@ -9,9 +9,11 @@ from eval.run_eval import (
     GOLDEN,
     SAMPLES,
     CachedEmbedder,
+    CachedReranker,
     CacheMissError,
     EmbeddingCache,
     Evidence,
+    RerankCache,
     count_leaks,
     evaluate,
     format_report,
@@ -22,6 +24,7 @@ from eval.run_eval import (
 from rag_service.corpus import load_corpus
 from tests.fixtures.db import db_engine
 from tests.fixtures.embedding import FakeEmbedder
+from tests.fixtures.rerank import OverlapReranker
 
 __all__ = ["db_engine"]
 
@@ -106,8 +109,11 @@ def test_cached_embedder_fills_cache_from_fallback_once(tmp_path: Path) -> None:
 
 def test_evaluate_reports_metrics_and_no_leaks(db_engine: Engine, tmp_path: Path) -> None:
     embedder = CachedEmbedder(EmbeddingCache(tmp_path / "c.json", "m"), FakeEmbedder())
+    reranker = CachedReranker(RerankCache(tmp_path / "r.json", "m"), OverlapReranker())
 
-    result = evaluate(db_engine, load_corpus(SAMPLES), load_golden(GOLDEN), embedder)
+    result = evaluate(
+        db_engine, load_corpus(SAMPLES), load_golden(GOLDEN), embedder, reranker=reranker
+    )
 
     assert result["n_questions"] == 75
     assert result["acl_leaks"] == 0

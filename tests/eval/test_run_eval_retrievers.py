@@ -6,11 +6,14 @@ import pytest
 from sqlalchemy import Engine
 
 from eval.run_eval import (
+    ALL_RETRIEVERS,
     DEFAULT_RETRIEVER,
     GOLDEN,
     SAMPLES,
     CachedEmbedder,
+    CachedReranker,
     EmbeddingCache,
+    RerankCache,
     evaluate,
     file_sha256,
     format_comparison,
@@ -20,6 +23,7 @@ from rag_service.corpus import load_corpus
 from rag_service.retrieval.search import RETRIEVERS, Retriever
 from tests.fixtures.db import db_engine
 from tests.fixtures.embedding import FakeEmbedder
+from tests.fixtures.rerank import OverlapReranker
 
 __all__ = ["db_engine"]
 
@@ -33,16 +37,18 @@ def test_golden_hash_ignores_line_endings(tmp_path: Path) -> None:
 
 
 def test_default_retriever_is_the_gated_one() -> None:
-    assert DEFAULT_RETRIEVER == "vector"
+    assert DEFAULT_RETRIEVER == "vector_rerank"
 
 
-@pytest.mark.parametrize("retriever", RETRIEVERS)
+@pytest.mark.parametrize("retriever", ALL_RETRIEVERS)
 def test_every_retriever_is_evaluated_without_leaks(
     db_engine: Engine, tmp_path: Path, retriever: Retriever
 ) -> None:
     embedder = CachedEmbedder(EmbeddingCache(tmp_path / "c.json", "m"), FakeEmbedder())
+    reranker = CachedReranker(RerankCache(tmp_path / "r.json", "m"), OverlapReranker())
+    corpus, golden = load_corpus(SAMPLES), load_golden(GOLDEN)
 
-    result = evaluate(db_engine, load_corpus(SAMPLES), load_golden(GOLDEN), embedder, retriever)
+    result = evaluate(db_engine, corpus, golden, embedder, retriever, reranker)
 
     assert result["retriever"] == retriever
     assert result["acl_leaks"] == 0
