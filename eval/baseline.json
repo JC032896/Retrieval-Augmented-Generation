@@ -7,11 +7,12 @@
     "pragma: no cover": 0
   },
   "eval": {
-    "n_questions": 50,
+    "n_questions": 75,
     "recall_at_5": 1.0,
-    "mrr": 0.97,
+    "mrr": 0.9267,
+    "hit_at_1": 0.8533,
     "acl_leaks": 0,
-    "golden_sha": "8f64c2b50284ca1c57b0b46c7e5ee69cf487380a13195f4c46963218f49b0675",
+    "golden_sha": "7ce479e261f1ca7416b76c0d616a5dda3cf8a79a23d51cc22b39cddc1fefac9d",
     "embedding_cache": true,
     "index": "flat",
     "retriever": "vector",
@@ -19,15 +20,36 @@
       "general": {
         "n": 40,
         "recall_at_5": 1.0,
-        "mrr": 0.975
+        "mrr": 0.9375,
+        "hit_at_1": 0.875
       },
       "code": {
-        "n": 10,
+        "n": 15,
         "recall_at_5": 1.0,
-        "mrr": 0.95
+        "mrr": 0.9333,
+        "hit_at_1": 0.8667
+      },
+      "paraphrase": {
+        "n": 20,
+        "recall_at_5": 1.0,
+        "mrr": 0.9,
+        "hit_at_1": 0.8
       }
     },
     "missed_at_5": [],
+    "missed_at_1": [
+      "c002",
+      "c015",
+      "g021",
+      "g022",
+      "g029",
+      "g036",
+      "g039",
+      "v011",
+      "v012",
+      "v015",
+      "v016"
+    ],
     "leaked": []
   },
   "deterministic_verified": true
