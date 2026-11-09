@@ -9,25 +9,25 @@
   "eval": {
     "n_questions": 75,
     "recall_at_5": 1.0,
-    "mrr": 0.9267,
-    "hit_at_1": 0.8533,
+    "mrr": 0.94,
+    "hit_at_1": 0.88,
     "acl_leaks": 0,
     "golden_sha": "7ce479e261f1ca7416b76c0d616a5dda3cf8a79a23d51cc22b39cddc1fefac9d",
     "embedding_cache": true,
     "index": "flat",
-    "retriever": "vector",
+    "retriever": "vector_rerank",
     "by_type": {
       "general": {
         "n": 40,
         "recall_at_5": 1.0,
-        "mrr": 0.9375,
-        "hit_at_1": 0.875
+        "mrr": 0.95,
+        "hit_at_1": 0.9
       },
       "code": {
         "n": 15,
         "recall_at_5": 1.0,
-        "mrr": 0.9333,
-        "hit_at_1": 0.8667
+        "mrr": 0.9667,
+        "hit_at_1": 0.9333
       },
       "paraphrase": {
         "n": 20,
@@ -38,17 +38,15 @@
     },
     "missed_at_5": [],
     "missed_at_1": [
-      "c002",
-      "c015",
+      "c006",
       "g021",
-      "g022",
+      "g023",
       "g029",
       "g036",
-      "g039",
+      "v010",
       "v011",
       "v012",
-      "v015",
-      "v016"
+      "v019"
     ],
     "leaked": []
   },
