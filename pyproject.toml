@@ -5,6 +5,7 @@ description = "권한 인식 한국어 문서 질의 서비스 (RAG)"
 requires-python = ">=3.12,<3.13"
 dependencies = [
     "alembic>=1.20.1",
+    "anthropic>=2.6.0",
     "fastapi>=0.162.2",
     "kiwipiepy>=0.24.1",
     "pdfplumber>=0.11.10",

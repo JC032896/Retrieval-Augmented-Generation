@@ -1,7 +1,9 @@
 """환경 변수(.env 포함)에서 읽는 서비스 설정."""
 
 from functools import lru_cache
+from typing import Literal
 
+from pydantic import SecretStr
 from pydantic_settings import BaseSettings, SettingsConfigDict
 from sqlalchemy import URL
 
@@ -16,6 +18,11 @@ class Settings(BaseSettings):
     postgres_host: str = "localhost"
     postgres_port: int = 5432
     postgres_db: str = "rag"
+
+    # 답변 생성 LLM. 키는 .env의 ANTHROPIC_API_KEY에만 둔다 (커밋 금지)
+    anthropic_api_key: SecretStr | None = None
+    llm_model: str = "claude-sonnet-5-5"
+    llm_effort: Literal["low", "medium", "high"] = "medium"
 
     @property
     def database_url(self) -> URL:
