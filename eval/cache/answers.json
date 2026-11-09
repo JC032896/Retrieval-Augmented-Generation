@@ -1,0 +1,1714 @@
+{
+ "answers": {
+  "000c119b03a05e2d2afe4efca259d8b9608cb10f1241555ea92d630669e1aa81": {
+   "text": "네, 시차출퇴근제가 있습니다. 직원은 오전 8시부터 오전 10시 사이에서 출근 시각을 선택할 수 있고, 퇴근 시각은 출근 시각으로부터 9시간 후입니다. [1]\n\n참고로 기본 근무시간은 오전 9시부터 오후 6시까지입니다. [3] 개발팀 직원이 1개월 단위 선택적 근로시간제를 적용받는 경우에는 오전 11시부터 오후 4시까지의 핵심 근무시간에 반드시 근무해야 합니다. [2]",
+   "model": "claude-sonnet-5-5",
+   "input_tokens": 1440,
+   "output_tokens": 209
+  },
+  "021893267bfa07326a64cfcb1fbd720d515ee0f71e662f94546700f0872dfeb0": {
+   "text": "S 등급을 받으면 성과급은 **기본 연봉의 20%**가 나옵니다[1]. 이와 함께 연봉도 8% 인상됩니다[1].\n\n연간 등급은 6월 평가와 12월 평가의 평균으로 정합니다[1].",
+   "model": "claude-opus-5-5",
+   "input_tokens": 1359,
+   "output_tokens": 166
+  },
+  "039f0611bba02ca78d11d90265db2df1507375d216c22c12d291cfdb89c72f15": {
+   "text": "문서에서 찾을 수 없습니다. 근거 문서에는 Standard 요금제의 가격(사용자당 월 8,000원, 최소 계약 10명)과 할인율별 승인 권한자만 있고, 할인 프로모션 기간은 나와 있지 않습니다[1][2].",
+   "model": "claude-opus-5-5",
+   "input_tokens": 1415,
+   "output_tokens": 188
+  },
+  "03d1768f6390539d8bbe5a91ac302171edbf02cf7814050deb307de68df7749e": {
+   "text": "미국은 A 지역에 해당하며, 직원 숙박비 한도는 1박 200달러입니다 [1].",
+   "model": "claude-haiku-5-5",
+   "input_tokens": 1444,
+   "output_tokens": 115
+  },
+  "051f1fb7d5542d7d17f58b81696196c322fc14b15046e99de1accabf87487862": {
+   "text": "5분 동안 입력이 없으면 화면이 자동으로 잠깁니다[1]. 다만 자리를 비울 때는 자동 잠금을 기다리지 말고 반드시 직접 화면을 잠가야 합니다[1].",
+   "model": "claude-opus-5-5",
+   "input_tokens": 1577,
+   "output_tokens": 155
+  },
+  "053dab57cf56e5b7cdabd02ec2734b69a64c871778e6d4aa08fb8fbdfaa590f9": {
+   "text": "PR을 병합하려면 리뷰어 2명의 승인을 받아야 합니다[1].",
+   "model": "claude-opus-5-5",
+   "input_tokens": 1401,
+   "output_tokens": 61
+  },
+  "073f1a22e5e5a83abcaa3016c6029682b8a2c7c72fd16ef57065b90130be6b0a": {
+   "text": "점심값만 따로 정한 항목은 없고, **식대**로 월 20만 원이 급여와 함께 지급됩니다[1].",
+   "model": "claude-opus-5-5",
+   "input_tokens": 1344,
+   "output_tokens": 184
+  },
+  "07c41be1798187a8eff7a7571608569a9c59bd7fe0ce28f5e643121ff0b2221b": {
+   "text": "SEC-PW-04는 서버와 배치 작업에 쓰는 서비스 계정에 적용됩니다[1]. 비밀번호는 20자 이상이어야 하며 180일마다 변경합니다[1]. 서비스 계정 비밀번호는 비밀 관리 시스템에만 보관합니다[1].",
+   "model": "claude-haiku-5-5",
+   "input_tokens": 1398,
+   "output_tokens": 193
+  },
+  "07c7401f255698b8aca0fca82685da2b22957b305dd605b5de37c51d42fb5560": {
+   "text": "네, 출근 시각을 선택할 수 있습니다. 오전 8시부터 오전 10시 사이에서 고를 수 있습니다[1]. 퇴근 시각은 출근 시각으로부터 9시간 후입니다[1].",
+   "model": "claude-haiku-5-5",
+   "input_tokens": 1388,
+   "output_tokens": 240
+  },
+  "07d56b547a6d63f09c25b1ef5d009c4d6dd8dd222f2e94b32c16b6be3203b4c1": {
+   "text": "강릉과 제주에 있는 제휴 콘도를 1박 2만 원에 이용할 수 있습니다[1]. 1인당 연 2회까지 신청할 수 있고, 성수기(7~8월, 12월 말)에는 추첨으로 배정합니다[1].\n\n다만 이 콘도가 바닷가에 있는지는 문서에 나와 있지 않습니다.",
+   "model": "claude-opus-5-5",
+   "input_tokens": 1493,
+   "output_tokens": 361
+  },
+  "0964c4ecd63fbfc60dfc58d3900bde7e7a10668998c0c72a45cd89f0559c20cd": {
+   "text": "2026년 연매출(KPI-2026-A) 목표는 320억 원이며, 2025년 271억 원 대비 18% 성장한 수치입니다. [2]\n\n참고로 2025년 연매출 목표는 280억 원, 실적은 271억 원(달성률 97%)이었습니다. [1]",
+   "model": "claude-sonnet-5-5",
+   "input_tokens": 1576,
+   "output_tokens": 108
+  },
+  "0a7868e140e226f11714a6ce060f851e0e7a039bc5476caf2c7b8a189c47d51c": {
+   "text": "KPI-2026-C(신규 Enterprise 고객사) 목표 40곳 중 25곳을 금융과 제조 업종에서 확보해야 합니다[1][2].",
+   "model": "claude-opus-5-5",
+   "input_tokens": 1464,
+   "output_tokens": 96
+  },
+  "0c0b4232aec3cd579009aaee32ba9185f80b45222f37c55c180385b8f8bee298": {
+   "text": "문서에서 찾을 수 없습니다. 장애 등급표에는 INC-P1부터 INC-P4까지만 정의되어 있고 INC-P5 등급은 없습니다. [2]",
+   "model": "claude-sonnet-5-5",
+   "input_tokens": 1633,
+   "output_tokens": 71
+  },
+  "0dfb66ce6cb558732685413bcdcf1fe72da48e0828ea1133bde49e61199fb7d4": {
+   "text": "문서에서 찾을 수 없습니다. 취업규칙 제30조에는 인사평가를 매년 6월과 12월 연 2회 실시한다는 내용과, 평가 등급·배분 비율·보상 반영 등 세부 기준은 인사팀이 별도로 정한다는 내용만 있습니다 [1]. B등급과 그에 따른 연봉 인상률은 근거 문서에 적혀 있지 않으므로 인사팀에 문의하시기 바랍니다.",
+   "model": "claude-haiku-5-5",
+   "input_tokens": 1343,
+   "output_tokens": 175
+  },
+  "0ed34cb005e047b2504c0cb141b57ae0855566f0c5ac303d73bde5309b52d78a": {
+   "text": "10년 근속하면 리프레시 휴가 10일과 포상금 300만 원을 받습니다[1]. 리프레시 휴가는 근속 기념일로부터 1년 안에 사용해야 합니다[1].",
+   "model": "claude-opus-5-5",
+   "input_tokens": 1324,
+   "output_tokens": 129
+  },
+  "0f6cb86a153c7c3fb4f465f16254b3a4597dd94d065320546a980129851b4acc": {
+   "text": "출장에서 돌아온 날로부터 7일 이내에 경비 시스템 HB-Expense에 영수증을 올리고 정산을 신청해야 합니다[1]. 기한을 넘기면 팀장의 사유서가 필요합니다[1].",
+   "model": "claude-opus-5-5",
+   "input_tokens": 1392,
+   "output_tokens": 139
+  },
+  "0fc25954bc82bfa0b7be00fd1e4836e2f9ef5606bb78c34d255952476baac5b7": {
+   "text": "기본 근무시간은 오전 9시부터 오후 6시까지이고, 휴게시간은 낮 12시부터 오후 1시까지입니다 [1]. 근무시간은 1일 8시간, 1주 40시간입니다 [1].",
+   "model": "claude-opus-5-5",
+   "input_tokens": 1377,
+   "output_tokens": 99
+  },
+  "12441f737d29d182d7a87694dae1b79aa5920948c23a64f53203432d615792e6": {
+   "text": "리뷰어 2명의 승인을 받아야 병합할 수 있습니다. [1]",
+   "model": "claude-sonnet-5-5",
+   "input_tokens": 1401,
+   "output_tokens": 34
+  },
+  "12a58c591cc3f027771edd77db514dfa7f8b5b047adcd80cf6053edf3cb2771e": {
+   "text": "문서에서 찾을 수 없습니다. 인사평가는 연 2회(6월, 12월) 실시한다는 점과 등급, 배분 비율 등 세부 기준은 인사팀이 별도로 정한다는 점만 적혀 있고, 구체적인 배분 비율은 나와 있지 않습니다. [1]",
+   "model": "claude-sonnet-5-5",
+   "input_tokens": 1233,
+   "output_tokens": 118
+  },
+  "12a8171092cfbab785de9ff7834e70e5073cdbfde91427b274af383c5a51c229": {
+   "text": "재택근무는 팀장의 승인을 받아 주 2회까지 가능합니다. [1] 같은 주의 재택근무 횟수가 2회를 넘으면 신청이 거절되며, 쓰지 않은 횟수는 다음 주로 넘어가지 않습니다. [5] 다만 입사 후 3개월이 지나지 않은 직원은 재택근무를 할 수 없습니다. [1]",
+   "model": "claude-sonnet-5-5",
+   "input_tokens": 1473,
+   "output_tokens": 148
+  },
+  "1361e202699a947f02768f8101ef62527540c86bf998ee551db95892ce98942a": {
+   "text": "**일비**는 1일 2만 5천 원입니다[1]. 당일 출장이면 숙박비는 나오지 않고 일비의 절반을 받습니다[1].\n\n**숙박비**는 지역에 따라 한도가 다릅니다.\n- 서울, 광역시: 1박 12만 원 한도[1]\n- 그 외 지역: 1박 9만 원 한도[1]\n\n문서에는 어떤 도시가 광역시인지 나와 있지 않아, 대구가 어느 기준에 해당하는지는 문서만으로 확인할 수 없습니다. 대구가 광역시 기준에 해당하면 숙박비 한도는 1박 12만 원입니다[1].",
+   "model": "claude-opus-5-5",
+   "input_tokens": 1435,
+   "output_tokens": 576
+  },
+  "156b2137ba6133a201754b765d244bba3aa5eb67f10674d517d52485879dc13b": {
+   "text": "문서에서 찾을 수 없습니다. 제공된 문서에는 Standard 요금제의 할인 프로모션 기간에 대한 내용이 없고, 표준 가격과 할인 권한 기준만 적혀 있습니다.",
+   "model": "claude-haiku-5-5",
+   "input_tokens": 1415,
+   "output_tokens": 86
+  },
+  "16e0ba2f42472935583381a6c8d081be17d8302202e5c8c72fec12ca790535f2": {
+   "text": "문서에서 찾을 수 없습니다. 제공된 근거 조각에는 퇴직금 계산 방식이 적혀 있지 않습니다. 경조금, 연차휴가, 반차, 장기근속 포상, 징계 종류에 관한 내용만 있습니다.",
+   "model": "claude-haiku-5-5",
+   "input_tokens": 1249,
+   "output_tokens": 101
+  },
+  "16ee4ed0536aaa09555ab0cb04ee91c92eabf1917bd0c1e2345b9a65cdb2d9c1": {
+   "text": "문서에서 찾을 수 없습니다. 제공된 문서에는 KPI-2026-A나 매출 목표가 없고, 2025년 연매출 271억 원 달성 실적만 있습니다[1].",
+   "model": "claude-opus-5-5",
+   "input_tokens": 1403,
+   "output_tokens": 197
+  },
+  "181ab05f6d7ff96f59839d5800d4aaae397657ab8500e0e068fff1aced899371": {
+   "text": "KPI-2026-A(연매출)의 2026년 목표는 320억 원이며, 2025년 271억 원 대비 18% 성장한 수치입니다. [1]",
+   "model": "claude-sonnet-5-5",
+   "input_tokens": 1453,
+   "output_tokens": 61
+  },
+  "1a04fd9a19620b1ed2fc8f2861bcf1318af609f64727a77877d4e3039e121cd4": {
+   "text": "제12조의3에 따르면 직원은 소속 팀장의 승인을 받아 **주 2회까지** 재택근무를 할 수 있습니다[1]. 같은 주의 재택근무 횟수가 2회를 넘으면 신청이 거절되고, 쓰지 않은 횟수는 다음 주로 넘어가지 않습니다[4].",
+   "model": "claude-opus-5-5",
+   "input_tokens": 1452,
+   "output_tokens": 171
+  },
+  "1a44c0b727dd9c780d20ae6b4839c8e5cca9894aaf9f40ba0eebd7dca84c4dab": {
+   "text": "문서에서 찾을 수 없습니다. 제공된 문서에는 육아휴직 기간에 관한 내용이 없고, 연차휴가·반차·경조휴가·장기근속 휴가·건강검진 관련 내용만 있습니다.",
+   "model": "claude-sonnet-5-5",
+   "input_tokens": 1324,
+   "output_tokens": 90
+  },
+  "1aac7f1e18a3f2f5725e309aacedb9c841956a82948e64d4c82ce5c93d4b5fdf": {
+   "text": "제12조의2는 **선택적 근로시간제**에 관한 조항입니다[1]. 개발팀 직원은 1개월 단위의 선택적 근로시간제를 적용받을 수 있고[1], 정산 기간의 총 근로시간은 1주 평균 40시간을 넘지 않아야 합니다[1].",
+   "model": "claude-haiku-5-5",
+   "input_tokens": 1369,
+   "output_tokens": 216
+  },
+  "1af8ff086d61203d8e339a82570e260f06531d5d2c296a1eb7513fda5a536198": {
+   "text": "문서에서 찾을 수 없습니다. 인사평가의 등급별 보상 반영 기준은 취업규칙에 적혀 있지 않고 인사팀이 별도로 정한다고만 되어 있습니다. [1]",
+   "model": "claude-sonnet-5-5",
+   "input_tokens": 1343,
+   "output_tokens": 83
+  },
+  "1b02adbf49d98c1b53fff60b5a56f96e6847a7a4f4da6d9ec4c547e39c85699e": {
+   "text": "계정과목 812는 여비교통비이며, 예시로 출장비와 택시비가 있습니다. [1]",
+   "model": "claude-sonnet-5-5",
+   "input_tokens": 1329,
+   "output_tokens": 41
+  },
+  "1b50903e16a45772b9574ca9c1a6783e1e7684c042027d2520aea75dfc9a9189": {
+   "text": "문서에서 찾을 수 없습니다. 제공된 문서에는 영업 인센티브 지급 기준이 적혀 있지 않습니다.",
+   "model": "claude-sonnet-5-5",
+   "input_tokens": 1449,
+   "output_tokens": 55
+  },
+  "1d437687b56f412b9889dfde24b2b46df58bcbf97df60c4e8c0918d499bcd585": {
+   "text": "출장에서 돌아온 날로부터 7일 이내에 경비 시스템 HB-Expense에 영수증을 올리고 정산을 신청해야 합니다[1]. 기한을 넘기면 팀장의 사유서가 필요합니다[1].",
+   "model": "claude-opus-5-5",
+   "input_tokens": 1460,
+   "output_tokens": 171
+  },
+  "1d94114d1451cf8a2258f9b40e1efc82692d0683eec9710a583abe84cf409040": {
+   "text": "문서에서 찾을 수 없습니다. 제공된 문서에는 장기근속 포상, 경조금, 자기계발비, 식대·통신비 등만 있고 희망퇴직 위로금에 관한 내용은 없습니다.",
+   "model": "claude-sonnet-5-5",
+   "input_tokens": 1320,
+   "output_tokens": 86
+  },
+  "1d952e50a3c313e216c78babe4e55a40c49aa25b804c60a4556846bb76e85f5d": {
+   "text": "문서에서 찾을 수 없습니다. 취업규칙에는 평가 등급과 배분 비율 등 세부 기준을 인사팀이 별도로 정한다고만 적혀 있고, 구체적인 비율은 나와 있지 않습니다[1].",
+   "model": "claude-opus-5-5",
+   "input_tokens": 1233,
+   "output_tokens": 156
+  },
+  "1e4e3869177161d5c5bfad3ccf1d210ea791533b480216a212b774ad88d87f72": {
+   "text": "PR을 병합하려면 리뷰어 2명의 승인이 필요합니다 [1]. 또한 CI가 실패한 PR은 병합할 수 없습니다 [2].",
+   "model": "claude-haiku-5-5",
+   "input_tokens": 1198,
+   "output_tokens": 66
+  },
+  "1eb09ee5cca4314edea2b522e5fb91e21889589a03c78a6884b7d07cde93d97f": {
+   "text": "10년 근속 시 리프레시 휴가 10일과 포상금 300만 원이 있습니다[1]. 리프레시 휴가는 근속 기념일로부터 1년 안에 사용해야 합니다[1].",
+   "model": "claude-haiku-5-5",
+   "input_tokens": 1324,
+   "output_tokens": 162
+  },
+  "1edc0004d35a0c740b19b3914bd40e3a790225b6d32ae2866b62df6a81340c2e": {
+   "text": "문서에서 찾을 수 없습니다. 제공된 문서에는 연차휴가, 반차, 경조휴가, 리프레시 휴가, 건강검진 공가만 있고 육아휴직 기간은 적혀 있지 않습니다.",
+   "model": "claude-opus-5-5",
+   "input_tokens": 1324,
+   "output_tokens": 127
+  },
+  "20773f366fa6d990fbafde3fe7abc5bab6acb7c2fe6a91ee65204ee25c2c8690": {
+   "text": "INC-P1 장애는 15분 이내에 최초 대응하며, 보고 대상은 CTO와 대표입니다 [2].",
+   "model": "claude-haiku-5-5",
+   "input_tokens": 1652,
+   "output_tokens": 148
+  },
+  "20ab875ea82f18d0fbc1f7d03bacb6d3b6163c447f2275dc88bdbb93997a9c98": {
+   "text": "네, 재택근무를 하는 직원은 모니터 1대를 무상으로 대여받을 수 있습니다[1]. HB-HR의 \"장비 대여\" 메뉴에서 신청하면 일주일 안에 집으로 배송됩니다[1]. 퇴사하거나 재택근무를 그만두면 반납해야 합니다[1].",
+   "model": "claude-opus-5-5",
+   "input_tokens": 1436,
+   "output_tokens": 170
+  },
+  "2378f903883022004ad6492e088c800cb61c422032284959668b94a5bcde6236": {
+   "text": "네, 출근 시각을 직접 고를 수 있습니다. 오전 8시부터 오전 10시 사이에서 선택하며, 퇴근 시각은 출근 시각으로부터 9시간 후입니다[1].\n\n참고로 개발팀 직원은 1개월 단위의 선택적 근로시간제를 적용받을 수 있습니다[3]. 이 경우 핵심 근무시간인 오전 11시부터 오후 4시까지는 반드시 근무해야 합니다[3].",
+   "model": "claude-opus-5-5",
+   "input_tokens": 1388,
+   "output_tokens": 269
+  },
+  "23b54f342ace42f8794db4568c8b41e02f05d8d37310bd3a3c1af6fe78a9a1e7": {
+   "text": "희망퇴직 위로금은 **기본 연봉의 6개월분**으로 정했습니다[1]. 희망퇴직 대상은 디바이스 사업 인력 22명 중 10명입니다[1].",
+   "model": "claude-opus-5-5",
+   "input_tokens": 1490,
+   "output_tokens": 118
+  },
+  "256563fe31d18260b9b9826e3a0be7cae4e309febc9cea33375be345d8ce56cb": {
+   "text": "**2026년 연매출 목표는 320억 원이며, 2025년 실적 271억 원보다 18% 성장한 수치입니다.** [2]\n\n참고로 2025년 연매출 목표는 280억 원이었고, 실적은 271억 원으로 달성률 97%였습니다. [1]",
+   "model": "claude-opus-5-5",
+   "input_tokens": 1576,
+   "output_tokens": 286
+  },
+  "2579e6a94ffe413417ce6425fe0eb2f0fb6dd68c503d9654a9fa4922ed47beeb": {
+   "text": "네, 업무와 관련된 도서 구입과 온라인 강의 비용은 연 100만 원 한도에서 지원됩니다. [1] 영수증을 경비 시스템 HB-Expense에 올리면 다음 달 급여와 함께 지급됩니다. [1] 쓰지 않은 금액은 다음 해로 이월되지 않습니다. [1]",
+   "model": "claude-sonnet-5-5",
+   "input_tokens": 1378,
+   "output_tokens": 132
+  },
+  "2598f81a694007d82ed885a003869b210f84f33fea70d6afc2470637a99a0492": {
+   "text": "네, 회의실 예약 단말기 \"한빛디바이스\" 사업은 2027년 1분기까지 철수하기로 결정했습니다. 최근 3년 연속 적자이고 한빛워크와의 시너지가 작다는 이유입니다. [1]\n\n디바이스 사업 인력 22명 중 12명은 개발팀과 영업팀으로 전환 배치하고, 10명은 희망퇴직을 받습니다. [1] 희망퇴직 위로금은 기본 연봉의 6개월분입니다. [1]\n\n기존 고객의 단말기 유지보수는 2028년 3월까지 외부 업체에 위탁합니다. [1]",
+   "model": "claude-sonnet-5-5",
+   "input_tokens": 1463,
+   "output_tokens": 233
+  },
+  "26084a68c63937a955d699b9fc335b56e6479da0a3e1aacd1c341f88fbb353a5": {
+   "text": "배우자가 출산하면 **20일**의 유급 경조휴가를 받을 수 있습니다[1].\n\n참고로 자녀 출산 시 경조금 50만 원도 지급됩니다[4].",
+   "model": "claude-opus-5-5",
+   "input_tokens": 1448,
+   "output_tokens": 217
+  },
+  "2687352f64e8a2cabf4e00c857de75ca5ca7cbc1a68b1fe41db8ea7120d346ba": {
+   "text": "문서에서 찾을 수 없습니다. 제공된 복리후생 안내에는 자기계발비, 장기근속 포상, 경조금, 식대와 통신비만 있고 사내 동호회 지원금은 없습니다.",
+   "model": "claude-opus-5-5",
+   "input_tokens": 1283,
+   "output_tokens": 114
+  },
+  "26e05d0b9d673a961b862704a2a631d72f6d22de361f9f21d63124db871c0e84": {
+   "text": "S 등급을 받으면 성과급은 기본 연봉 대비 20%입니다. [1] 연봉 인상률은 8%입니다. [1] 연간 등급은 6월 평가와 12월 평가의 평균으로 정해집니다. [1]",
+   "model": "claude-sonnet-5-5",
+   "input_tokens": 1359,
+   "output_tokens": 91
+  },
+  "2965ca3a5afa0e49bd221999dde20f97157f30022991c93afa95ee2933def2d8": {
+   "text": "DEV-P1 장애(고객사 단말기 전체가 켜지지 않음)는 4시간 이내에 현장 방문해야 합니다. [1]",
+   "model": "claude-sonnet-5-5",
+   "input_tokens": 1642,
+   "output_tokens": 57
+  },
+  "2a201f361fc70f8bf74e9c54ae811395e5f76bd048a9bd640a6260f0b10627c5": {
+   "text": "SEC-PW-01 기준 비밀번호는 12자 이상이어야 하며 [1], 90일마다 변경해야 합니다 [1].",
+   "model": "claude-haiku-5-5",
+   "input_tokens": 1387,
+   "output_tokens": 54
+  },
+  "2a4e07f0d1d744d03770f645c410af8ff4579c145d47787605cd0ee5a6d6dfca": {
+   "text": "KPI-2025-A(연매출)는 목표 280억 원 대비 실적 271억 원으로 달성률 97%입니다. [1]",
+   "model": "claude-sonnet-5-5",
+   "input_tokens": 1513,
+   "output_tokens": 51
+  },
+  "2c75b7b5a320296cace38e2a5c77baae40cb4365ff258534e0c7377005ab18eb": {
+   "text": "SEC-MFA-01에 따라 다단계 인증(MFA)은 VPN 접속, 사외에서의 메일 접속, 관리자 콘솔 접속에 필수입니다. [1]",
+   "model": "claude-sonnet-5-5",
+   "input_tokens": 1453,
+   "output_tokens": 72
+  },
+  "2dfb490d578b4d65f1d54e0143f2342b960523ed5446aeb2e2c3d0c1326448ce": {
+   "text": "KPI-2025-A(연매출)는 목표 280억 원 대비 실적 271억 원으로, 달성률 97%입니다[1].",
+   "model": "claude-opus-5-5",
+   "input_tokens": 1513,
+   "output_tokens": 96
+  },
+  "2e8fea5ec96c1c47025182fed520754a6a8f39dee5226f4e98b4877b5e08a282": {
+   "text": "문서에서 찾을 수 없습니다. 일본 법인 설립 관련 문서(임원회의록)에는 2027년 하반기 도쿄 법인 설립 목표와 시장 조사 예산 2억 원(2026년 예비비 집행)만 적혀 있고, 설립에 드는 총비용은 나와 있지 않습니다 [1].",
+   "model": "claude-haiku-5-5",
+   "input_tokens": 1487,
+   "output_tokens": 127
+  },
+  "2f65e241163e734e655a724efb6796c32ba8de5f2bca08d530c323f585719c61": {
+   "text": "문서에서 찾을 수 없습니다. 제공된 문서에는 2025년 연매출 271억 원 달성 기록만 있고, 올해 분기별 영업 목표는 적혀 있지 않습니다[1].",
+   "model": "claude-opus-5-5",
+   "input_tokens": 1422,
+   "output_tokens": 148
+  },
+  "30023bc6e1011a7c6bed5293e2d679ab407cbdc247246884c738d49860f872f1": {
+   "text": "15% 할인은 10% 초과 20% 이하 구간에 해당하므로 영업팀장이 승인합니다. [1]\n\n다만 3년 이상 장기 계약으로 추가 할인(최대 5%)을 적용하는 경우, 그 할인도 승인 권한 기준에 합산됩니다. [1]",
+   "model": "claude-sonnet-5-5",
+   "input_tokens": 1318,
+   "output_tokens": 114
+  },
+  "301083e90ad1cdd10e0083fe18cfed8e82b24e5f2bbd98a47ce48525d9137eaf": {
+   "text": "문서에서 찾을 수 없습니다. 2025년 실적에는 연매출, 신규 Enterprise 고객사, 클라우드 비용만 있고 영업이익은 없으며, 영업이익 관련 내용은 2026년 영업이익률 목표 12%뿐입니다[1][2].",
+   "model": "claude-opus-5-5",
+   "input_tokens": 1538,
+   "output_tokens": 243
+  },
+  "31424aeeb83d6e57a091be17cceabad74b8ee45bb3d4e3a494c3a604cefb3188": {
+   "text": "재택근무 중 메시지에는 30분 이내에 응답해야 합니다 [1].",
+   "model": "claude-haiku-5-5",
+   "input_tokens": 1456,
+   "output_tokens": 34
+  },
+  "31f5679954c711c8d3343d1c029667ee6664bffff47b8f1d3696812977726995": {
+   "text": "계정과목 코드 812는 **여비교통비**이며, 출장비와 택시비가 여기에 해당합니다.[1]",
+   "model": "claude-opus-5-5",
+   "input_tokens": 1329,
+   "output_tokens": 76
+  },
+  "324c7765204f3b0421ff54cd3d4f5bea40ca4476aaaa9bf9ad7ac3cc83428f20": {
+   "text": "한국어 답변입니다.\n\n한빛워크 전체 서비스가 중단되면 INC-P1 등급이며, 최초 대응은 15분 이내에 해야 합니다. [1] 또한 INC-P1은 장애 인지 후 30분 이내에 고객 공지를 올려야 합니다. [4]",
+   "model": "claude-sonnet-5-5",
+   "input_tokens": 1546,
+   "output_tokens": 112
+  },
+  "334d75b0d7edb9d6daa98da14dd47ac4d58e58f81c307535ae73874a473b3110": {
+   "text": "SEC-PW-04는 서버와 배치 작업에 쓰는 서비스 계정에 적용됩니다[1].\n\n비밀번호 기준은 다음과 같습니다.\n- 20자 이상이어야 합니다[1].\n- 180일마다 변경합니다[1].\n- 비밀 관리 시스템에만 보관합니다[1].",
+   "model": "claude-opus-5-5",
+   "input_tokens": 1398,
+   "output_tokens": 134
+  },
+  "34ee254ab9d2105ef0ee9c894712342f87aa8ac2a9e0cb441a9b9d93b218db2c": {
+   "text": "문서에서 찾을 수 없습니다. 제공된 근거 조각에는 KPI-2026-A 또는 매출 목표에 대한 내용이 없습니다.",
+   "model": "claude-haiku-5-5",
+   "input_tokens": 1403,
+   "output_tokens": 62
+  },
+  "366452c169378d7a1bdc302b8fb37a8538ed92ee2f4a7129465327bfd2eecdbe": {
+   "text": "대구 출장의 일비는 1일 2만 5천 원입니다[1]. 숙박비는 1박 12만 원까지입니다[1]. 대구는 광역시이므로 '서울, 광역시' 기준이 적용됩니다[1].\n\n당일 출장이면 숙박비는 지급하지 않고 일비의 절반을 지급합니다[1].",
+   "model": "claude-haiku-5-5",
+   "input_tokens": 1435,
+   "output_tokens": 467
+  },
+  "36cf0f620a281ca3e1f86b3a26be1a89d1786c9c14194d92ca5eb1c25c0f0b64": {
+   "text": "제안서는 다음 순서로 구성합니다: 요약(1쪽 이내), 고객사의 현재 과제, 한빛워크 도입 방안, 가격과 계약 조건, 도입 일정과 지원 체계 [1].",
+   "model": "claude-haiku-5-5",
+   "input_tokens": 1361,
+   "output_tokens": 85
+  },
+  "36dd105c21f0c1103779c3c6f82a52d467f6b613fccfeffc2d0686f36a1365bd": {
+   "text": "식대로 월 20만 원이 급여와 함께 지급됩니다. [1]\n\n문서에는 \"점심값\"만 따로 구분한 금액은 적혀 있지 않고, 식대 전체 금액만 나와 있습니다. [1]",
+   "model": "claude-sonnet-5-5",
+   "input_tokens": 1344,
+   "output_tokens": 87
+  },
+  "38a3a10aa6653c19990217e91fae1f54839691831f96b5b10ed9edf40227acba": {
+   "text": "법인카드를 쓰면 **3일 이내**에 HB-Expense에 증빙(영수증)을 올려야 합니다 [1]. 증빙이 2주 넘게 올라오지 않으면 재무팀이 해당 카드의 사용을 정지합니다 [1].",
+   "model": "claude-opus-5-5",
+   "input_tokens": 1376,
+   "output_tokens": 142
+  },
+  "39176a0f40a8f0571cb6b2234606d43a0184661841e4da56ee266c99823b9c19": {
+   "text": "법인카드를 쓰면 **3일 이내**에 HB-Expense에 증빙(영수증)을 올려야 합니다.[1] 증빙이 2주 넘게 올라오지 않으면 재무팀이 해당 카드의 사용을 정지합니다.[1]",
+   "model": "claude-opus-5-5",
+   "input_tokens": 1260,
+   "output_tokens": 140
+  },
+  "3a0711a3ca2a2803329b94f5fe9a56e4e4524530b58f2b4d62c078eaed77afbb": {
+   "text": "INC-P1과 INC-P2 장애는 복구 후 5영업일 이내에 사후 분석(포스트모템) 문서를 작성해야 합니다. [1]\n\n사후 분석은 개인의 책임을 묻지 않는 방식(blameless)으로 작성합니다. [1]\n\nINC-P3와 INC-P4의 사후 분석 작성 기한은 문서에서 찾을 수 없습니다.",
+   "model": "claude-sonnet-5-5",
+   "input_tokens": 1554,
+   "output_tokens": 148
+  },
+  "3a28de52323fb48957f677e11afeaea2deaec377e2301b7f69b09b101b53dc9e": {
+   "text": "문서 1에 따르면 강릉과 제주에 있는 제휴 콘도를 1박 2만 원에 이용할 수 있습니다[1]. 1인당 연 2회까지 신청할 수 있으며, 성수기(7~8월, 12월 말)에는 추첨으로 배정합니다[1].",
+   "model": "claude-haiku-5-5",
+   "input_tokens": 1493,
+   "output_tokens": 111
+  },
+  "3a61ff4c19cc9b84f060920619a8ba8ce95c575fde2d04a1f0e97d85ed88e75d": {
+   "text": "재택근무 중 메시지에는 30분 이내에 응답해야 합니다. [1]\n\n참고로 근무 시간에는 메신저에 접속해 있어야 합니다. [1]",
+   "model": "claude-sonnet-5-5",
+   "input_tokens": 1456,
+   "output_tokens": 67
+  },
+  "3a688197ff5816067d55f9853ecb8f22cd1928fd23de274fde826e0f6e49e754": {
+   "text": "문서에서 찾을 수 없습니다. 제공된 문서에는 야근 시 택시비 지원에 관한 내용이 없습니다. 출장비 규정의 교통비 항목(KTX 일반실, 고속버스, 자가용 km당 250원)은 출장에 해당하는 내용이라 야근 택시비와는 무관합니다.",
+   "model": "claude-haiku-5-5",
+   "input_tokens": 1451,
+   "output_tokens": 125
+  },
+  "3dbc9ea5c72f8adc24795054627499f6fbf700788a4d237afcc70dc34e8a8c19": {
+   "text": "PRO-TPL-v3 제안서는 다음 순서로 구성합니다 [1].\n\n1. 요약 (1쪽 이내)\n2. 고객사의 현재 과제\n3. 한빛워크 도입 방안\n4. 가격과 계약 조건\n5. 도입 일정과 지원 체계\n\n[1]",
+   "model": "claude-opus-5-5",
+   "input_tokens": 1361,
+   "output_tokens": 131
+  },
+  "3e8f78291d2015a3f3b3cda77eb1cda2c2d88b3d0a120a03b0d1ad89939a3701": {
+   "text": "문서에서 찾을 수 없습니다. 제공된 조각은 경조금, 연차휴가, 반차, 장기근속 포상, 징계의 종류만 다루고 있으며 퇴직금 계산 방법은 나와 있지 않습니다.",
+   "model": "claude-opus-5-5",
+   "input_tokens": 1249,
+   "output_tokens": 138
+  },
+  "4023b97c2c3a047cb2aa3d3ec079961855b1eb9c3acce9341d9174e62e58a5da": {
+   "text": "기본 근무시간은 오전 9시부터 오후 6시까지이고, 휴게시간은 낮 12시부터 오후 1시까지입니다 [1].",
+   "model": "claude-haiku-5-5",
+   "input_tokens": 1377,
+   "output_tokens": 59
+  },
+  "402e17a99f28840d80fe6e6ecab96225987b33272dbdf2308fa3b571b6b1c94b": {
+   "text": "네, 회의실 예약 단말기 \"한빛디바이스\" 사업은 2027년 1분기까지 철수하기로 결정했습니다[1].\n\n디바이스 사업 인력 22명 중 12명은 개발팀과 영업팀으로 전환 배치하고, 10명은 희망퇴직을 받습니다[1]. 희망퇴직 위로금은 기본 연봉의 6개월분입니다[1]. 기존 고객의 단말기 유지보수는 2028년 3월까지 외부 업체에 위탁합니다[1].",
+   "model": "claude-haiku-5-5",
+   "input_tokens": 1463,
+   "output_tokens": 404
+  },
+  "405a409c98f8d45ad7ec1c3bb3b4ba288e0243971900248f742203a7d7e0078f": {
+   "text": "악성 메일을 열었다면 보안 사고가 의심되는 상황이므로 1시간 이내에 신고해야 합니다. [1]\n\n신고처는 다음과 같습니다. [1]\n- 메일: security@hanbit-soft.example [1]\n- 전화: 내선 7777 (24시간) [1]",
+   "model": "claude-sonnet-5-5",
+   "input_tokens": 1368,
+   "output_tokens": 111
+  },
+  "407618c85136c1f723e3f048b0a9385c7fddf6ef2772c6d05b834abd64388952": {
+   "text": "일반 계정 비밀번호는 **12자 이상**이어야 합니다[1]. 영문 대문자, 영문 소문자, 숫자, 특수문자 중 3종류 이상을 섞어야 합니다[1].\n\n서버와 배치 작업에 쓰는 서비스 계정의 비밀번호는 **20자 이상**이어야 합니다[2].",
+   "model": "claude-opus-5-5",
+   "input_tokens": 1480,
+   "output_tokens": 173
+  },
+  "4231750ec8934b89c5a6b474a819d6a167dc4f169ec1a1fe8e60573d4cfd3c5b": {
+   "text": "본인 결혼 경조금은 100만 원입니다 [1]. 본인 결혼 시 유급 경조휴가는 5일입니다 [2].",
+   "model": "claude-haiku-5-5",
+   "input_tokens": 1268,
+   "output_tokens": 55
+  },
+  "42f7a1f5c307ef06b8174109a4481cbcc5e09d090f2ef242ee4e68048a85fe23": {
+   "text": "회사 노트북을 잃어버린 경우는 보안 사고에 해당하므로 1시간 이내에 신고해야 합니다[1].\n\n- 메일: security@hanbit-soft.example [1]\n- 전화: 내선 7777 (24시간) [1]",
+   "model": "claude-opus-5-5",
+   "input_tokens": 1357,
+   "output_tokens": 128
+  },
+  "43cfabffdbbebbbb3ad9c454a41eff87f6117ad4f9fe29564145a3d55f436fa4": {
+   "text": "제12조의2는 선택적 근로시간제에 대한 조항입니다. [1]\n\n- 개발팀 직원은 1개월 단위의 선택적 근로시간제를 적용받을 수 있습니다. [1]\n- 정산 기간의 총 근로시간은 1주 평균 40시간을 넘지 않아야 합니다. [1]\n- 핵심 근무시간은 오전 11시부터 오후 4시까지이며, 이 시간에는 반드시 근무해야 합니다. [1]",
+   "model": "claude-sonnet-5-5",
+   "input_tokens": 1369,
+   "output_tokens": 177
+  },
+  "4409b4963e5322b8a5609ef9ef6a084934ed8150dc35b3efdce6b74df067833f": {
+   "text": "징계는 견책, 감봉, 정직, 해고의 4종류입니다[1]. IT 보안 정책을 위반한 경우에도 이 조항에 따라 징계할 수 있습니다[2].",
+   "model": "claude-opus-5-5",
+   "input_tokens": 1222,
+   "output_tokens": 156
+  },
+  "440d6cc4fc15d4304fba8387adce7fd0321de9efe954f7ad25fbb09aa5505c6a": {
+   "text": "정기 배포는 매주 화요일과 목요일 오후 2시에 합니다[1]. 금요일과 공휴일 전날에는 배포하지 않습니다[1]. 단, 긴급 장애 수정은 예외이며 이때는 장애 대응 매뉴얼을 따릅니다[1].",
+   "model": "claude-opus-5-5",
+   "input_tokens": 1308,
+   "output_tokens": 144
+  },
+  "4489132703431e804c33cb8cde6eb8428f5e8ac7d61f10c7ef38b0cd3cc03350": {
+   "text": "법인카드를 사용하면 3일 이내에 HB-Expense에 증빙(영수증)을 올려야 합니다. [1]\n\n참고로 증빙이 2주 넘게 올라오지 않으면 재무팀이 해당 카드의 사용을 정지합니다. [1]",
+   "model": "claude-sonnet-5-5",
+   "input_tokens": 1260,
+   "output_tokens": 101
+  },
+  "44a240f9bf3c5f5b794e29006cfb8cb5073173a56e55f4ce23c4a2c79678f193": {
+   "text": "문서에서 찾을 수 없습니다. 제공된 조각에는 주차 지원에 대한 내용이 없고, 장비 지원, 연차휴가, 연혁, 제품, 조직 관련 내용만 있습니다.",
+   "model": "claude-haiku-5-5",
+   "input_tokens": 1391,
+   "output_tokens": 84
+  },
+  "4636af5f104cc355e1b0c051c917e030d22b4560a4a817f2da1253895c2adc78": {
+   "text": "문서에서 찾을 수 없습니다. 제공된 조각에는 사내 동호회 지원금에 대한 내용이 없고, 자기계발비·장기근속 포상·경조금·식대와 통신비만 적혀 있습니다.",
+   "model": "claude-haiku-5-5",
+   "input_tokens": 1283,
+   "output_tokens": 87
+  },
+  "466f8815b433732a9e0b466eb806ee811cc182b8bc30d9faecb10283a0b6e20e": {
+   "text": "네, 재택근무를 하는 직원은 모니터 1대를 무상으로 대여받을 수 있습니다[1]. HB-HR의 \"장비 대여\" 메뉴에서 신청하면 일주일 안에 집으로 배송됩니다[1]. 퇴사하거나 재택근무를 그만두면 반납해야 합니다[1].",
+   "model": "claude-opus-5-5",
+   "input_tokens": 1431,
+   "output_tokens": 225
+  },
+  "46dcdfefea78baacdfaaf465f005c59347937fc4ae28913d1eac599e1faa9413": {
+   "text": "배우자 출산 시 유급 경조휴가는 20일입니다. [1]",
+   "model": "claude-sonnet-5-5",
+   "input_tokens": 1342,
+   "output_tokens": 30
+  },
+  "4882ad609fe08627c8a5f70a98b2a9ec87f4ef6ab6bf72777779dad5cf4dd4f6": {
+   "text": "문서에서 찾을 수 없습니다. 교통비 기준은 국내 출장 시 KTX 일반실, 고속버스, 자가용(km당 250원)만 나와 있고, 야근 후 택시비 지원에 관한 내용은 없습니다[2].",
+   "model": "claude-opus-5-5",
+   "input_tokens": 1451,
+   "output_tokens": 155
+  },
+  "48e4aeba8eb807bad64c1ebef56b7b491db6810f373721de35596da737c8b3f6": {
+   "text": "네, 당일 출장에도 일비는 지급되며 금액은 일비의 절반입니다[1]. 국내 출장 일비가 1일 2만 5천 원이므로 당일치기 출장이면 1만 2천 500원입니다[1]. 당일 출장에는 숙박비가 지급되지 않습니다[1].",
+   "model": "claude-haiku-5-5",
+   "input_tokens": 1437,
+   "output_tokens": 385
+  },
+  "4bee2bdf914dc466d3e00e563ee32e076c9b2a8e65d8d81e5db0aac4538f5f19": {
+   "text": "네, **국내 당일 출장**에도 일비가 나오지만, 일비(1일 2만 5천 원)의 **절반**만 지급됩니다 [1]. 숙박비는 지급되지 않습니다 [1].\n\n해외 당일 출장의 일비 기준은 문서에 없습니다.",
+   "model": "claude-opus-5-5",
+   "input_tokens": 1437,
+   "output_tokens": 299
+  },
+  "4c3bfefd5fc4aca5772940d48c4e2573026e5d263f2db044b7a37debb0fb8267": {
+   "text": "계정과목 812는 여비교통비입니다. 예시로는 출장비, 택시비가 있습니다.[1]",
+   "model": "claude-haiku-5-5",
+   "input_tokens": 1329,
+   "output_tokens": 43
+  },
+  "4d2be71d27d3b4c7b8856f1e8c362e777769132ca0cc180da1089b68d4dc8d6b": {
+   "text": "문서에서 찾을 수 없습니다. 제공된 문서에는 직급별 연봉 범위에 관한 내용이 없습니다(급여와 함께 지급되는 식대·통신비 등 복리후생 내용만 있습니다).",
+   "model": "claude-sonnet-5-5",
+   "input_tokens": 1262,
+   "output_tokens": 87
+  },
+  "4e9d0c73b26f10b03432514da648c5facd64dda6dd0838d2e687c6ac4001108c": {
+   "text": "문서에서 찾을 수 없습니다. 표준 가격과 할인 승인 권한에 관한 내용만 있고, 할인 프로모션의 기간이나 종료일은 적혀 있지 않습니다. [1][2]",
+   "model": "claude-sonnet-5-5",
+   "input_tokens": 1415,
+   "output_tokens": 83
+  },
+  "4f1644b1a42cbc22ad97f9889ebad9921e2e3fab6d64f6c707e598712befe899": {
+   "text": "희망퇴직 위로금은 기본 연봉의 6개월분으로 정했습니다. [1]",
+   "model": "claude-haiku-5-5",
+   "input_tokens": 1490,
+   "output_tokens": 38
+  },
+  "4fad9263ba46835c0b2261d5533d86ec1d7413b0187292dc294a799dc24ff847": {
+   "text": "온콜 교대는 매주 월요일 오전 10시입니다. [1] 수당은 온콜 담당자에게 주당 15만 원을 지급합니다. [1]",
+   "model": "claude-sonnet-5-5",
+   "input_tokens": 1450,
+   "output_tokens": 62
+  },
+  "509d4f813c315b0ccd31b81c3bb9e9dbf66815cf39c686d8cc9a20452a70174f": {
+   "text": "임원은 비행 시간이 6시간 이상이면 비즈니스석을 탈 수 있습니다. [1]",
+   "model": "claude-sonnet-5-5",
+   "input_tokens": 1317,
+   "output_tokens": 43
+  },
+  "50af5b165f6c85b104c9a12c058586abd34620bfae79a6a2f277f97199aa447c": {
+   "text": "네, 시차출퇴근제가 있습니다. 직원은 오전 8시부터 오전 10시 사이에서 출근 시각을 선택할 수 있으며, 퇴근 시각은 출근 시각으로부터 9시간 후입니다 [1].\n\n개발팀 직원은 1개월 단위의 선택적 근로시간제도 적용받을 수 있습니다. 이 경우 핵심 근무시간은 오전 11시부터 오후 4시까지이며, 이 시간에는 반드시 근무해야 합니다 [2].",
+   "model": "claude-haiku-5-5",
+   "input_tokens": 1440,
+   "output_tokens": 629
+  },
+  "5150ec5c69c48cec116c3a1cf36b652e41531c2003b88ad86965403f785cfc0b": {
+   "text": "문서에서 찾을 수 없습니다. 제공된 문서에는 주차 지원에 관한 내용이 없습니다.",
+   "model": "claude-sonnet-5-5",
+   "input_tokens": 1391,
+   "output_tokens": 47
+  },
+  "51e8074866199d79cd96be2ee1980ab9f228a4d3ef03dcf626d79681ac797f3b": {
+   "text": "서비스 전체가 중단되면 INC-P1으로 분류되며, 최초 대응은 15분 이내에 해야 합니다[1]. 이 경우 보고 대상은 CTO와 대표입니다[1].",
+   "model": "claude-haiku-5-5",
+   "input_tokens": 1546,
+   "output_tokens": 215
+  },
+  "52a3f27f9d46828fe3468dcc000d4c80f72bf1d92956af47bcc7dd1df5a9d877": {
+   "text": "연차휴가의 총 휴가일수는 25일을 한도로 합니다. 기본 15일에서 최대 10일이 늘어날 수 있습니다[1]. 3년 이상 계속 근무한 직원은 최초 1년을 넘는 계속 근무 연수 매 2년마다 1일이 가산됩니다[1].",
+   "model": "claude-haiku-5-5",
+   "input_tokens": 1400,
+   "output_tokens": 466
+  },
+  "5304ebb31e1fa829a075cbafc40ec92cab599be7e8a46e2690e4d5c5f2aa594f": {
+   "text": "식대는 월 20만 원이며, 급여와 함께 지급됩니다.[1]",
+   "model": "claude-opus-5-5",
+   "input_tokens": 1324,
+   "output_tokens": 62
+  },
+  "543e3b75d656e4364d57175fc36927685874328cafef03a679fe97ef62535d06": {
+   "text": "배우자가 출산하면 유급 경조휴가 20일을 받습니다 [1].",
+   "model": "claude-haiku-5-5",
+   "input_tokens": 1342,
+   "output_tokens": 174
+  },
+  "543f1b6fc21593041a5346c6f4b16d9c31d7657a6cc8d994f33be55fa4115475": {
+   "text": "네, 배우자도 받을 수 있지만 **만 40세 이상**이어야 하며 **2년에 1회** 지원됩니다[1]. 참고로 직원 본인은 매년 1회 종합건강검진을 지원받습니다[1].",
+   "model": "claude-opus-5-5",
+   "input_tokens": 1265,
+   "output_tokens": 123
+  },
+  "54abe9be6fbe33079a23cd896bd58fb64aae6afdf3f90b66a7f22d53a562bb29": {
+   "text": "문서에서 찾을 수 없습니다. 근거 자료에는 2025년 영업이익 실적이 없고, 2026년 영업이익률 목표(12%)만 있습니다[2].",
+   "model": "claude-haiku-5-5",
+   "input_tokens": 1538,
+   "output_tokens": 69
+  },
+  "555403fbee0a78950c20cc397d9f8b484fd058e2124090173b34022270fe5bdb": {
+   "text": "네, 재택근무 직원은 모니터 1대를 무상으로 대여받을 수 있습니다. [1]\n\nHB-HR의 \"장비 대여\" 메뉴에서 신청하면 일주일 안에 집으로 배송됩니다. [1] 퇴사하거나 재택근무를 그만두면 반납해야 합니다. [1]",
+   "model": "claude-sonnet-5-5",
+   "input_tokens": 1431,
+   "output_tokens": 123
+  },
+  "55ef5645187d57490ce9876f9884f5cbcefc6d031e58579073a3249efb68f85e": {
+   "text": "SEC-DATA-03은 고객 개인정보가 담긴 파일을 USB 등 외부 저장 장치로 옮기는 것을 금지합니다[1]. 다만 업무상 꼭 필요하면 보안 담당자의 사전 승인을 받고 암호화된 전송 시스템을 써야 합니다[1].",
+   "model": "claude-opus-5-5",
+   "input_tokens": 1350,
+   "output_tokens": 169
+  },
+  "568869614fd714c4e6cad69873ee5d28cd558a57b9131195a0255e2241162ca8": {
+   "text": "반차는 4시간 단위입니다. 연차휴가를 4시간 단위의 반차로 나누어 사용할 수 있습니다. [1]",
+   "model": "claude-sonnet-5-5",
+   "input_tokens": 1328,
+   "output_tokens": 54
+  },
+  "5708a7837c3620ee9e2e11f8f1f93865f5de77d6adc641f393e68081b089e9a6": {
+   "text": "SEC-DATA-04에 따르면 개인 계정의 클라우드 저장소(개인 드라이브 등)에는 업무 파일을 저장할 수 없습니다. [1] 업무 파일은 회사가 승인한 클라우드 저장소에만 저장해야 합니다. [1]",
+   "model": "claude-sonnet-5-5",
+   "input_tokens": 1431,
+   "output_tokens": 106
+  },
+  "5722034a4d7f29b74061d58270c6e154a40eea7da231684cb3429fc3cf22f88d": {
+   "text": "뉴욕은 미국이므로 A 지역에 해당하며, 숙박비 한도는 직급에 따라 다릅니다[1].\n- 직원: 1박 200달러 한도[1]\n- 임원: 1박 250달러 한도[1]",
+   "model": "claude-haiku-5-5",
+   "input_tokens": 1449,
+   "output_tokens": 270
+  },
+  "581e3a2dd396f4cbbeb83b62b2dc49646b0b92460a8fc739e000d743e7a66c0f": {
+   "text": "문서에서 찾을 수 없습니다. 제공된 복리후생 안내에는 장기근속 포상금, 경조금, 자기계발비, 식대와 통신비만 있고 희망퇴직 위로금은 적혀 있지 않습니다[1][2][3][4].",
+   "model": "claude-opus-5-5",
+   "input_tokens": 1320,
+   "output_tokens": 152
+  },
+  "59620687cc9dd9a8b9274bdf0af7c694449605702aa1522206b1b6eacc5fe4e0": {
+   "text": "네, 재택근무를 하는 직원은 모니터 1대를 무상으로 대여받을 수 있습니다[1]. HB-HR의 \"장비 대여\" 메뉴에서 신청하면 일주일 안에 집으로 배송됩니다[1]. 퇴사하거나 재택근무를 그만두면 반납해야 합니다[1].",
+   "model": "claude-haiku-5-5",
+   "input_tokens": 1436,
+   "output_tokens": 320
+  },
+  "59853c07a44001d3ae9c469e4fef590c899c20272911d92a16194b6c1159deaf": {
+   "text": "대구는 광역시이므로 국내 출장 기준이 적용됩니다. 다만 문서에 대구가 광역시라고 명시되어 있지는 않으며, 숙박비 구분이 \"서울, 광역시\"와 \"그 외 지역\"으로만 적혀 있습니다.\n\n- 일비: 1일 2만 5천 원입니다. 당일 출장이면 일비의 절반을 지급합니다. [1]\n- 숙박비: 대구를 광역시로 보면 1박 12만 원 한도입니다. 당일 출장에는 숙박비를 지급하지 않습니다. [1]",
+   "model": "claude-sonnet-5-5",
+   "input_tokens": 1435,
+   "output_tokens": 213
+  },
+  "599fbf361377c555458a971eb58166cab4826a56789b4238f9d591e4333ec5c4": {
+   "text": "재택근무를 하는 직원은 모니터 1대를 무상으로 대여받을 수 있습니다[1]. HB-HR의 \"장비 대여\" 메뉴에서 신청하면 일주일 안에 집으로 배송됩니다[1]. 퇴사하거나 재택근무를 그만두면 반납해야 합니다[1].",
+   "model": "claude-haiku-5-5",
+   "input_tokens": 1431,
+   "output_tokens": 122
+  },
+  "5b5768f4902e527e1a943bf5bf519c646f730a29cc4e171df6e6a81ef5da435d": {
+   "text": "SEC-PW-01 기준 비밀번호는 12자 이상이어야 하며[1], 90일마다 변경해야 합니다[1]. 최근 5개의 비밀번호는 다시 쓸 수 없습니다[1].",
+   "model": "claude-sonnet-5-5",
+   "input_tokens": 1387,
+   "output_tokens": 84
+  },
+  "5b8d7a6f975bde94f4cb1a4c2d02643cb67ec1c19ced91a37165bc6086867073": {
+   "text": "교대는 매주 월요일 오전 10시입니다[1]. 온콜 담당자에게는 주당 15만 원의 온콜 수당을 지급합니다[1].",
+   "model": "claude-haiku-5-5",
+   "input_tokens": 1450,
+   "output_tokens": 62
+  },
+  "5d57deed0fa09a2b2c2cfd80a8bb405a365e8d780d1d79d059846cc7a48dc38d": {
+   "text": "연차휴가는 사용하려는 날의 3일 전까지 신청해야 합니다. [1]",
+   "model": "claude-haiku-5-5",
+   "input_tokens": 1422,
+   "output_tokens": 37
+  },
+  "5fcc444b3f50f49101635b66ca89c349cd054f34b57fb08509313f1785474a80": {
+   "text": "문서에서 찾을 수 없습니다. 문서에는 2027년 하반기 도쿄 법인 설립을 목표로 하는 시장 조사의 예산 2억 원(2026년 예비비에서 집행)만 적혀 있고, 법인 설립 총비용은 나와 있지 않습니다 [1].",
+   "model": "claude-opus-5-5",
+   "input_tokens": 1487,
+   "output_tokens": 303
+  },
+  "60c3dd775f075f87bd1e54feeca98eb5ca4eb3949a3b81eaa6680c2634dfffb6": {
+   "text": "문서에서 찾을 수 없습니다. 문서에는 한빛디바이스 사업의 향후 계획이나 전망이 적혀 있지 않습니다.\n\n문서에 있는 관련 내용은 다음과 같습니다. 2019년에 IoT 디바이스 사업을 시작했고 회의실 예약 단말기 \"한빛디바이스\"를 출시했습니다[1]. 한빛디바이스는 회의실 입구에 설치하는 예약 현황 단말기이며 한빛워크 일정과 연동됩니다[4].",
+   "model": "claude-haiku-5-5",
+   "input_tokens": 1311,
+   "output_tokens": 306
+  },
+  "60fbd93bfb97fd41a8f83bf8e6982bca195f717d85c94f426400af3c8e931826": {
+   "text": "정기 배포는 매주 화요일과 목요일 오후 2시에 합니다. [1] 금요일과 공휴일 전날에는 배포하지 않습니다. [1] 다만 긴급 장애 수정은 예외이며, 이때는 장애 대응 매뉴얼을 따릅니다. [1]",
+   "model": "claude-haiku-5-5",
+   "input_tokens": 1308,
+   "output_tokens": 112
+  },
+  "61adecb4b06e8bdbd8811d2932187f4df5caa8e06ad59c0479916f6516143c58": {
+   "text": "네, 직원은 오전 8시부터 오전 10시 사이에서 출근 시각을 선택할 수 있습니다. [1] 퇴근 시각은 선택한 출근 시각으로부터 9시간 후입니다. [1]\n\n참고로 개발팀 직원은 1개월 단위 선택적 근로시간제를 적용받을 수 있으며, 이 경우 핵심 근무시간인 오전 11시부터 오후 4시까지는 반드시 근무해야 합니다. [3]",
+   "model": "claude-sonnet-5-5",
+   "input_tokens": 1388,
+   "output_tokens": 177
+  },
+  "640a7b6293ee27363a0e198edf75eeb9ad9d66e28f72c5ec07edafdc451ccd41": {
+   "text": "문서에서 찾을 수 없습니다. 제공된 조각에는 INC-P1 장애의 대응 시한에 대한 내용이 없습니다. 보안 사고 신고는 의심 시점부터 1시간 이내로 적혀 있으나[5], 이는 장애 대응 기준이 아니므로 답으로 사용할 수 없습니다.",
+   "model": "claude-haiku-5-5",
+   "input_tokens": 1310,
+   "output_tokens": 128
+  },
+  "65e7182b3a1533d7b415a113ae4502e93c490c0c3ec5b772ddf005e1b9df2a87": {
+   "text": "한빛워크 Enterprise 요금제는 SSO, 감사 로그, 전용 고객 지원을 제공합니다. [1]\n\n다만 문서에는 Enterprise의 가격이나 Standard 요금제의 구체적인 구성이 적혀 있지 않아, 그 부분은 문서에서 찾을 수 없습니다.",
+   "model": "claude-sonnet-5-5",
+   "input_tokens": 1427,
+   "output_tokens": 122
+  },
+  "66707fcdf63f8efd58e8aa978ed54557cc2dd9f978578c2567f0b47848931e39": {
+   "text": "문서에서 찾을 수 없습니다. 장애 대응 매뉴얼의 등급 표에는 INC-P1부터 INC-P4까지만 적혀 있고 INC-P5 등급은 없습니다.",
+   "model": "claude-haiku-5-5",
+   "input_tokens": 1633,
+   "output_tokens": 79
+  },
+  "6859e5b056f5a7a2fdfa8aecd27e529b6f34083d53d9e8dc3f4928beac15dca1": {
+   "text": "일반 계정 비밀번호는 12자 이상이어야 합니다[1]. 서버와 배치 작업에 쓰는 서비스 계정 비밀번호는 20자 이상이어야 합니다[2].",
+   "model": "claude-haiku-5-5",
+   "input_tokens": 1480,
+   "output_tokens": 215
+  },
+  "68680de819657f853c317051cb9dac3751b7fdfa8272c03ab10b003c824ac0d8": {
+   "text": "10년 근속 시 리프레시 휴가 10일과 포상금 300만 원이 주어집니다. [1] 리프레시 휴가는 근속 기념일로부터 1년 안에 사용해야 합니다. [1]",
+   "model": "claude-sonnet-5-5",
+   "input_tokens": 1324,
+   "output_tokens": 81
+  },
+  "69c33d781ff59657fced8362f73049c1ae246fe421c4a87a8c3bf1f27566c9c6": {
+   "text": "기본 근무시간은 오전 9시부터 오후 6시까지이고, 휴게시간(점심)은 낮 12시부터 오후 1시까지입니다. [1] 근무시간은 1일 8시간, 1주 40시간입니다. [1]\n\n참고로 시차출퇴근제에서는 오전 8시~10시 사이에 출근 시각을 선택할 수 있고, 퇴근 시각은 출근 시각으로부터 9시간 후입니다. [4]",
+   "model": "claude-sonnet-5-5",
+   "input_tokens": 1377,
+   "output_tokens": 169
+  },
+  "6a10763431ecc3e7da92b8d4bfc5b920b98130cb8dcc6040c42a8db0e8eb2e29": {
+   "text": "문서에서 찾을 수 없습니다. 제공된 근거 조각에는 직급별 연봉 범위에 대한 내용이 없고, 출장비, 장기근속 포상, 식대와 통신비, 징계 종류, 자기계발비에 관한 내용만 있습니다.",
+   "model": "claude-haiku-5-5",
+   "input_tokens": 1262,
+   "output_tokens": 103
+  },
+  "6a777e73879162bc0505b1c033ed50fb8a5d6a0520798c54e5d6290c34c2eb04": {
+   "text": "네, 있습니다.\n\n- **시차출퇴근제**: 직원은 오전 8시부터 오전 10시 사이에서 출근 시각을 선택할 수 있으며, 퇴근 시각은 출근 시각으로부터 9시간 후입니다[1]. 기본 근무시간은 오전 9시부터 오후 6시까지입니다[3].\n- **선택적 근로시간제 (개발팀만 해당)**: 개발팀 직원은 1개월 단위의 선택적 근로시간제를 적용받을 수 있습니다[2]. 정산 기간의 총 근로시간은 1주 평균 40시간을 넘지 않아야 합니다[2]. 핵심 근무시간인 오전 11시부터 오후 4시까지는 반드시 근무해야 합니다[2]. 이 핵심 근무시간은 재택근무 날에도 동일하게 적용됩니다[4].",
+   "model": "claude-opus-5-5",
+   "input_tokens": 1440,
+   "output_tokens": 408
+  },
+  "6bc08b6d9d6dbc34d5f4f21ade2bd8737fdc1114d949b8f9e1b0c5a0b4c0475e": {
+   "text": "재택근무 중에도 근무 시간에는 메신저에 접속해 있어야 하며, 메시지에는 **30분 이내**에 응답해야 합니다 [1].",
+   "model": "claude-opus-5-5",
+   "input_tokens": 1456,
+   "output_tokens": 152
+  },
+  "6ca4747e2ac31a3bf1109fd431b94c584e9e2f1220ad0f62ab2cf23183c78915": {
+   "text": "한빛워크 Enterprise 요금제에서는 SSO, 감사 로그, 전용 고객 지원을 제공합니다[1]. 한빛워크는 메신저, 전자결재, 일정, 문서 공유를 하나로 묶은 협업 도구이며, Standard와 Enterprise 두 가지 요금제가 있습니다[1].",
+   "model": "claude-opus-5-5",
+   "input_tokens": 1427,
+   "output_tokens": 201
+  },
+  "6d44cb1d469ee6ce2236fbdd1a15b99a534950b4b80a78753ef26d85dd855442": {
+   "text": "문서에서 찾을 수 없습니다. 일본 법인 설립 총비용에 대한 기재는 없고, 시장 조사 예산 2억 원을 2026년 예비비에서 집행한다는 내용만 있습니다. [1]\n\n참고로 법인 설립 목표 시점은 2027년 하반기(도쿄)입니다. [1]",
+   "model": "claude-sonnet-5-5",
+   "input_tokens": 1487,
+   "output_tokens": 125
+  },
+  "6dd2fcbe807e473ec403d1beb6fdbe838fef8bb791bbfb65fd3693ebeda53757": {
+   "text": "리뷰어 2명의 승인이 필요합니다. [1] 또한 CI가 실패한 PR은 병합할 수 없습니다. [2]",
+   "model": "claude-sonnet-5-5",
+   "input_tokens": 1198,
+   "output_tokens": 55
+  },
+  "725fa51a325a50e71d7b20eb52ef46c85e33339c395bc4606c57fc53571445bf": {
+   "text": "식대는 월 20만 원을 급여와 함께 지급합니다. [1]",
+   "model": "claude-haiku-5-5",
+   "input_tokens": 1324,
+   "output_tokens": 30
+  },
+  "72642cc2b1d89754b143d8eed4458a30d8938a31c6e7a5036b200856ee501429": {
+   "text": "개인 휴대폰으로 업무를 하려면 먼저 MDM(모바일 기기 관리)에 등록해야 합니다[1]. 등록하지 않은 기기로는 사내 메일과 메신저에 접속할 수 없습니다[1].",
+   "model": "claude-opus-5-5",
+   "input_tokens": 1521,
+   "output_tokens": 168
+  },
+  "74ebfd99aab7e6beb77b7907167f6ee59df7f8f5d8ce0a1f67709c5150514812": {
+   "text": "문서에서 찾을 수 없습니다. 제공된 문서에는 야근 후 택시비 지원에 관한 내용이 없습니다. (출장비 규정의 교통 항목은 출장 시 KTX·고속버스·자가용 기준만 다루며 야근 택시비와는 관련이 없습니다.) [2]",
+   "model": "claude-sonnet-5-5",
+   "input_tokens": 1451,
+   "output_tokens": 117
+  },
+  "77842a2c01194c81ff97955883955aff4c3f458eac8be28e596dbb09655955da": {
+   "text": "INC-P1과 INC-P2 장애는 복구 후 5영업일 이내에 사후 분석(포스트모템) 문서를 작성해야 합니다 [1]. INC-P3와 INC-P4의 사후 분석 기한은 문서에 나와 있지 않습니다.\n\n참고로 사후 분석은 개인의 책임을 묻지 않는 방식(blameless)으로 작성하고, 재발 방지 작업은 이슈로 등록해 다음 스프린트 안에 처리합니다 [1].",
+   "model": "claude-opus-5-5",
+   "input_tokens": 1554,
+   "output_tokens": 267
+  },
+  "77d07af39b01a8e9d8b8942028c243d439a2c7838a555a51b121e0f09e5b04eb": {
+   "text": "네, 업무와 관련된 도서 구입, 온라인 강의, 자격증 응시료를 연 100만 원 한도에서 지원합니다[1]. 영수증을 경비 시스템 HB-Expense에 올리면 다음 달 급여와 함께 지급됩니다[1]. 쓰지 않은 금액은 다음 해로 이월되지 않습니다[1].",
+   "model": "claude-opus-5-5",
+   "input_tokens": 1378,
+   "output_tokens": 151
+  },
+  "7839ab1bfaefe3b3620f479f5928a1e62837d164e4500bd3e48fc519175e80c7": {
+   "text": "미국은 A 지역에 해당하며, 직원의 숙박비 한도는 1박 200달러입니다 [1].",
+   "model": "claude-opus-5-5",
+   "input_tokens": 1444,
+   "output_tokens": 72
+  },
+  "78579553be0cf057e9339b2b19b956e2bc45db1e5264cdf1d094e56040e3f04a": {
+   "text": "문서에서 찾을 수 없습니다. 제공된 문서에는 연차휴가, 반차, 경조금, 장기근속 포상, 징계 종류만 있고 퇴직금 계산 방법은 적혀 있지 않습니다.",
+   "model": "claude-sonnet-5-5",
+   "input_tokens": 1249,
+   "output_tokens": 88
+  },
+  "7a5ff5580c7705e9ce5339e205b562d8b278a8a72428590bcf6102ed734f0950": {
+   "text": "SEC-PW-04는 서버와 배치 작업에 쓰는 서비스 계정에 적용됩니다. [1]\n\n비밀번호 기준은 다음과 같습니다.\n- 20자 이상이어야 합니다. [1]\n- 180일마다 변경합니다. [1]\n- 비밀 관리 시스템에만 보관합니다. [1]",
+   "model": "claude-sonnet-5-5",
+   "input_tokens": 1398,
+   "output_tokens": 127
+  },
+  "7b509b890614393a23b50bfe85e294381f29100e7638a8c742173192016575fa": {
+   "text": "제12조의3은 직원이 소속 팀장의 승인을 받아 주 2회까지 재택근무를 할 수 있다고 정합니다 [1]. 같은 주의 재택근무 횟수가 2회를 넘으면 신청이 거절되며, 쓰지 않은 횟수는 다음 주로 넘어가지 않습니다 [4].",
+   "model": "claude-haiku-5-5",
+   "input_tokens": 1452,
+   "output_tokens": 127
+  },
+  "7bd816e61b81efad2d551d4d25e61ca190954eb0ef58ff75af9e8103ecee2585": {
+   "text": "INC-P3의 기준은 \"일부 기능 장애, 우회 방법 있음\"이고, 최초 대응은 \"4시간 이내\"입니다 [1].",
+   "model": "claude-haiku-5-5",
+   "input_tokens": 1637,
+   "output_tokens": 59
+  },
+  "7c395668e836dbc28a54518f00b1a9435b0e2ed0d79c0044307ff99f31baf0b1": {
+   "text": "B등급의 연봉 인상률은 4%입니다. [1]\n연간 등급은 6월 평가와 12월 평가의 평균으로 정합니다. [1]",
+   "model": "claude-haiku-5-5",
+   "input_tokens": 1406,
+   "output_tokens": 227
+  },
+  "7d0ea8c8e00ae53277b26bd489bfc0911c1d538a58fd0cdd0739f4204710b955": {
+   "text": "해외 출장은 임원의 승인을 받아야 하며, 출발 2주 전까지 신청해야 합니다 [1].",
+   "model": "claude-opus-5-5",
+   "input_tokens": 1375,
+   "output_tokens": 83
+  },
+  "7d1558a07e92fda02fbefd7d15280f9d8e024670a8a2cebf0a9202da7f601500": {
+   "text": "PR을 병합하려면 리뷰어 2명의 승인이 필요합니다[1]. 또한 CI가 실패한 PR은 병합할 수 없습니다[2].",
+   "model": "claude-opus-5-5",
+   "input_tokens": 1198,
+   "output_tokens": 111
+  },
+  "7d842ba8f70be5464087ceccb3c121b2268c304b9bb2d222a51471e7181be27e": {
+   "text": "네, 당일 출장에는 일비의 절반을 지급합니다. 국내 일비가 1일 2만 5천 원이므로 당일 출장이면 그 절반이 지급됩니다. 다만 숙박비는 지급하지 않습니다. [1]\n\n해외 당일 출장의 일비 지급 여부는 문서에서 찾을 수 없습니다. 당일 출장 규정은 국내 출장 항목에만 적혀 있습니다. [1][2]",
+   "model": "claude-sonnet-5-5",
+   "input_tokens": 1437,
+   "output_tokens": 166
+  },
+  "7e27d416502b197f0d2b9f040bfee49c1170a1da505d7dd2f7cb4dd66606c104": {
+   "text": "15% 할인은 **영업팀장**이 승인합니다(10% 초과 20% 이하 구간) [1].\n\n3년 이상 장기 계약으로 추가 할인을 받으면 그 할인도 합산해 승인 권한을 정합니다 [1]. 예를 들어 15%에 장기 계약 할인 5%를 더하면 20%가 되어 여전히 영업팀장 승인 대상입니다 [1].",
+   "model": "claude-opus-5-5",
+   "input_tokens": 1318,
+   "output_tokens": 214
+  },
+  "7e337375338e9fc53a8167f50d8820f91986de9c4400edf75bc1314f0257f624": {
+   "text": "네, 임원은 비행 6시간 이상이면 비즈니스석을 탈 수 있습니다 [1]. 직원은 항공편을 이코노미석으로 규정되어 있습니다 [1]. 비행 6시간 미만인 경우의 임원 좌석 등급은 문서에 없습니다.",
+   "model": "claude-haiku-5-5",
+   "input_tokens": 1317,
+   "output_tokens": 356
+  },
+  "7e82e79cdb0a0531555aada7cfbb9dbda4f7fae4064a76bc8cace157bc0be197": {
+   "text": "문서에서 찾을 수 없습니다. 제공된 문서에는 분기별 영업 목표에 대한 내용이 없고, 2025년 연매출(271억 원)만 적혀 있습니다. [1]",
+   "model": "claude-sonnet-5-5",
+   "input_tokens": 1422,
+   "output_tokens": 77
+  },
+  "7e89458505228fd7a5a7ecb94c3d7ef51abeb67ea5a687641796bc61a9d652b7": {
+   "text": "본인 결혼 시 경조금은 100만 원입니다[1]. 경조휴가는 5일(유급)입니다[1][2].\n\n자녀 결혼에 대한 경조금 금액은 문서에서 찾을 수 없습니다.",
+   "model": "claude-opus-5-5",
+   "input_tokens": 1268,
+   "output_tokens": 211
+  },
+  "7f08c4090db6c7eb6cd9436b1fb4f93be670dd8b1556a14c3f25ef99db30b989": {
+   "text": "재택근무는 전날 오후 6시까지 인사 시스템 HB-HR의 \"근무 신청\" 메뉴에서 신청합니다 [1].",
+   "model": "claude-haiku-5-5",
+   "input_tokens": 1430,
+   "output_tokens": 57
+  },
+  "7fd7b30f60d74877d4c4f72aa2235022b56d8ed34b68b412c5934865f07c0bf3": {
+   "text": "2026년 마케팅 예산은 18억 원이며, 전체 비용 예산 210억 원의 9%입니다[1]. 이 중 60%는 상반기에, 40%는 하반기에 배정합니다[2].",
+   "model": "claude-opus-5-5",
+   "input_tokens": 1495,
+   "output_tokens": 122
+  },
+  "7fea79ea12265d09117eb95302fed92e455dd590fa259608db54709cc3de7989": {
+   "text": "한빛워크 Enterprise 요금제에는 SSO, 감사 로그, 전용 고객 지원이 포함됩니다 [1].",
+   "model": "claude-haiku-5-5",
+   "input_tokens": 1427,
+   "output_tokens": 52
+  },
+  "804a898f59ed3ec62492f46aa1d0ab348d251075be2e5fe6e7f301ee09a944c1": {
+   "text": "네, 배우자도 건강검진 지원 대상입니다. 다만 만 40세 이상인 경우에 한해 2년에 1회 지원됩니다 [1].",
+   "model": "claude-haiku-5-5",
+   "input_tokens": 1265,
+   "output_tokens": 338
+  },
+  "809763657d0e6622315f3107f96b50f68a6c5f2f87f86c0c7a692c121293aadb": {
+   "text": "문서에서 찾을 수 없습니다. 영업 제안서 작성 가이드에는 할인 승인 권한, 표준 가격, 검토와 제출 절차만 있고, 영업 인센티브 지급 기준은 없습니다.",
+   "model": "claude-opus-5-5",
+   "input_tokens": 1449,
+   "output_tokens": 175
+  },
+  "815b25f806f7f4ab4c36c7285a3848cefec087fdd6c9819f77bb557a9f460b5f": {
+   "text": "자기계발비는 연 100만 원 한도에서 업무와 관련된 도서 구입, 온라인 강의, 자격증 응시료를 지원합니다[1]. 쓰지 않은 금액은 다음 해로 이월되지 않습니다[1].",
+   "model": "claude-opus-5-5",
+   "input_tokens": 1411,
+   "output_tokens": 93
+  },
+  "8161ac6526eb72bc64a856d5347d9d214460ad9e1ccdbd8f53b6c68f3935e071": {
+   "text": "출장에서 돌아온 날로부터 7일 이내에 경비 시스템 HB-Expense에 영수증을 올리고 정산을 신청해야 합니다[1]. 기한을 넘기면 팀장의 사유서가 필요합니다[1].",
+   "model": "claude-haiku-5-5",
+   "input_tokens": 1392,
+   "output_tokens": 92
+  },
+  "832ca76f9ac4fd0181b95477d5370eb7058ebd4b5b34846923363122ba623fae": {
+   "text": "재택근무 전날 오후 6시까지 인사 시스템 HB-HR의 \"근무 신청\" 메뉴에서 재택근무를 선택해 신청하면 됩니다[1]. 팀장이 승인하면 메신저 상태가 자동으로 \"재택\"으로 바뀝니다[1]. 같은 주의 재택근무 횟수가 2회를 넘으면 신청이 거절됩니다[1].",
+   "model": "claude-opus-5-5",
+   "input_tokens": 1430,
+   "output_tokens": 186
+  },
+  "847596e0500ff37f71feca8dbd7bbf7ca7691922cc6aa436bc93bae77214e26f": {
+   "text": "자기계발비 한도는 연 100만 원입니다[1]. 쓰지 않은 금액은 다음 해로 이월되지 않습니다[1].",
+   "model": "claude-haiku-5-5",
+   "input_tokens": 1411,
+   "output_tokens": 56
+  },
+  "855f4387a213aeca755a92d94d83f47236ee2cf58e7b40c918d7ca36d6e8cea5": {
+   "text": "문서에서 찾을 수 없습니다. 제공된 문서에는 INC-P1 장애의 대응 시한에 관한 내용이 없습니다.",
+   "model": "claude-sonnet-5-5",
+   "input_tokens": 1310,
+   "output_tokens": 57
+  },
+  "8900b59a7ddac46f3d0a45ca87fc329fa3eafe317f2e99bf63fb38c20fef237d": {
+   "text": "문서에서 찾을 수 없습니다. 다만 취업규칙 제12조의3 제2항에 따르면 입사 후 3개월이 지나지 않은 직원은 재택근무를 할 수 없습니다 [1]. 입사 두 달이면 이 조건에 해당하므로 재택근무가 불가능한 것으로 보입니다.",
+   "model": "claude-haiku-5-5",
+   "input_tokens": 1435,
+   "output_tokens": 125
+  },
+  "897788e259fc9664118ccbc71f36df4010076e5f767c433db1ffc6c85b6774ec": {
+   "text": "2026년 마케팅 예산은 18억 원이며, 비중은 9%입니다[1]. 상반기에 60%, 하반기에 40%를 배정합니다[2].",
+   "model": "claude-haiku-5-5",
+   "input_tokens": 1495,
+   "output_tokens": 115
+  },
+  "8ab3348961eb043342262559adf1b854ee447fc55afca7f06b07d939114a30f5": {
+   "text": "SEC-DATA-04에서 업무 파일 저장을 금지하는 곳은 개인 계정의 클라우드 저장소(개인 드라이브 등)입니다[1]. 업무 파일은 회사가 승인한 클라우드 저장소에만 저장해야 합니다[1].",
+   "model": "claude-haiku-5-5",
+   "input_tokens": 1431,
+   "output_tokens": 201
+  },
+  "8b7550983ba4159a9e9b25ecf9e12fa740bd6cfa23af53ca98b1b1d0cd7590d6": {
+   "text": "연차휴가는 4시간 단위의 반차로 나누어 사용할 수 있습니다. [1]",
+   "model": "claude-haiku-5-5",
+   "input_tokens": 1352,
+   "output_tokens": 39
+  },
+  "8c62ded2c48a488238fd182b729f86e86771c5eef2a4c8e6d027ad883673da42": {
+   "text": "출장에서 돌아온 날로부터 7일 이내에 경비 시스템 HB-Expense에 영수증을 올리고 정산을 신청해야 합니다[1]. 기한을 넘기면 팀장의 사유서가 필요합니다[1].",
+   "model": "claude-haiku-5-5",
+   "input_tokens": 1460,
+   "output_tokens": 92
+  },
+  "8d0025ea7f10d53e9a32267a726251b585b35306e7fa1a9419d8b9e11ac66444": {
+   "text": "인사평가는 연 2회, 매년 6월과 12월에 실시합니다 [1].",
+   "model": "claude-haiku-5-5",
+   "input_tokens": 1268,
+   "output_tokens": 34
+  },
+  "8db6556de690f97bcbe6b60c70862628cdb5ec0819e5e2a7ca41b6972ffd283f": {
+   "text": "KPI-2026-A(연매출)의 2026년 목표는 320억 원으로, 2025년 271억 원 대비 18% 성장한 수치입니다[1].",
+   "model": "claude-opus-5-5",
+   "input_tokens": 1453,
+   "output_tokens": 100
+  },
+  "8e61195813d14175114195c78deacf57df7e4fce85f860986bb6b60a518cc667": {
+   "text": "네, 잠깁니다. 로그인에 5회 연속 실패하면 계정이 30분 동안 잠깁니다. [1] 즉시 풀어야 하면 헬프데스크(내선 1004)에 요청하면 됩니다. [1]",
+   "model": "claude-sonnet-5-5",
+   "input_tokens": 1355,
+   "output_tokens": 90
+  },
+  "8ecbeae315cceb85ca6eca9c0fb1de4dd65a9232fb875ffd5335b9106ffc1acb": {
+   "text": "자기계발비는 연 100만 원 한도입니다. [1] 쓰지 않은 금액은 다음 해로 이월되지 않으므로, 남아도 내년으로 넘어가지 않습니다. [1]",
+   "model": "claude-sonnet-5-5",
+   "input_tokens": 1411,
+   "output_tokens": 78
+  },
+  "8f7d2d1aa3618c5d75ef7fb5deb8032bb046856002e03be4c67df81d4d317cd1": {
+   "text": "문서에서 찾을 수 없습니다. 인사평가는 매년 6월과 12월에 연 2회 실시하며, 평가 등급과 평가 결과의 보상 반영 등 세부 기준은 인사팀이 별도로 정한다고만 적혀 있습니다[1].",
+   "model": "claude-opus-5-5",
+   "input_tokens": 1343,
+   "output_tokens": 154
+  },
+  "910e550fe4ac2bd0563f93ffe05fdee6ccb5409166337b18786b7708ceda9899": {
+   "text": "SEC-DATA-03은 고객 개인정보가 담긴 파일을 USB 등 외부 저장 장치로 옮기는 것을 금지합니다[1]. 업무상 꼭 필요하면 보안 담당자의 사전 승인을 받고 암호화된 전송 시스템을 써야 합니다[1].",
+   "model": "claude-haiku-5-5",
+   "input_tokens": 1350,
+   "output_tokens": 116
+  },
+  "91b60df530c478d767fb7571d8457f9b615a3fef5aaa6aeabec65ce562de9e5b": {
+   "text": "회사 콘도는 강릉과 제주의 제휴 콘도이며, 1박 2만 원에 이용할 수 있습니다[1]. 1인당 연 2회까지 신청할 수 있고, 성수기(7~8월, 12월 말)에는 추첨으로 배정합니다[1].",
+   "model": "claude-opus-5-5",
+   "input_tokens": 1306,
+   "output_tokens": 193
+  },
+  "920723e551f4a9f1dd9448c9523e01daa07fc33a9924fe0bb8c4666367ea302c": {
+   "text": "문서에서 찾을 수 없습니다. 제공된 문서에는 PR(풀 리퀘스트) 병합이나 그에 필요한 승인 인원에 관한 내용이 없습니다.",
+   "model": "claude-sonnet-5-5",
+   "input_tokens": 1318,
+   "output_tokens": 73
+  },
+  "94013dcd9f8db2e8cba2e509201d4fb8568394766b0e29126c75af54036b72f3": {
+   "text": "문서에서 찾을 수 없습니다. 제공된 근거 조각에는 육아휴직의 사용 기간이나 한도에 대한 내용이 없습니다. 제공된 조각은 장기근속 포상, 연차휴가, 경조휴가, 반차, 건강검진에 관한 내용입니다.",
+   "model": "claude-haiku-5-5",
+   "input_tokens": 1324,
+   "output_tokens": 113
+  },
+  "9700f6260e533cdf59c57f083b827a89191160155786301307dec636d024180d": {
+   "text": "보안 사고가 의심되면 **1시간 이내**에 신고해야 합니다. 악성 메일을 연 경우가 보안 사고의 예로 적혀 있습니다. [1]\n\n신고처는 다음과 같습니다. [1]\n- 메일: security@hanbit-soft.example\n- 전화: 내선 7777 (24시간)",
+   "model": "claude-opus-5-5",
+   "input_tokens": 1368,
+   "output_tokens": 177
+  },
+  "970e6fb4c8be5554309688f2e4e8496076683ff183442cfef8d78b51192c5c4c": {
+   "text": "모든 PR은 리뷰어 2명의 승인을 받아야 병합할 수 있습니다. [1]",
+   "model": "claude-haiku-5-5",
+   "input_tokens": 1401,
+   "output_tokens": 41
+  },
+  "98282b1782de960afb3b9e7c1823822de1974878b897a54a02431e82f19fd96a": {
+   "text": "S 등급의 성과급은 기본 연봉의 20%입니다[1]. 같은 등급의 연봉 인상률은 8%입니다[1]. 연간 등급은 6월과 12월 평가의 평균으로 정해집니다[1]. 문서에 기본 연봉 금액이 없어 실제 지급액은 계산할 수 없습니다.",
+   "model": "claude-haiku-5-5",
+   "input_tokens": 1359,
+   "output_tokens": 335
+  },
+  "986502807236d63ddd82bb521972e4cf89c4cb29f761e30eb6101553c7a7ff37": {
+   "text": "제12조의2는 **선택적 근로시간제**에 대한 조항입니다[1].\n\n주요 내용은 다음과 같습니다.\n- 개발팀 직원은 1개월 단위의 선택적 근로시간제를 적용받을 수 있습니다[1].\n- 정산 기간의 총 근로시간은 1주 평균 40시간을 넘지 않아야 합니다[1].\n- 핵심 근무시간은 오전 11시부터 오후 4시까지이며, 이 시간에는 반드시 근무해야 합니다[1].",
+   "model": "claude-opus-5-5",
+   "input_tokens": 1369,
+   "output_tokens": 220
+  },
+  "990a7020facc5dbd6a55f0aacfe9f63e6674014de050b154e641050507ce157d": {
+   "text": "네, 로그인에 5회 연속 실패하면 계정이 30분 동안 잠깁니다[1]. 즉시 풀어야 하면 헬프데스크(내선 1004)에 요청합니다[1].",
+   "model": "claude-haiku-5-5",
+   "input_tokens": 1355,
+   "output_tokens": 77
+  },
+  "998602ce1d98079f109f490bb9c3a2a0a0eb884dad0e3c645c087d19f3b22c21": {
+   "text": "문서에서 찾을 수 없습니다. 문서에는 한빛디바이스가 2019년에 시작된 회의실 예약 단말기 사업이라는 내용과 장애 처리 기준만 있고, 앞으로의 사업 계획은 없습니다 [1][4][5].",
+   "model": "claude-opus-5-5",
+   "input_tokens": 1311,
+   "output_tokens": 252
+  },
+  "9b4de5faa2408a3bc7ec8a3da93d5e750408e169099cf1eda831f3f8fd523d27": {
+   "text": "SEC-MFA-01은 VPN 접속, 사외에서의 메일 접속, 관리자 콘솔 접속에 다단계 인증(MFA)을 필수로 적용합니다[1]. 인증 앱은 회사가 지정한 \"HB Authenticator\"만 사용합니다[1].",
+   "model": "claude-haiku-5-5",
+   "input_tokens": 1453,
+   "output_tokens": 108
+  },
+  "9d149b6be4bf820c78fcb9f0697e4ecc0183b20e1e1454a81032b9d2dce9cb65": {
+   "text": "B등급을 받으면 연봉이 **4%** 오릅니다[1]. 성과급은 기본 연봉의 6%입니다[1].\n\n참고로 알아 두실 점이 있습니다.\n- 보상에 반영되는 연간 등급은 6월 평가와 12월 평가의 평균으로 정합니다[1].\n- 인상분 중 연봉 범위의 상한을 넘는 부분은 일시금으로 지급합니다[2].",
+   "model": "claude-opus-5-5",
+   "input_tokens": 1406,
+   "output_tokens": 233
+  },
+  "9d6e15d87be7f71d672b836d673c6743378191e87c9288cdc71eac56c9a9602c": {
+   "text": "SEC-MFA-01에 따라 다단계 인증(MFA)이 필수인 접속은 VPN 접속, 사외에서의 메일 접속, 관리자 콘솔 접속입니다[1]. 이때 인증 앱은 회사가 지정한 \"HB Authenticator\"만 씁니다[1]. 재택근무 가이드에서도 VPN 접속에 MFA가 필요하다고 이 규정을 언급합니다[2].",
+   "model": "claude-opus-5-5",
+   "input_tokens": 1453,
+   "output_tokens": 210
+  },
+  "9e19e72d9338acb2aa26766b3fba8a4fc05547df7fd7f037c48613baabb7fd6f": {
+   "text": "해외 출장은 임원의 승인을 받아야 하며, 출발 2주 전까지 신청해야 합니다. [1]",
+   "model": "claude-haiku-5-5",
+   "input_tokens": 1375,
+   "output_tokens": 47
+  },
+  "9e36ec1c2a75be5082dd6dfa1807c22f0e1dda9fc72c20009a98865a19b9c264": {
+   "text": "재택근무 전날 오후 6시까지 인사 시스템 HB-HR의 \"근무 신청\" 메뉴에서 재택근무를 선택해 신청하면 됩니다. [1]\n\n팀장이 승인하면 메신저 상태가 자동으로 \"재택\"으로 바뀝니다. [1]",
+   "model": "claude-sonnet-5-5",
+   "input_tokens": 1430,
+   "output_tokens": 111
+  },
+  "9e4209a67e843fac0a6cdd59cd70be4cd495c9d1778885ec93d2ef67e01d9dc9": {
+   "text": "네, 배우자도 지원을 받을 수 있습니다. 다만 만 40세 이상인 경우에 한해 2년에 1회 지원합니다. [1]",
+   "model": "claude-sonnet-5-5",
+   "input_tokens": 1265,
+   "output_tokens": 60
+  },
+  "9e4e8bc9dad1cabcfcf902fca14f1e50141b20864c9acc98c50dfd170481020e": {
+   "text": "INC-P1과 INC-P2는 복구 후 5영업일 이내에 사후 분석(포스트모템) 문서를 작성합니다 [1].",
+   "model": "claude-haiku-5-5",
+   "input_tokens": 1554,
+   "output_tokens": 56
+  },
+  "a0d5cebc935e4924e3a2d83598b53cfe814587ad92e09f8beae2e4b76517b7c2": {
+   "text": "부산은 광역시이므로 숙박비 한도는 1박 12만 원입니다 [1]. 다만 문서에는 \"서울, 광역시\"로만 적혀 있어, 부산이 광역시에 해당한다는 판단은 문서 기준을 그대로 적용한 것입니다 [1].",
+   "model": "claude-haiku-5-5",
+   "input_tokens": 1442,
+   "output_tokens": 108
+  },
+  "a1e1ec06ab7a493d6da9dacc044182617506182a684a825969e9b4fd85f986ae": {
+   "text": "SEC-DATA-03은 고객 개인정보가 담긴 파일을 USB 등 외부 저장 장치로 옮기는 것을 금지합니다. [1] 다만 업무상 꼭 필요하면 보안 담당자의 사전 승인을 받고 암호화된 전송 시스템을 사용해야 합니다. [1]",
+   "model": "claude-sonnet-5-5",
+   "input_tokens": 1350,
+   "output_tokens": 122
+  },
+  "a3a1981662ae0efc633c62b66995b0b15ed99af35e4f2434f7b1bc174779af11": {
+   "text": "주 2회까지 가능합니다. 직원은 소속 팀장의 승인을 받아 주 2회까지 재택근무를 할 수 있습니다 [1]. 다만 입사 후 3개월이 지나지 않은 직원은 재택근무를 할 수 없습니다 [1]. 같은 주의 재택근무 횟수가 2회를 넘으면 신청이 거절되며, 쓰지 않은 횟수는 다음 주로 넘어가지 않습니다 [5].",
+   "model": "claude-haiku-5-5",
+   "input_tokens": 1473,
+   "output_tokens": 174
+  },
+  "a46ea7643e446652234e186ee5fb2932d1272d9f21dab5c61b221c7b5d399ee9": {
+   "text": "문서 1에 따르면 신규 Enterprise 고객사 40곳(KPI-2026-C) 중 25곳은 금융과 제조 업종에서 확보해야 합니다[1].",
+   "model": "claude-haiku-5-5",
+   "input_tokens": 1464,
+   "output_tokens": 69
+  },
+  "a51c3d7ab7ccc96cbf013dd4d199c8df2ebfcdc11f50ac79896c0471e1e95f9a": {
+   "text": "네, 업무와 관련된 도서 구입과 온라인 강의 비용을 연 100만 원 한도에서 지원합니다[1]. 영수증을 경비 시스템 HB-Expense에 올리면 다음 달 급여와 함께 지급되며, 쓰지 않은 금액은 다음 해로 이월되지 않습니다[1].",
+   "model": "claude-haiku-5-5",
+   "input_tokens": 1378,
+   "output_tokens": 125
+  },
+  "a566c28b3629dd12eadba4bc359f7575a44536a30f89cba34a39a1bbef1805ff": {
+   "text": "SEC-PW-01 기준 비밀번호는 12자 이상이어야 하며, 90일마다 변경해야 합니다[1]. 또한 최근 5개의 비밀번호는 다시 쓸 수 없습니다[1].",
+   "model": "claude-opus-5-5",
+   "input_tokens": 1387,
+   "output_tokens": 160
+  },
+  "a63cab0c626e7005f88203ba9d375173d5c9f604810d4ab98ab24d4ab00b0986": {
+   "text": "KPI-2026-C(신규 Enterprise 고객사 40곳) 중 25곳은 금융과 제조 업종에서 확보해야 합니다. [1][2]\n\n다만 금융과 제조 각각에서 몇 곳씩 확보해야 하는지는 문서에 나와 있지 않습니다.",
+   "model": "claude-sonnet-5-5",
+   "input_tokens": 1464,
+   "output_tokens": 111
+  },
+  "a6be587777fbfe1c6acd08a55d5cbfff1d0529f73f254ad35ed30855cc30f9e3": {
+   "text": "개인 휴대폰으로 업무를 하려면 먼저 MDM(모바일 기기 관리)에 등록해야 합니다. [1] 등록하지 않은 기기로는 사내 메일과 메신저에 접속할 수 없습니다. [1]",
+   "model": "claude-sonnet-5-5",
+   "input_tokens": 1521,
+   "output_tokens": 93
+  },
+  "a90f7dd32f7721864c4da66e263ee13ff8d7218de6e35d8cd6c72c037d6a295d": {
+   "text": "개인 휴대폰으로 사내 메신저를 쓰려면 먼저 MDM(모바일 기기 관리)에 등록해야 합니다[1]. 등록하지 않은 기기로는 사내 메일과 메신저에 접속할 수 없습니다[1].",
+   "model": "claude-haiku-5-5",
+   "input_tokens": 1521,
+   "output_tokens": 98
+  },
+  "ac758ebd181381470bd3df46d6cbf86715bd5ac73ac36a617973a9bc90667523": {
+   "text": "식대는 월 20만 원이며, 급여와 함께 지급됩니다. [1]",
+   "model": "claude-sonnet-5-5",
+   "input_tokens": 1324,
+   "output_tokens": 33
+  },
+  "acebf5c3276bbfcb91d42d5a3fdafbae4bdb6a4681aef22899ee0fab550a580a": {
+   "text": "부산으로 국내 출장을 가는 경우, 부산은 광역시이므로 숙박비는 1박 12만 원 한도입니다. [1]\n\n참고로 서울·광역시 외 지역은 1박 9만 원 한도입니다. [1] 당일 출장에는 숙박비를 지급하지 않습니다. [1]",
+   "model": "claude-sonnet-5-5",
+   "input_tokens": 1442,
+   "output_tokens": 118
+  },
+  "ae320ef9e122c6a0b4d180b555624185d489874f361fab8f1f10d3a197ef48d8": {
+   "text": "연차휴가는 총 25일이 한도입니다. 기본 15일에, 3년 이상 계속 근무한 직원은 최초 1년을 넘는 계속 근무 연수 매 2년마다 1일이 가산됩니다. [1]",
+   "model": "claude-sonnet-5-5",
+   "input_tokens": 1400,
+   "output_tokens": 88
+  },
+  "aebc7bb8aef5a6617729bfdd9f05cf30e09221f681306416c02db76c70d617ae": {
+   "text": "온콜 교대는 매주 월요일 오전 10시이고, 온콜 담당자에게는 주당 15만 원의 온콜 수당을 지급합니다[1].",
+   "model": "claude-opus-5-5",
+   "input_tokens": 1450,
+   "output_tokens": 103
+  },
+  "af236c59283cb26c187869782305606da3854b4b492a7e4ba16b7dea116969b1": {
+   "text": "징계는 견책, 감봉, 정직, 해고의 4종류입니다. [1]",
+   "model": "claude-sonnet-5-5",
+   "input_tokens": 1222,
+   "output_tokens": 33
+  },
+  "af42cf77c755d4aca548838ac61fbf9fa2c268a824d49a7674af2caae23836f7": {
+   "text": "재택근무는 소속 팀장의 승인을 받아 주 2회까지 할 수 있습니다. [1][2] 같은 주의 재택근무 횟수가 2회를 넘으면 신청이 거절되며, 쓰지 않은 횟수는 다음 주로 넘어가지 않습니다. [4]",
+   "model": "claude-sonnet-5-5",
+   "input_tokens": 1452,
+   "output_tokens": 113
+  },
+  "b06229f23988d2682425d7de15c5d651adad73920c06fc6fb56016edfdb70ec1": {
+   "text": "INC-P3 등급의 기준은 \"일부 기능 장애, 우회 방법 있음\"이며, 최초 대응 시간은 4시간 이내입니다[1]. 보고 대상은 개발팀장입니다[1].",
+   "model": "claude-opus-5-5",
+   "input_tokens": 1637,
+   "output_tokens": 143
+  },
+  "b1322105572d395daf2518788b49269d63a743aa121318953fd38e694313e745": {
+   "text": "2026년 마케팅 예산은 18억 원이며, 전체 예산(210억 원)의 9%입니다. [1]\n\n상반기에 60%, 하반기에 40%를 배정합니다. [2]",
+   "model": "claude-sonnet-5-5",
+   "input_tokens": 1495,
+   "output_tokens": 73
+  },
+  "b17482767b82e8ec9ab154eb78fb653a2e9562d1e9fb4704e4434a7d81e759e2": {
+   "text": "강릉과 제주에 있는 제휴 콘도를 1박 2만 원에 이용할 수 있습니다. [1] 1인당 연 2회까지 신청할 수 있으며, 성수기(7~8월, 12월 말)에는 추첨으로 배정합니다. [1]",
+   "model": "claude-sonnet-5-5",
+   "input_tokens": 1493,
+   "output_tokens": 102
+  },
+  "b201cabbd79dc7400b19ca603b0167e9e4d17b9b33792f9408a008d34c9bd60a": {
+   "text": "연차휴가는 사용하려는 날의 3일 전까지 신청해야 합니다[1].",
+   "model": "claude-opus-5-5",
+   "input_tokens": 1422,
+   "output_tokens": 55
+  },
+  "b3b02dba9381deedd8ffcccc06aa6383f9882d2af277ac906fc3472b143726ab": {
+   "text": "문서 1에 따르면 DEV-P1 장애는 4시간 이내 현장 방문입니다 [1].",
+   "model": "claude-haiku-5-5",
+   "input_tokens": 1642,
+   "output_tokens": 42
+  },
+  "b3d467209c5b3094ab1e9b6d1764f656b8333dda2046a170e91684c0601245ca": {
+   "text": "연차휴가는 사용하려는 날의 3일 전까지 신청해야 합니다. [1]",
+   "model": "claude-sonnet-5-5",
+   "input_tokens": 1422,
+   "output_tokens": 37
+  },
+  "b3e18c75e7d85b1643b1664181ee4ad9c862faaded70eb73a703c1f8c61138da": {
+   "text": "25% 할인은 20% 초과에 해당하므로 **임원**의 승인을 받아야 합니다[1].\n\n3년 이상 장기 계약에 적용하는 추가 할인(최대 5%)도 승인 권한 기준에 합산합니다[1]. 따라서 장기 계약 할인이 포함된 경우에도 합산한 할인율로 승인권자를 판단합니다[1].",
+   "model": "claude-opus-5-5",
+   "input_tokens": 1391,
+   "output_tokens": 180
+  },
+  "b43800ea870fb22e6ffaccde2f6aa9293be3b6aa360690b23828544b5955dffa": {
+   "text": "법인카드를 사용하면 3일 이내에 HB-Expense에 증빙(영수증)을 올려야 합니다. [1]\n\n증빙이 2주 넘게 올라오지 않으면 재무팀이 해당 카드의 사용을 정지합니다. [1]",
+   "model": "claude-sonnet-5-5",
+   "input_tokens": 1376,
+   "output_tokens": 97
+  },
+  "b5cba0fe65402cc020bf1731033ea34ec9f3b0937d76194de1a27730c5617027": {
+   "text": "연차휴가는 최대 **25일**까지 늘어납니다. 1년간 80% 이상 출근하면 기본 15일이 주어집니다[1]. 3년 이상 계속 근무하면 최초 1년을 넘는 계속 근무 연수 매 2년마다 1일이 더해지고, 총 휴가일수는 25일을 한도로 합니다[1].",
+   "model": "claude-opus-5-5",
+   "input_tokens": 1400,
+   "output_tokens": 169
+  },
+  "b648b040057e240d9ab31a06ff4f6bf2e989c0ae7ac667df710adf19f103b1d9": {
+   "text": "인사평가는 1년에 2회, 매년 6월과 12월에 실시합니다[1].",
+   "model": "claude-opus-5-5",
+   "input_tokens": 1268,
+   "output_tokens": 61
+  },
+  "b6f3669b4f29919b5e4dbcb391d4bf236f690044fb39930be7e8cbe57895c4e7": {
+   "text": "25% 할인은 **임원**의 승인을 받아야 합니다. 할인율 20% 초과는 임원 승인 대상입니다[1]. 3년 이상 장기 계약의 추가 5% 할인도 승인 기준에 합산하므로[1], 합산한 할인율이 25%라면 같은 기준이 적용됩니다.",
+   "model": "claude-haiku-5-5",
+   "input_tokens": 1391,
+   "output_tokens": 427
+  },
+  "b73e7005c51fee6e08a14d680306777bb470be3839b0f44fc9a86afcf7a24e3d": {
+   "text": "네, 비행 6시간 이상이면 임원은 비즈니스석을 이용할 수 있습니다[1]. 직원은 이코노미석입니다[1].",
+   "model": "claude-opus-5-5",
+   "input_tokens": 1317,
+   "output_tokens": 107
+  },
+  "b7c7ce6daa3634ae199e94ab5a93f40f85a9d705a56f7fcbb69f8ea223ccbd27": {
+   "text": "문서에서 찾을 수 없습니다. 제30조는 인사평가를 매년 6월과 12월 연 2회 실시한다고만 정하고, 평가 등급과 배분 비율 등 세부 기준은 인사팀이 별도로 정한다고 되어 있습니다[1]. 따라서 등급별 배분 비율은 인사팀에 직접 확인하셔야 합니다.",
+   "model": "claude-haiku-5-5",
+   "input_tokens": 1233,
+   "output_tokens": 141
+  },
+  "b8a9a686a332b640f6767d4863e066377697fddc1a302f54ad74b063d857cf7d": {
+   "text": "문서에서 찾을 수 없습니다. 코딩 컨벤션 문서에는 Python[1]과 TypeScript[2]의 언어별 규칙만 있고 Java 규칙은 적혀 있지 않습니다.\n\n언어와 관계없이 적용될 수 있는 공통 규칙으로는 테스트 커버리지 80% 이상[4], 리뷰어 2명 승인 후 병합[5]이 문서에 있지만, 이것이 Java에도 적용된다고 명시되어 있지는 않습니다.",
+   "model": "claude-sonnet-5-5",
+   "input_tokens": 1317,
+   "output_tokens": 189
+  },
+  "b9aef105239a8ab5e606e7b4e1b1130954969bb10529da3242c503a5057c621f": {
+   "text": "문서에서 찾을 수 없습니다. 2025년 연매출 271억 원[1][3]과 2026년 영업이익률 목표 12%[2]는 있지만, 2025년 영업이익이나 영업이익률 실적은 적혀 있지 않습니다.",
+   "model": "claude-sonnet-5-5",
+   "input_tokens": 1538,
+   "output_tokens": 96
+  },
+  "ba5c5661bafc7054ec18cc325e7b15db91d404bb945ce2ad12c3cf5fe010c677": {
+   "text": "해외 출장은 임원의 승인을 받아야 하며, 출발 2주 전까지 신청해야 합니다. [1]",
+   "model": "claude-sonnet-5-5",
+   "input_tokens": 1375,
+   "output_tokens": 47
+  },
+  "bc28c22ce50fa1ea174565495219156e4c9a45970ab40f0b6a8db8fba968b720": {
+   "text": "강릉과 제주의 제휴 콘도를 1박에 2만 원으로 이용할 수 있습니다[1]. 1인당 연 2회까지 신청할 수 있으며[1], 성수기(7~8월, 12월 말)에는 추첨으로 배정합니다[1].",
+   "model": "claude-haiku-5-5",
+   "input_tokens": 1306,
+   "output_tokens": 218
+  },
+  "bd04e906a586aaad96b526d9ece43685aed236ed8a4fa8b01266c11353d1e781": {
+   "text": "2026년 연매출 목표는 320억 원입니다(2025년 실적 271억 원 대비 18% 성장) [2]. 문서상 '올해'를 2026년으로 보고 답했습니다.",
+   "model": "claude-haiku-5-5",
+   "input_tokens": 1576,
+   "output_tokens": 284
+  },
+  "bef9c538197afa27df4a7ce73f70f92c005d9924e13441ce0e9a29e0b2c1173a": {
+   "text": "문서에서 찾을 수 없습니다. 제공된 문서에는 INC-P1 장애나 장애 등급별 대응 시간에 대한 내용이 없고, 보안 사고가 의심되면 1시간 이내에 신고해야 한다는 규정만 있습니다[5].",
+   "model": "claude-opus-5-5",
+   "input_tokens": 1310,
+   "output_tokens": 155
+  },
+  "bfe6a461a5f4b60c130b03900d2e792ddd1bf3c92e7e796d15dc462e1409d50a": {
+   "text": "제안서는 표준 템플릿 PRO-TPL-v3를 쓰며, 다음 순서로 구성합니다. [1]\n\n1. 요약 (1쪽 이내) [1]\n2. 고객사의 현재 과제 [1]\n3. 한빛워크 도입 방안 [1]\n4. 가격과 계약 조건 [1]\n5. 도입 일정과 지원 체계 [1]",
+   "model": "claude-sonnet-5-5",
+   "input_tokens": 1361,
+   "output_tokens": 142
+  },
+  "c086f00daf9f5553b737c8babdcc6c198af724126e025a9ab907c5f31d3b5e46": {
+   "text": "문서에서 찾을 수 없습니다. 제공된 근거 조각에는 PR(코드 변경 요청) 병합 절차나 승인 인원에 대한 내용이 없습니다.",
+   "model": "claude-haiku-5-5",
+   "input_tokens": 1318,
+   "output_tokens": 70
+  },
+  "c263c4dbbcefb842de589e2c423a56c3178c7c71b24eb5563aa1d363c21f302a": {
+   "text": "5분 동안 입력이 없으면 자동으로 잠기도록 설정되어 있습니다[1]. 자리를 비울 때는 반드시 화면을 직접 잠가야 합니다[1].",
+   "model": "claude-haiku-5-5",
+   "input_tokens": 1577,
+   "output_tokens": 134
+  },
+  "c2d88cc65f3bfa548b33b6fcf916885436038417d3dbda048073ebb7225ddf63": {
+   "text": "INC-P1 장애는 15분 이내에 최초 대응해야 하며, 보고 대상은 CTO와 대표입니다. [2]",
+   "model": "claude-sonnet-5-5",
+   "input_tokens": 1652,
+   "output_tokens": 52
+  },
+  "c301a9c3a167462cb2e082e68f650c7fb061926a18eb1bc378aa54a28b65e66d": {
+   "text": "네, 연차휴가는 4시간 단위의 반차로 나누어 사용할 수 있습니다. [1]\n\n참고로 연차휴가는 사용하려는 날의 3일 전까지 신청해야 합니다. [5] 다만 반차에도 이 신청 기한이 똑같이 적용되는지는 문서에 적혀 있지 않습니다.",
+   "model": "claude-sonnet-5-5",
+   "input_tokens": 1352,
+   "output_tokens": 128
+  },
+  "c481dc9198d808453f5418f60a289c20d4a6e744360f73b861bb5ef5d8266c8b": {
+   "text": "한빛소프트는 2015년 3월에 설립되었습니다[2]. 설립 장소는 서울 성동구입니다[2].",
+   "model": "claude-haiku-5-5",
+   "input_tokens": 1239,
+   "output_tokens": 126
+  },
+  "c49fd80e85b14350eea8bd42abafeb24de0fddbc11b0c5389e83af4c5c9a8c80": {
+   "text": "네, 로그인에 5회 연속 실패하면 계정이 30분 동안 잠깁니다[1]. 즉시 풀어야 하면 헬프데스크(내선 1004)에 요청하면 됩니다[1].",
+   "model": "claude-opus-5-5",
+   "input_tokens": 1355,
+   "output_tokens": 104
+  },
+  "c5386649f27a18559f3271bba5c26f002af7ec4c41d68f4d81df3280812cb588": {
+   "text": "출장에서 돌아온 날로부터 7일 이내에 경비 시스템 HB-Expense에 영수증을 올리고 정산을 신청해야 합니다. [1] 기한을 넘기면 팀장의 사유서가 필요합니다. [1]",
+   "model": "claude-sonnet-5-5",
+   "input_tokens": 1392,
+   "output_tokens": 93
+  },
+  "c57f2c1caab5f8c8b1304a752e0bf2a217515893d85b088aad580b87c921d67e": {
+   "text": "문서에서 찾을 수 없습니다. 한빛디바이스 사업의 향후 계획이나 전망은 문서에 적혀 있지 않습니다.\n\n참고로 문서에 있는 내용은 다음과 같습니다. 한빛디바이스 사업은 2019년에 회의실 예약 단말기로 시작되었습니다[1]. 한빛디바이스는 회의실 입구에 설치하는 예약 현황 단말기이며 한빛워크 일정과 연동됩니다[4].",
+   "model": "claude-sonnet-5-5",
+   "input_tokens": 1311,
+   "output_tokens": 179
+  },
+  "c5ccf0e1e14d2910ddaf242cac606b38f6116e9f67cb02c31a26620ec3f3a388": {
+   "text": "문서에서 찾을 수 없습니다. 식대 항목은 월 20만 원으로 적혀 있지만, 이것이 점심값을 가리키는지는 문서에 명시되어 있지 않습니다. [1]",
+   "model": "claude-haiku-5-5",
+   "input_tokens": 1344,
+   "output_tokens": 80
+  },
+  "c66f4836e485346a14145765088454cc8f01fcf986a477f51191d52f64739ff5": {
+   "text": "문서에서 찾을 수 없습니다. 제공된 근거 조각에는 희망퇴직 위로금에 관한 내용이 없고, 장기근속 포상·경조금·자기계발비·식대와 통신비·계정과목 코드만 적혀 있습니다.",
+   "model": "claude-haiku-5-5",
+   "input_tokens": 1320,
+   "output_tokens": 98
+  },
+  "c6cf53b49d9760241bca0f176b466f3a468c88d05b1d98cb1dbcee158dd0cc40": {
+   "text": "법인카드를 쓰면 3일 이내에 HB-Expense에 증빙(영수증)을 올려야 합니다 [1]. 증빙이 2주 넘게 올라오지 않으면 재무팀이 해당 카드의 사용을 정지합니다 [1].",
+   "model": "claude-haiku-5-5",
+   "input_tokens": 1376,
+   "output_tokens": 98
+  },
+  "c75dc51b1b67250151bdb3036090231afedf441f9e595eff3eeec2b46b092070": {
+   "text": "문서에서 찾을 수 없습니다. 취업규칙 제20조에는 \"배우자 출산: 20일\"이라는 유급 경조휴가가 있습니다[1]. 다만 이는 배우자 출산 휴가일 뿐이며, 이 문서에 따르면 그 외 출산 관련 휴가 조건이나 신청 절차는 확인할 수 없습니다.",
+   "model": "claude-haiku-5-5",
+   "input_tokens": 1448,
+   "output_tokens": 138
+  },
+  "c8ab9f1f7004600d29ec7e214bc080e5cba33685feb6e3b4b308509a04abeb6d": {
+   "text": "본인 결혼 시 경조금은 100만 원입니다. [1]\n\n문서에서 찾을 수 없는 부분이 있습니다. 자녀 결혼 시 경조금 금액은 적혀 있지 않습니다. [1]\n\n참고로 본인 결혼 시 유급 경조휴가는 5일입니다. [2]",
+   "model": "claude-sonnet-5-5",
+   "input_tokens": 1268,
+   "output_tokens": 118
+  },
+  "cafd40ee4577cd83e92c38e7087c5f8291d47cf38b8b8806661809ccb8f8e8e6": {
+   "text": "아니요, 입사 후 3개월이 지나지 않은 직원은 재택근무를 할 수 없어서 입사 두 달차에는 재택근무를 할 수 없습니다. [1][2]\n\n참고로 3개월이 지나면 소속 팀장의 승인을 받아 주 2회까지 재택근무를 할 수 있습니다. [1]",
+   "model": "claude-sonnet-5-5",
+   "input_tokens": 1435,
+   "output_tokens": 126
+  },
+  "cb07dda83ef6ac69a84177d7cadc98223c4896dcfd7ce1095e665ade89278797": {
+   "text": "B등급은 연봉 인상률이 4%이고, 성과급은 기본 연봉 대비 6%입니다. [1]\n\n참고로 연간 등급은 6월 평가와 12월 평가의 평균으로 정해집니다. [1] 또한 연봉 범위의 상한을 넘는 인상분은 일시금으로 지급됩니다. [2]",
+   "model": "claude-sonnet-5-5",
+   "input_tokens": 1406,
+   "output_tokens": 127
+  },
+  "cc04965c5a3baf2bb83d1af606cd7ba9ee819fc3a64b2bd040566ddd14d8294a": {
+   "text": "한빛소프트는 2015년 3월 서울 성동구에서 설립되었습니다. [2]",
+   "model": "claude-sonnet-5-5",
+   "input_tokens": 1239,
+   "output_tokens": 37
+  },
+  "cc28fad794329a6b117dc91a0dd6a83b3c8e0614bc204fccb8e5aa7a2e273418": {
+   "text": "정기 배포는 매주 화요일과 목요일 오후 2시에 합니다. [1] 금요일과 공휴일 전날에는 배포하지 않으며, 긴급 장애 수정만 예외로 이때는 장애 대응 매뉴얼을 따릅니다. [1]",
+   "model": "claude-sonnet-5-5",
+   "input_tokens": 1308,
+   "output_tokens": 103
+  },
+  "cc5fb964e23c9da6c64ab3ae09875e60a885c3928fd78a45d881a2d77abf41a4": {
+   "text": "Enterprise 요금제는 사용자당 월 15,000원입니다. [1] 최소 계약 조건은 100명, 1년 약정입니다. [1]",
+   "model": "claude-sonnet-5-5",
+   "input_tokens": 1446,
+   "output_tokens": 58
+  },
+  "cf6f319a8cfb3cf8e055d29b40491679ae4e38d31b62d6c7c37b36aa0b9da433": {
+   "text": "문서에서 찾을 수 없습니다. 제공된 문서에는 인사평가, 출장비, 재택근무, 예산, 연봉에 관한 승인 규정만 있고 PR 병합 승인 인원은 나와 있지 않습니다.",
+   "model": "claude-opus-5-5",
+   "input_tokens": 1318,
+   "output_tokens": 124
+  },
+  "cfa3cfab24061bf13cfaeebf70b3bf4e30dba075c61736568e656bae92349625": {
+   "text": "징계의 종류는 견책, 감봉, 정직, 해고의 4종류입니다. [1]",
+   "model": "claude-haiku-5-5",
+   "input_tokens": 1222,
+   "output_tokens": 37
+  },
+  "d20223e44d0d499c1d9274409c79dd3f67cdfdaa2bf41011edca2811fbaa4fe8": {
+   "text": "Enterprise 요금제 가격은 사용자당 월 15,000원입니다[1]. 최소 계약은 100명, 1년 약정입니다[1].",
+   "model": "claude-haiku-5-5",
+   "input_tokens": 1446,
+   "output_tokens": 57
+  },
+  "d28c98a03bcf8ff153e8986f5c500e1f24d8ab493fd05887d7a7095009490927": {
+   "text": "재택근무는 소속 팀장의 승인을 받아 **주 2회까지** 할 수 있습니다[1][2].\n\n- 같은 주에 2회를 넘겨 신청하면 거절되고, 쓰지 않은 횟수는 다음 주로 넘어가지 않습니다[5].\n- 입사 후 3개월이 지나지 않은 직원은 재택근무를 할 수 없습니다[1].",
+   "model": "claude-opus-5-5",
+   "input_tokens": 1473,
+   "output_tokens": 213
+  },
+  "d2ac6fc01def3bb435ce4e7f0d8fff3b311a586e32950e93fef6e8e870c2f64e": {
+   "text": "출장에서 돌아온 날로부터 7일 이내에 경비 시스템 HB-Expense에 영수증을 올리고 정산을 신청해야 합니다. [1] 기한을 넘기면 팀장의 사유서가 필요합니다. [1]",
+   "model": "claude-sonnet-5-5",
+   "input_tokens": 1460,
+   "output_tokens": 93
+  },
+  "d48838f891ec96770a3ab0c5109eba5836e7f58bc5e28e2d331ecb741a5a5e0a": {
+   "text": "뉴욕은 미국이므로 A 지역 숙박비 기준이 적용됩니다. 직원은 1박 200달러, 임원은 1박 250달러가 한도입니다. [1]",
+   "model": "claude-opus-5-5",
+   "input_tokens": 1449,
+   "output_tokens": 105
+  },
+  "d4b90cc565fc62b3649bfee8af0f9e45667bc8b1a2afa7255c354bfee9cf1095": {
+   "text": "문서에서 찾을 수 없습니다. 제공된 문서에는 영업 인센티브(성과급, 보상 지급 기준)에 대한 내용이 없습니다. 할인 승인 권한이나 표준 가격 등 영업 관련 문서는 있으나 인센티브 기준은 적혀 있지 않습니다.",
+   "model": "claude-haiku-5-5",
+   "input_tokens": 1449,
+   "output_tokens": 119
+  },
+  "d4bc976c931f2ff6e7e6293de9a26232660ff61c983a2f7580cec7709e0476bd": {
+   "text": "네, 회의실 예약 단말기 \"한빛디바이스\" 사업은 2027년 1분기까지 철수하기로 결정했습니다[1]. 최근 3년 연속 적자이고 한빛워크와의 시너지가 작다는 이유입니다[1].\n\n직원 처리 방안은 다음과 같습니다.\n- 디바이스 사업 인력 22명 중 12명은 개발팀과 영업팀으로 전환 배치합니다[1].\n- 나머지 10명은 희망퇴직을 받습니다[1].\n- 희망퇴직 위로금은 기본 연봉의 6개월분입니다[1].\n\n기존 고객의 단말기 유지보수는 2028년 3월까지 외부 업체에 위탁합니다[1].",
+   "model": "claude-opus-5-5",
+   "input_tokens": 1463,
+   "output_tokens": 359
+  },
+  "d5d9b9f659195c3476418edd2ec72b3990b9b7342fe228a4b571c4e7af63173c": {
+   "text": "회사 노트북을 잃어버렸다면 1시간 이내에 보안 사고로 신고해야 합니다. [1]\n신고처는 메일 security@hanbit-soft.example 또는 내선 7777(24시간)입니다. [1]",
+   "model": "claude-haiku-5-5",
+   "input_tokens": 1357,
+   "output_tokens": 264
+  },
+  "d6329c3188ff97a112c4ddfe7d019cf34c7133e1de58aa577518c2fe6e7a3a45": {
+   "text": "한빛워크 전체 서비스가 중단되면 INC-P1 등급이고, **15분 이내**에 최초 대응해야 합니다. 보고 대상은 CTO와 대표입니다[1].\n\n함께 챙길 일은 다음과 같습니다.\n- 메신저의 #incident 채널에 등급과 증상을 올립니다[4].\n- 장애를 인지한 뒤 **30분 이내**에 고객 공지를 올립니다. 공지 문안은 영업팀과 함께 검토합니다[4].",
+   "model": "claude-opus-5-5",
+   "input_tokens": 1546,
+   "output_tokens": 237
+  },
+  "d7027ac8642088b270057e3e8538af9d25aaf6bc823d4e738ba4eb8d08170479": {
+   "text": "네, 재택근무 직원은 모니터 1대를 무상으로 대여받을 수 있습니다. [1] HB-HR의 \"장비 대여\" 메뉴에서 신청하면 일주일 안에 집으로 배송됩니다. [1] 퇴사하거나 재택근무를 그만두면 반납해야 합니다. [1]",
+   "model": "claude-sonnet-5-5",
+   "input_tokens": 1436,
+   "output_tokens": 122
+  },
+  "d8096268580826b3c1216ac5f62c98890c2a7830811fc28727968f326d7e9193": {
+   "text": "문서에서 찾을 수 없습니다. 제공된 문서에는 주차 지원 내용이 없고, 재택근무 직원의 모니터 대여 같은 장비 지원만 적혀 있습니다[3].",
+   "model": "claude-opus-5-5",
+   "input_tokens": 1391,
+   "output_tokens": 112
+  },
+  "d82afc8fea8a640b9ed5ea0725a9a357edeab6eacbec72b6eeeb62c0bbb1a29b": {
+   "text": "문서에서 찾을 수 없습니다. 언어별 규칙은 Python[1]과 TypeScript[2]만 있고 Java 규칙은 없습니다.",
+   "model": "claude-opus-5-5",
+   "input_tokens": 1317,
+   "output_tokens": 302
+  },
+  "d9f2978f2fc2a9a9b8fd9d2ef3ef5f3182a46a16c4879ca7d0d59203e54c1fea": {
+   "text": "일반 사용자 계정 비밀번호는 12자 이상이어야 하며, 영문 대문자·소문자·숫자·특수문자 중 3종류 이상을 섞어야 합니다. [1]\n\n서버와 배치 작업에 쓰는 서비스 계정의 비밀번호는 20자 이상이어야 합니다. [2]",
+   "model": "claude-sonnet-5-5",
+   "input_tokens": 1480,
+   "output_tokens": 122
+  },
+  "db67ffce37841668767620f6e5e7773b40a5608817819d43426aac1b52aaf0dc": {
+   "text": "배우자 출산 시 유급 경조휴가는 20일입니다. [1]",
+   "model": "claude-sonnet-5-5",
+   "input_tokens": 1448,
+   "output_tokens": 30
+  },
+  "dc2a19c95032a1ae5b3faa527e1605b38033b6acc87d91090fc7102136bf8517": {
+   "text": "25% 할인은 20%를 초과하므로 임원의 승인이 필요합니다. [1]\n\n참고로 3년 이상 장기 계약에 적용되는 추가 5% 할인도 승인 권한 기준에 합산됩니다. [1]",
+   "model": "claude-sonnet-5-5",
+   "input_tokens": 1391,
+   "output_tokens": 89
+  },
+  "dcd3ead6329535220a3598c85db5a449ee5675cbdb2b5adf4699e8a4bf7fb283": {
+   "text": "법인카드를 쓰면 3일 이내에 HB-Expense에 증빙(영수증)을 올려야 합니다 [1]. 증빙이 2주 넘게 올라오지 않으면 재무팀이 해당 카드의 사용을 정지합니다 [1].",
+   "model": "claude-haiku-5-5",
+   "input_tokens": 1260,
+   "output_tokens": 98
+  },
+  "de927db26f6df3ce160c39168e0f5e31fc714bfd1cfb03ecd73b7e10dddb8bbd": {
+   "text": "DEV-P1(고객사 단말기 전체가 켜지지 않음)은 **4시간 이내**에 현장을 방문해야 합니다[1].",
+   "model": "claude-opus-5-5",
+   "input_tokens": 1642,
+   "output_tokens": 104
+  },
+  "dee27bfb02e9fab60d5568b893e5d42551241135edc4c5fdcfeb4a2fc18241b2": {
+   "text": "아니요, 지금은 재택근무를 할 수 없습니다. 입사 후 3개월이 지나지 않은 직원은 재택근무를 할 수 없기 때문입니다[1][2].\n\n입사 3개월이 지나면 소속 팀장의 승인을 받아 주 2회까지 재택근무를 할 수 있습니다[1].",
+   "model": "claude-opus-5-5",
+   "input_tokens": 1435,
+   "output_tokens": 156
+  },
+  "dee6bb71e3c17f33d539bf085edf9707f234441fa2d7c1f4863062a13cd26351": {
+   "text": "문서에서 찾을 수 없습니다. 장애 대응 매뉴얼의 등급은 INC-P1부터 INC-P4까지만 정의되어 있고 INC-P5는 없습니다[2].",
+   "model": "claude-opus-5-5",
+   "input_tokens": 1633,
+   "output_tokens": 130
+  },
+  "e0cedc67d4bfa859a3e0c5a3769191c58cedb565254b9153ef9693c41d4633b7": {
+   "text": "KPI-2026-A(연매출)의 2026 목표는 320억 원입니다(2025년 271억 원 대비 18% 성장) [1].",
+   "model": "claude-haiku-5-5",
+   "input_tokens": 1453,
+   "output_tokens": 53
+  },
+  "e4f9adf5cf9bb27f8de73c34d88896c31669936ade77f72f7bd1af7ae010319b": {
+   "text": "희망퇴직 위로금은 기본 연봉의 6개월분으로 정했습니다. [1]",
+   "model": "claude-sonnet-5-5",
+   "input_tokens": 1490,
+   "output_tokens": 38
+  },
+  "e55eab97f88cab5ed3422e744ac7c880b9d1d7039d569b6a3dd28fbb04a7c132": {
+   "text": "INC-P3 등급의 기준은 \"일부 기능 장애, 우회 방법 있음\"이며, 최초 대응은 4시간 이내입니다. [1] 보고 대상은 개발팀장입니다. [1]",
+   "model": "claude-sonnet-5-5",
+   "input_tokens": 1637,
+   "output_tokens": 80
+  },
+  "e660d5b18895bd631145fc5bbfe5f26f6d63c08c73577925c40ccd7d3a96bfd2": {
+   "text": "연차휴가는 4시간 단위의 반차로 나누어 사용할 수 있습니다. [1]",
+   "model": "claude-haiku-5-5",
+   "input_tokens": 1328,
+   "output_tokens": 39
+  },
+  "e6fa3f3ef6ec7e08d94cb97f32eb5660cfa0599c408814231da872cae62d8350": {
+   "text": "SEC-DATA-04는 개인 계정의 클라우드 저장소(개인 드라이브 등)에 업무 파일을 저장하는 것을 금지합니다[1]. 업무 파일은 회사가 승인한 클라우드 저장소에만 저장해야 합니다[1].",
+   "model": "claude-opus-5-5",
+   "input_tokens": 1431,
+   "output_tokens": 130
+  },
+  "e83f4b75f28f6e39088195efb2aa63db1c0085a44f833fd6afaa2255d7b1d3e1": {
+   "text": "INC-P1 장애는 **15분 이내**에 최초 대응하고, **CTO와 대표**에게 보고합니다[2]. INC-P1의 기준은 한빛워크 전체 서비스 중단 또는 데이터 유실입니다[2].\n\n함께 지켜야 할 기한도 있습니다. 장애 인지 후 30분 이내에 고객 공지를 올려야 합니다[1]. 복구 후에는 5영업일 이내에 사후 분석 문서를 작성해야 합니다[3].",
+   "model": "claude-opus-5-5",
+   "input_tokens": 1652,
+   "output_tokens": 282
+  },
+  "e83fe2d1920f82a21ccd3e904cac43beec8e45a374d2672a9ca055578562a39d": {
+   "text": "한빛소프트는 2015년 3월 서울 성동구에서 설립되었습니다[2]. 설립과 함께 사내 메신저 베타를 출시했습니다[1].",
+   "model": "claude-opus-5-5",
+   "input_tokens": 1239,
+   "output_tokens": 110
+  },
+  "e98af5648c2114ceeff9596dd71f42a069b8e4ba425fdb7d1c3c919141a0a1e0": {
+   "text": "네, 연차휴가는 4시간 단위의 반차로 나누어 사용할 수 있습니다[1].",
+   "model": "claude-opus-5-5",
+   "input_tokens": 1352,
+   "output_tokens": 154
+  },
+  "ea350b32afadcefde5b0013591e442555b45938c867de13646707633469abcb0": {
+   "text": "5분 동안 입력이 없으면 화면이 자동으로 잠기도록 설정되어 있습니다. [1] 다만 자리를 비울 때는 자동 잠금을 기다리지 말고 직접 화면을 잠가야 합니다. [1]",
+   "model": "claude-sonnet-5-5",
+   "input_tokens": 1577,
+   "output_tokens": 93
+  },
+  "ea7c830d83f83792d00070187f9690ea71d0df4e5b551792265f865a6dae2857": {
+   "text": "KPI-2025-A(연매출)는 목표 280억 원 대비 실적 271억 원으로 달성률 97%입니다. [1]",
+   "model": "claude-haiku-5-5",
+   "input_tokens": 1513,
+   "output_tokens": 51
+  },
+  "ea8aed7546ebe49873c88ffc31a16c31e983785e25d98fd824fabe1de6a29eab": {
+   "text": "문서에서 찾을 수 없습니다. 제공된 문서에는 출장비, 장기근속 포상, 식대와 통신비, 징계 종류, 자기계발비만 있고 직급별 연봉 범위는 없습니다.",
+   "model": "claude-opus-5-5",
+   "input_tokens": 1262,
+   "output_tokens": 132
+  },
+  "eca6ea97b756578aa16047b142e9649a9693a951ac0a7b5a25d47cf2085c3e4d": {
+   "text": "문서에서 찾을 수 없습니다. 근거 조각에는 분기별 영업 목표에 대한 내용이 없고, 회사의 연혁과 영업 제안서 관련 정보만 있습니다.",
+   "model": "claude-haiku-5-5",
+   "input_tokens": 1422,
+   "output_tokens": 77
+  },
+  "ed1e2962f7016b6e8e676ab2cba697e362b8f0b7692179841b707dd9178f86ac": {
+   "text": "악성 메일을 열었다면 1시간 이내에 신고해야 합니다[1]. 신고처는 메일 security@hanbit-soft.example 또는 전화 내선 7777(24시간)입니다[1].",
+   "model": "claude-haiku-5-5",
+   "input_tokens": 1368,
+   "output_tokens": 167
+  },
+  "ed69597c61fbf675fbd3c5cfe0033361d8543b99bed06ee5feb1f87870546abb": {
+   "text": "Enterprise 요금제는 사용자당 월 15,000원이고, 최소 계약 조건은 100명, 1년 약정입니다[1].",
+   "model": "claude-opus-5-5",
+   "input_tokens": 1446,
+   "output_tokens": 90
+  },
+  "eeabae8f85af81ead6b4dfe6d03d01f81eb4f911db7b33e248f8c340c412f913": {
+   "text": "15% 할인은 **영업팀장**이 승인합니다[1]. 할인율 10% 초과 20% 이하는 영업팀장이 승인하는 구간입니다[1].\n\n3년 이상 장기 계약의 추가 할인 5%도 승인 권한 기준에 합산합니다[1].",
+   "model": "claude-haiku-5-5",
+   "input_tokens": 1318,
+   "output_tokens": 391
+  },
+  "f010bfe5dd3263ffa791f5d373e3971b90d929bdc9ccc71401d3663428c5f5cb": {
+   "text": "**1박 12만 원 한도**입니다. 국내 출장 숙박비는 서울과 광역시가 1박 12만 원 한도이고, 그 외 지역은 1박 9만 원 한도입니다 [1]. 부산은 광역시이므로 12만 원 한도가 적용됩니다. 다만 부산이 광역시라는 점은 문서에 직접 적혀 있지 않습니다.\n\n당일 출장이면 숙박비는 지급하지 않고 일비의 절반만 지급합니다 [1].",
+   "model": "claude-opus-5-5",
+   "input_tokens": 1442,
+   "output_tokens": 505
+  },
+  "f083e07c98fff77eeb951b7e3703c90e144064774da165f2d59bb87550c3c7b3": {
+   "text": "배우자가 출산하면 유급 경조휴가 20일을 받습니다[1].",
+   "model": "claude-opus-5-5",
+   "input_tokens": 1342,
+   "output_tokens": 63
+  },
+  "f36783460f483b46ad44b4087f4dc91ab3d04a290fe0514815bc1cc65ba95556": {
+   "text": "제휴 콘도(강릉·제주)는 1박 2만 원에 이용할 수 있고, 1인당 연 2회까지 신청할 수 있습니다. [1] 다만 성수기(7~8월, 12월 말)에는 추첨으로 배정합니다. [1]",
+   "model": "claude-sonnet-5-5",
+   "input_tokens": 1306,
+   "output_tokens": 100
+  },
+  "f4104fe9d9db03807216f3f4f9d26ef45ec47593f655e5ea86cb09a6ca72b56b": {
+   "text": "회사 노트북을 분실한 경우 보안 사고가 의심되는 상황이므로 1시간 이내에 신고해야 합니다. [1]\n\n- 메일: security@hanbit-soft.example [1]\n- 전화: 내선 7777 (24시간) [1]\n\n참고로 문서의 신고 기준은 \"기기를 분실하는 등 보안 사고가 의심되면\"이라고만 되어 있고, 회사 노트북만을 따로 다루는 별도 절차는 문서에 없습니다. [1]",
+   "model": "claude-sonnet-5-5",
+   "input_tokens": 1357,
+   "output_tokens": 183
+  },
+  "f458252f8b5abbe94d55538aebd982b8effb024c0724114912d44e46ad390e1b": {
+   "text": "인사평가는 매년 6월과 12월, 연 2회 실시합니다. [1]",
+   "model": "claude-sonnet-5-5",
+   "input_tokens": 1268,
+   "output_tokens": 33
+  },
+  "f4f3f9baf414930c418fe7ed626c1b2907a9df814870046aef9a30a7ca4326ec": {
+   "text": "문서에서 찾을 수 없습니다. 제공된 문서에는 KPI-2026-A 매출 목표에 대한 내용이 없고, 2025년 연매출 실적(271억 원)만 적혀 있습니다. [1]",
+   "model": "claude-sonnet-5-5",
+   "input_tokens": 1403,
+   "output_tokens": 85
+  },
+  "f7de9b2da472f633a0559ffdbe0afd43ce53b807b6ce8ca11a3f9b87906309b5": {
+   "text": "문서에서 찾을 수 없습니다. 근거 조각에는 Python과 TypeScript 규칙만 있고 Java에 대한 규칙은 없습니다.\n\n다만 Python과 TypeScript 외의 언어에도 적용될 수 있는 공통 규칙은 다음과 같습니다. 테스트 커버리지는 새 코드 기준 80% 이상이어야 하고[4], CI가 실패한 PR은 병합할 수 없습니다[4]. 모든 PR은 리뷰어 2명의 승인을 받아야 합니다[5].",
+   "model": "claude-haiku-5-5",
+   "input_tokens": 1317,
+   "output_tokens": 201
+  },
+  "faf2169df37c11323b3b2ea01b23aa7766e4a607ee3625df5505676bc86e99da": {
+   "text": "문서에서 찾을 수 없습니다. 복리후생 안내에는 자기계발비, 장기근속 포상, 경조금, 식대와 통신비만 있고 사내 동호회 지원금에 관한 내용은 없습니다.",
+   "model": "claude-sonnet-5-5",
+   "input_tokens": 1283,
+   "output_tokens": 86
+  },
+  "fdac5a1523888bdaa5fd23ab31ba7b12edab8143951f9946723eab3b45f9f0f0": {
+   "text": "연차휴가는 4시간 단위의 반차로 나누어 사용할 수 있습니다[1].",
+   "model": "claude-opus-5-5",
+   "input_tokens": 1328,
+   "output_tokens": 56
+  },
+  "ff0a0b1e35569a2eea464f115b558c9d0d3662943b6a44a2c4b528cd4c87f12a": {
+   "text": "뉴욕은 미국이므로 A 지역 기준이 적용됩니다. 숙박비 한도는 직위에 따라 다릅니다.\n\n- 직원: 1박 200달러 한도 [1]\n- 임원: 1박 250달러 한도 [1]",
+   "model": "claude-sonnet-5-5",
+   "input_tokens": 1449,
+   "output_tokens": 162
+  },
+  "ff4383a894a5c598df2b5fc1a00daa56f1151974cd6ac0a66245ea253872c60c": {
+   "text": "미국은 A 지역(미국, 유럽, 일본)에 해당하며, 직원의 숙박비 한도는 1박 200달러입니다. [1]",
+   "model": "claude-sonnet-5-5",
+   "input_tokens": 1444,
+   "output_tokens": 57
+  }
+ }
+}
