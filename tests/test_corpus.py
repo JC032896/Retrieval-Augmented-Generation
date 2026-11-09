@@ -15,9 +15,9 @@ SAMPLES = Path(__file__).resolve().parents[1] / "samples"
 SHARED = {
     "01_company_intro.md",
     "02_employment_rules.md",
-    "03_benefits.md",
+    "03_benefits.docx",
     "04_it_security_policy.md",
-    "05_travel_expense_rules.md",
+    "05_travel_expense_rules.pdf",
     "06_remote_work_guide.md",
 }
 

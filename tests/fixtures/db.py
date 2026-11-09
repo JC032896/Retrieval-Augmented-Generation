@@ -19,11 +19,13 @@ from rag_service.config import get_settings
 
 TEST_DATABASE = "rag_test"
 ALEMBIC_INI = Path(__file__).resolve().parents[2] / "alembic.ini"
+# DB가 꺼져 있을 때 연결이 실패하지 않고 멈추는 경우가 있어서(Windows, 2026-11-09 확인) 제한을 둔다
+CONNECT_ARGS = {"connect_timeout": 5}
 
 
 def _create_test_database() -> None:
     admin_url = get_settings().database_url.set(database="postgres")
-    admin = create_engine(admin_url, isolation_level="AUTOCOMMIT")
+    admin = create_engine(admin_url, isolation_level="AUTOCOMMIT", connect_args=CONNECT_ARGS)
     try:
         with admin.connect() as connection:
             exists = connection.execute(
@@ -52,7 +54,9 @@ def migrate(engine: Engine, revision: str = "head", *, downgrade: bool = False) 
 @pytest.fixture(scope="session")
 def db_engine() -> Iterator[Engine]:
     _create_test_database()
-    engine = create_engine(get_settings().database_url.set(database=TEST_DATABASE))
+    engine = create_engine(
+        get_settings().database_url.set(database=TEST_DATABASE), connect_args=CONNECT_ARGS
+    )
     migrate(engine)
     yield engine
     engine.dispose()

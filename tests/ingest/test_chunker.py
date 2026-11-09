@@ -4,7 +4,7 @@ from pathlib import Path
 import pytest
 
 from rag_service.corpus import load_corpus
-from rag_service.ingest.chunker import chunk_markdown
+from rag_service.ingest.chunker import chunk_document, chunk_markdown
 
 ROOT = Path(__file__).resolve().parents[2]
 
@@ -75,9 +75,7 @@ def test_every_golden_evidence_section_is_a_chunk_section() -> None:
     """골든 데이터셋의 정답 위치(section)가 조각의 section과 맞아야 Recall@5를 계산할 수 있다."""
     corpus = load_corpus(ROOT / "samples")
     sections = {
-        document.file: {
-            chunk.section for chunk in chunk_markdown(corpus.doc_path(document).read_text("utf-8"))
-        }
+        document.file: {chunk.section for chunk in chunk_document(corpus.doc_path(document))}
         for document in corpus.documents
     }
 

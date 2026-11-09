@@ -7,22 +7,22 @@
 {"id": "g007", "type": "general", "user": "kim", "question": "배우자가 출산하면 휴가를 며칠 받아?", "answer": "유급 경조휴가 20일을 받는다.", "evidence": [{"file": "02_employment_rules.md", "section": "제20조 (경조휴가)"}]}
 {"id": "g008", "type": "general", "user": "park", "question": "징계에는 어떤 종류가 있어?", "answer": "견책, 감봉, 정직, 해고의 4종류다.", "evidence": [{"file": "02_employment_rules.md", "section": "제25조 (징계의 종류)"}]}
 {"id": "g009", "type": "general", "user": "han", "question": "인사평가는 1년에 몇 번, 언제 해?", "answer": "연 2회, 매년 6월과 12월에 한다.", "evidence": [{"file": "02_employment_rules.md", "section": "제30조 (인사평가)"}]}
-{"id": "g010", "type": "general", "user": "kim", "question": "식대는 얼마 나와?", "answer": "월 20만 원을 급여와 함께 지급한다.", "evidence": [{"file": "03_benefits.md", "section": "식대와 통신비"}]}
-{"id": "g011", "type": "general", "user": "jung", "question": "자기계발비 한도는 얼마고, 남으면 내년으로 넘어가?", "answer": "연 100만 원 한도이고, 쓰지 않은 금액은 이월되지 않는다.", "evidence": [{"file": "03_benefits.md", "section": "자기계발비"}]}
-{"id": "g012", "type": "general", "user": "lee", "question": "배우자도 건강검진 지원을 받을 수 있어?", "answer": "만 40세 이상인 배우자는 2년에 1회 지원받는다.", "evidence": [{"file": "03_benefits.md", "section": "건강검진"}]}
-{"id": "g013", "type": "general", "user": "choi", "question": "결혼하면 경조금은 얼마 받아?", "answer": "본인 결혼 경조금은 100만 원이다.", "evidence": [{"file": "03_benefits.md", "section": "경조금"}]}
-{"id": "g014", "type": "general", "user": "park", "question": "회사 콘도는 얼마에 몇 번 쓸 수 있어?", "answer": "강릉과 제주 제휴 콘도를 1박 2만 원에, 1인당 연 2회까지 이용할 수 있다.", "evidence": [{"file": "03_benefits.md", "section": "휴양시설"}]}
-{"id": "g015", "type": "general", "user": "kim", "question": "10년 근속하면 어떤 포상이 있어?", "answer": "리프레시 휴가 10일과 포상금 300만 원을 받는다.", "evidence": [{"file": "03_benefits.md", "section": "장기근속 포상"}]}
+{"id": "g010", "type": "general", "user": "kim", "question": "식대는 얼마 나와?", "answer": "월 20만 원을 급여와 함께 지급한다.", "evidence": [{"file": "03_benefits.docx", "section": "식대와 통신비"}]}
+{"id": "g011", "type": "general", "user": "jung", "question": "자기계발비 한도는 얼마고, 남으면 내년으로 넘어가?", "answer": "연 100만 원 한도이고, 쓰지 않은 금액은 이월되지 않는다.", "evidence": [{"file": "03_benefits.docx", "section": "자기계발비"}]}
+{"id": "g012", "type": "general", "user": "lee", "question": "배우자도 건강검진 지원을 받을 수 있어?", "answer": "만 40세 이상인 배우자는 2년에 1회 지원받는다.", "evidence": [{"file": "03_benefits.docx", "section": "건강검진"}]}
+{"id": "g013", "type": "general", "user": "choi", "question": "결혼하면 경조금은 얼마 받아?", "answer": "본인 결혼 경조금은 100만 원이다.", "evidence": [{"file": "03_benefits.docx", "section": "경조금"}]}
+{"id": "g014", "type": "general", "user": "park", "question": "회사 콘도는 얼마에 몇 번 쓸 수 있어?", "answer": "강릉과 제주 제휴 콘도를 1박 2만 원에, 1인당 연 2회까지 이용할 수 있다.", "evidence": [{"file": "03_benefits.docx", "section": "휴양시설"}]}
+{"id": "g015", "type": "general", "user": "kim", "question": "10년 근속하면 어떤 포상이 있어?", "answer": "리프레시 휴가 10일과 포상금 300만 원을 받는다.", "evidence": [{"file": "03_benefits.docx", "section": "장기근속 포상"}]}
 {"id": "g016", "type": "general", "user": "jung", "question": "로그인을 계속 틀리면 계정이 잠겨? 얼마 동안?", "answer": "5회 연속 실패하면 30분 동안 잠긴다.", "evidence": [{"file": "04_it_security_policy.md", "section": "SEC-PW-02 계정 잠금"}]}
 {"id": "g017", "type": "general", "user": "lee", "question": "개인 휴대폰으로 사내 메신저를 쓰려면 어떻게 해야 해?", "answer": "먼저 MDM에 등록해야 한다. 등록하지 않은 기기로는 메일과 메신저에 접속할 수 없다.", "evidence": [{"file": "04_it_security_policy.md", "section": "SEC-DEV-01 개인 기기"}]}
 {"id": "g018", "type": "general", "user": "park", "question": "피싱 메일을 열어버렸어. 어디에 언제까지 신고해야 해?", "answer": "1시간 이내에 security@hanbit-soft.example 또는 내선 7777로 신고한다.", "evidence": [{"file": "04_it_security_policy.md", "section": "보안 사고 신고"}]}
 {"id": "g019", "type": "general", "user": "kim", "question": "자리를 비우면 화면이 몇 분 뒤에 자동으로 잠겨?", "answer": "5분 동안 입력이 없으면 자동으로 잠긴다.", "evidence": [{"file": "04_it_security_policy.md", "section": "SEC-DATA-05 화면 잠금"}]}
-{"id": "g020", "type": "general", "user": "choi", "question": "부산으로 출장 가면 숙박비는 얼마까지 돼?", "answer": "광역시이므로 1박 12만 원 한도다.", "evidence": [{"file": "05_travel_expense_rules.md", "section": "국내 출장"}]}
-{"id": "g021", "type": "general", "user": "jung", "question": "당일치기 출장도 일비가 나와?", "answer": "숙박비는 없고 일비의 절반을 지급한다.", "evidence": [{"file": "05_travel_expense_rules.md", "section": "국내 출장"}]}
-{"id": "g022", "type": "general", "user": "lee", "question": "미국 출장 갈 때 직원 숙박비 한도는?", "answer": "A 지역이므로 1박 200달러 한도다.", "evidence": [{"file": "05_travel_expense_rules.md", "section": "해외 출장"}]}
-{"id": "g023", "type": "general", "user": "han", "question": "임원은 해외 출장 때 비즈니스석을 탈 수 있어?", "answer": "비행 시간이 6시간 이상이면 비즈니스석을 탈 수 있다.", "evidence": [{"file": "05_travel_expense_rules.md", "section": "해외 출장"}]}
-{"id": "g024", "type": "general", "user": "kim", "question": "출장비 정산은 언제까지 해야 해?", "answer": "돌아온 날로부터 7일 이내에 HB-Expense에 영수증을 올리고 신청한다.", "evidence": [{"file": "05_travel_expense_rules.md", "section": "정산"}]}
-{"id": "g025", "type": "general", "user": "park", "question": "해외 출장은 누구한테 언제까지 승인받아야 해?", "answer": "임원의 승인을 받아야 하고, 출발 2주 전까지 신청한다.", "evidence": [{"file": "05_travel_expense_rules.md", "section": "사전 승인"}]}
+{"id": "g020", "type": "general", "user": "choi", "question": "부산으로 출장 가면 숙박비는 얼마까지 돼?", "answer": "광역시이므로 1박 12만 원 한도다.", "evidence": [{"file": "05_travel_expense_rules.pdf", "section": "국내 출장"}]}
+{"id": "g021", "type": "general", "user": "jung", "question": "당일치기 출장도 일비가 나와?", "answer": "숙박비는 없고 일비의 절반을 지급한다.", "evidence": [{"file": "05_travel_expense_rules.pdf", "section": "국내 출장"}]}
+{"id": "g022", "type": "general", "user": "lee", "question": "미국 출장 갈 때 직원 숙박비 한도는?", "answer": "A 지역이므로 1박 200달러 한도다.", "evidence": [{"file": "05_travel_expense_rules.pdf", "section": "해외 출장"}]}
+{"id": "g023", "type": "general", "user": "han", "question": "임원은 해외 출장 때 비즈니스석을 탈 수 있어?", "answer": "비행 시간이 6시간 이상이면 비즈니스석을 탈 수 있다.", "evidence": [{"file": "05_travel_expense_rules.pdf", "section": "해외 출장"}]}
+{"id": "g024", "type": "general", "user": "kim", "question": "출장비 정산은 언제까지 해야 해?", "answer": "돌아온 날로부터 7일 이내에 HB-Expense에 영수증을 올리고 신청한다.", "evidence": [{"file": "05_travel_expense_rules.pdf", "section": "정산"}]}
+{"id": "g025", "type": "general", "user": "park", "question": "해외 출장은 누구한테 언제까지 승인받아야 해?", "answer": "임원의 승인을 받아야 하고, 출발 2주 전까지 신청한다.", "evidence": [{"file": "05_travel_expense_rules.pdf", "section": "사전 승인"}]}
 {"id": "g026", "type": "general", "user": "jung", "question": "재택근무 신청은 언제까지 어디서 해?", "answer": "전날 오후 6시까지 HB-HR의 근무 신청 메뉴에서 한다.", "evidence": [{"file": "06_remote_work_guide.md", "section": "신청 방법"}]}
 {"id": "g027", "type": "general", "user": "kim", "question": "재택근무 중에 메시지는 얼마 안에 답해야 해?", "answer": "30분 이내에 응답해야 한다.", "evidence": [{"file": "06_remote_work_guide.md", "section": "근무 수칙"}]}
 {"id": "g028", "type": "general", "user": "choi", "question": "재택근무용 모니터를 지원받을 수 있어?", "answer": "모니터 1대를 무상으로 대여받을 수 있고, HB-HR 장비 대여 메뉴에서 신청하면 일주일 안에 배송된다.", "evidence": [{"file": "06_remote_work_guide.md", "section": "장비 지원"}]}
