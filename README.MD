@@ -249,6 +249,33 @@ v019)는 정답이 2위 안에 있다.
 CI는 `eval/cache/answers.json`에 저장한 답으로 API 없이 평가한다. 프롬프트나 검색 결과가 바뀌면
 캐시 키가 달라져 평가가 실패하므로, `--update-cache`로 답을 다시 받아야 한다 (Sonnet 약 $0.36).
 
+### 질문 API와 SSE 스트리밍 (4단계)
+
+`POST /ask {"question": "..."}`는 답변을 SSE(`text/event-stream`)로 흘려보낸다 (`api/ask.py`).
+
+```
+uv run python -m rag_service.ingest samples        # 문서와 사용자(users 테이블)를 수집
+AUTH_MODE=dev_header uv run uvicorn rag_service.main:app
+curl -N -X POST localhost:8000/ask -H "X-User-Id: kim" -H "Content-Type: application/json" \
+     -d '{"question": "출장비 정산은 언제까지 해야 해?"}'
+```
+
+| 이벤트 | 내용 |
+|---|---|
+| `delta` | 답변 조각 `{"text"}`. 이어 붙여 보여 준다 |
+| `done` | 마지막 이벤트. 최종 답변, 인용, 인용 검증 결과, 토큰과 비용 |
+| `error` | LLM 실패. 이 이벤트로 끝난다 |
+
+- 사용자 확인, 입력 검증, 검색은 스트림을 열기 전에 끝내서 실패하면 일반 HTTP 오류로 돌려준다
+  (헤더 없음·미등록 사용자 401, 빈 질문 422, `AUTH_MODE`나 API 키 미설정 503).
+- 신원과 권한 속성을 나눴다. 요청에서는 로그인 id만 받고, 부서·역할·보안 등급은 DB `users`
+  테이블에서 읽는다 (수집할 때 `org.yaml`과 맞춘다). 요청에 실린 권한 값을 믿지 않으므로 퇴사나
+  등급 변경이 다음 요청부터 반영된다.
+- LLM이 거절 문구로 시작하면 그 텍스트는 흘려보내지 않고 `done(refused=true)`만 보낸다.
+  "문서에서"까지만 왔을 때는 판단이 설 때까지 모아 둔다.
+- `AUTH_MODE=dev_header`는 헤더 값을 그대로 믿는 개발·데모 전용이다 (누구나 다른 사람 행세 가능).
+  기본값 `disabled`에서는 질문 API가 503을 돌려준다. SSO(JWT/OIDC) 검증은 다음 단계에서 더한다.
+
 ---
 
 ## 참고

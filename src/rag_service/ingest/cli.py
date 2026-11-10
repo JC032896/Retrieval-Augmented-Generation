@@ -33,5 +33,8 @@ def main(
         stats = ingest_corpus(
             session, corpus, embedder=embedder_factory(), tokenizer=KoreanTokenizer()
         )
-    print(f"문서 {stats.documents}개, 조각 {stats.chunks}개 저장 (삭제된 문서 {stats.removed}개)")
+    print(
+        f"문서 {stats.documents}개, 조각 {stats.chunks}개, 사용자 {stats.users}명 저장"
+        f" (삭제된 문서 {stats.removed}개)"
+    )
     return 0

@@ -5,18 +5,20 @@
 - 코퍼스에서 빠진 문서는 DB에서도 지운다.
 - 권한 정보(부서, 역할, 보안 등급)는 document_acl에 원본을, chunks에 사본을 저장한다.
 - 문서 수명(현행/폐지)은 documents에만 저장한다.
+- 사용자(org.yaml의 users)는 users 테이블에 login으로 맞춘다. 있으면 갱신, 없으면 추가하고,
+  코퍼스에서 빠진 사용자는 지운다. API는 이 테이블로 요청한 사용자의 권한을 판단한다.
 - 커밋은 호출하는 쪽에서 한다. 전체를 한 트랜잭션으로 묶으면 중간에 실패해도 DB가
   반쯤 바뀐 상태로 남지 않는다.
 """
 
 from dataclasses import dataclass
 
-from sqlalchemy import cast, delete
+from sqlalchemy import cast, delete, select
 from sqlalchemy.dialects.postgresql import TSVECTOR
 from sqlalchemy.orm import Session
 
 from rag_service.corpus import Corpus, DocumentEntry
-from rag_service.db.models import Chunk, Document, DocumentAcl
+from rag_service.db.models import Chunk, Document, DocumentAcl, User
 from rag_service.ingest.chunker import DEFAULT_MAX_CHARS, chunk_document
 from rag_service.ingest.embedder import Embedder
 from rag_service.ingest.tokenizer import KoreanTokenizer, to_tsvector_literal
@@ -27,6 +29,7 @@ class IngestStats:
     documents: int
     chunks: int
     removed: int
+    users: int = 0
 
 
 def ingest_corpus(
@@ -49,8 +52,27 @@ def ingest_corpus(
             session, corpus, entry, embedder=embedder, tokenizer=tokenizer, max_chars=max_chars
         )
     return IngestStats(
-        documents=len(corpus.documents), chunks=chunk_count, removed=removed.rowcount
+        documents=len(corpus.documents),
+        chunks=chunk_count,
+        removed=removed.rowcount,
+        users=sync_users(session, corpus),
     )
+
+
+def sync_users(session: Session, corpus: Corpus) -> int:
+    """users 테이블을 org.yaml의 사용자 목록과 같게 만들고 사용자 수를 돌려준다."""
+    entries = {entry.id: entry for entry in corpus.org.users}
+    session.execute(delete(User).where(User.login.not_in(list(entries))))
+    existing = {user.login: user for user in session.scalars(select(User))}
+    for login, entry in entries.items():
+        user = existing.get(login) or User(login=login)
+        user.name = entry.name
+        user.department = entry.department
+        user.role = entry.role
+        user.clearance_level = entry.clearance_level
+        session.add(user)
+    session.flush()
+    return len(entries)
 
 
 def ingest_document(

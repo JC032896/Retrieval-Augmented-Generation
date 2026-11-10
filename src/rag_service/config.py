@@ -23,6 +23,12 @@ class Settings(BaseSettings):
     anthropic_api_key: SecretStr | None = None
     llm_model: str = "claude-sonnet-5-5"
     llm_effort: Literal["low", "medium", "high"] = "medium"
+    llm_timeout_seconds: float = 120.0
+
+    # API가 요청한 사용자를 확인하는 방식 (rag_service.api.auth 참고)
+    # - disabled: 질문 API를 막는다 (기본값. 설정하지 않은 서버가 열린 채로 뜨지 않게)
+    # - dev_header: X-User-Id 헤더를 그대로 믿는다. 개발과 데모 전용 (누구나 다른 사람 행세 가능)
+    auth_mode: Literal["disabled", "dev_header"] = "disabled"
 
     @property
     def database_url(self) -> URL:

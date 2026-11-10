@@ -116,9 +116,12 @@ class User(Base):
     __tablename__ = "users"
     __table_args__ = (
         CheckConstraint(f"clearance_level {_LEVEL_RANGE}", name="ck_users_clearance_level"),
+        UniqueConstraint("login", name="uq_users_login"),
     )
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    # 로그인 id (org.yaml의 users[].id, 이후 SSO 사용자 식별자). API는 이 값으로 사용자를 찾는다
+    login: Mapped[str] = mapped_column(Text)
     name: Mapped[str] = mapped_column(Text)
     department: Mapped[str] = mapped_column(Text)
     role: Mapped[str] = mapped_column(Text)

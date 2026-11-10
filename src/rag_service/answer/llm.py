@@ -4,6 +4,7 @@ LLM은 Protocol 뒤에 둔다. 기본은 Claude API이고, 같은 complete()만 
 바꿀 수 있다. 테스트와 CI는 API를 부르지 않는 가짜 LLM을 쓴다.
 """
 
+from collections.abc import Generator
 from dataclasses import dataclass
 from typing import Any, Literal, Protocol
 
@@ -16,6 +17,9 @@ Effort = Literal["low", "medium", "high"]
 FALLBACK_BETA = "server-side-fallback-2026-07-01"
 # 사고(thinking) 토큰도 max_tokens에 들어간다. 실제로 쓴 만큼만 과금되므로 넉넉히 둔다
 DEFAULT_MAX_TOKENS = 16000
+# 요청 하나의 제한 시간(초). 스트리밍에서는 토큰 사이의 대기 시간에 걸린다. SDK 기본값은 10분이라
+# 서버가 멈추면 사용자 요청이 그만큼 묶인다
+DEFAULT_TIMEOUT = 120.0
 
 # 공개 표준 요금 (100만 토큰당 입력, 출력 달러, 2026-11 기준). 비용 추정용
 MODEL_PRICES: dict[str, tuple[float, float]] = {
@@ -49,6 +53,12 @@ class LLM(Protocol):
     def complete(self, *, system: str, prompt: str) -> Completion: ...
 
 
+class StreamingLLM(Protocol):
+    def stream(self, *, system: str, prompt: str) -> Generator[str, None, Completion]:
+        """답변 텍스트를 생성되는 대로 내보내고, 끝나면 Completion을 돌려준다."""
+        ...
+
+
 class ClaudeLLM:
     def __init__(
         self,
@@ -57,9 +67,10 @@ class ClaudeLLM:
         api_key: str | None = None,
         effort: Effort = "medium",
         max_tokens: int = DEFAULT_MAX_TOKENS,
+        timeout: float = DEFAULT_TIMEOUT,
     ) -> None:
         # api_key가 None이면 SDK가 환경 변수 ANTHROPIC_API_KEY를 읽는다
-        self._client = anthropic.Anthropic(api_key=api_key)
+        self._client = anthropic.Anthropic(api_key=api_key, timeout=timeout)
         self.model = model
         self.effort = effort
         self.max_tokens = max_tokens
@@ -67,6 +78,20 @@ class ClaudeLLM:
     def complete(self, *, system: str, prompt: str) -> Completion:
         response = self._client.beta.messages.create(**self.request(system=system, prompt=prompt))
         return parse_response(response)
+
+    def stream(self, *, system: str, prompt: str) -> Generator[str, None, Completion]:
+        # 중간에 대체 모델로 넘어가도 이미 보낸 텍스트는 유효하다 (대체 모델이 이어서 쓴다).
+        # 소비하는 쪽이 중간에 멈추면 with 블록이 닫히면서 API 연결도 끊긴다
+        # SDK 오류(시간 초과, 연결 실패, 429, 5xx 등)는 LLMError로 바꾼다
+        try:
+            with self._client.beta.messages.stream(
+                **self.request(system=system, prompt=prompt)
+            ) as s:
+                yield from s.text_stream
+                message = s.get_final_message()
+        except anthropic.APIError as error:
+            raise LLMError(f"Claude API 오류: {type(error).__name__}") from error
+        return parse_response(message)
 
     def request(self, *, system: str, prompt: str) -> dict[str, Any]:
         """API 요청 인자. 네트워크 없이 검사할 수 있게 따로 만든다."""
