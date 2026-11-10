@@ -5,7 +5,8 @@
   2. 사용자의 clearance_level >= 조각의 security_level
 
 권한의 원본은 document_acl이고, chunks의 권한 컬럼은 검색 SQL의 WHERE 절에서
-바로 걸러내기 위한 사본이다. 권한이 바뀌면 사본만 갱신하고 임베딩은 다시 만들지 않는다.
+바로 걸러내기 위한 사본이다. 지금은 권한이 바뀌어도 문서를 통째로 다시 수집한다 (임베딩 재계산).
+사본만 갱신하는 기능은 계획이다 (README 로드맵의 증분 수집).
 """
 
 from datetime import datetime
