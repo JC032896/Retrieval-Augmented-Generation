@@ -9,11 +9,12 @@
 사본만 갱신하는 기능은 계획이다 (README 로드맵의 증분 수집).
 """
 
-from datetime import datetime
+from datetime import date, datetime
 
 from pgvector.sqlalchemy import Vector
 from sqlalchemy import (
     CheckConstraint,
+    Date,
     DateTime,
     ForeignKey,
     Index,
@@ -60,6 +61,12 @@ class Document(Base):
     # 권한과 달리 조각에 복사하지 않는다. 새 판이 나오면 이 한 행만 바꾸면 된다
     status: Mapped[str] = mapped_column(Text, server_default=text("'current'"))
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+    # 수명 관리 (마이그레이션 0005). 0005 이전에 수집한 행은 비어 있다 → 재수집 대상
+    content_sha256: Mapped[str | None] = mapped_column(Text)  # 원문 파일 바이트의 해시
+    source_mtime: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))  # 참고용
+    embedding_model: Mapped[str | None] = mapped_column(Text)  # 이 문서의 조각을 임베딩한 모델
+    effective_from: Mapped[date | None] = mapped_column(Date)  # 시행일 (비면 미상)
+    effective_to: Mapped[date | None] = mapped_column(Date)  # 마지막 유효일 포함 (비면 미상/현재)
 
 
 class DocumentAcl(Base):
@@ -86,6 +93,7 @@ class Chunk(Base):
     __tablename__ = "chunks"
     __table_args__ = (
         UniqueConstraint("document_id", "chunk_index", name="uq_chunks_document_index"),
+        UniqueConstraint("document_id", "chunk_key", name="uq_chunks_document_key"),
         CheckConstraint(f"security_level {_LEVEL_RANGE}", name="ck_chunks_security_level"),
         Index("ix_chunks_tokens", "tokens", postgresql_using="gin"),
         Index(
@@ -107,6 +115,10 @@ class Chunk(Base):
     # Kiwi 형태소 토큰을 공백으로 이어 to_tsvector('simple', ...)로 만든 값
     tokens: Mapped[str] = mapped_column(TSVECTOR)
     embedding: Mapped[list[float]] = mapped_column(Vector(EMBEDDING_DIM))
+    # "어느 조항인가": 원문 경로 + 제목 경로 + 같은 제목 경로 안의 순번 (chunker.chunk_keys)
+    chunk_key: Mapped[str | None] = mapped_column(Text)
+    # "정확히 어떤 문장인가": content(제목 경로 포함 최종 본문)의 해시
+    content_sha256: Mapped[str | None] = mapped_column(Text)
     # 권한 사본 (document_acl, documents.security_level에서 복사)
     allowed_departments: Mapped[list[str]] = mapped_column(ARRAY(Text), server_default=text("'{}'"))
     allowed_roles: Mapped[list[str]] = mapped_column(ARRAY(Text), server_default=text("'{}'"))

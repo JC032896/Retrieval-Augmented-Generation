@@ -7,6 +7,10 @@
 - 본문이 max_chars보다 길면 빈 줄(문단) 경계에서 나눈다. 한 문단이 max_chars보다 길면
   표처럼 쪼개면 의미가 깨지는 경우가 많으므로 그대로 둔다.
 - 조각의 page는 그 조각의 첫 문단이 있는 페이지다 (PDF만 있고, 다른 형식은 None).
+- chunk_keys는 조각마다 "어느 조항인가"를 가리키는 키를 만든다 (원문 경로 + 제목 경로 + 순번).
+  본문 오타를 고쳐도 키는 같고, 다른 섹션에 문단을 더해도 이 섹션의 키는 그대로다.
+  한계: 같은 제목 경로 안에서 앞쪽 조각이 나뉘거나 합쳐지면 뒤쪽 조각의 순번이 밀린다.
+  원문 파일 이름이 바뀌면 모든 키가 바뀐다.
 """
 
 import re
@@ -38,6 +42,17 @@ class TextChunk:
         if not self.heading_path:
             return self.body
         return " > ".join(self.heading_path) + "\n\n" + self.body
+
+
+def chunk_keys(source_path: str, chunks: Sequence[TextChunk]) -> list[str]:
+    """조각마다 "{원문 경로}#{제목 경로}#{같은 제목 경로 안의 순번}" 키를 만든다."""
+    seen: dict[tuple[str, ...], int] = {}
+    keys = []
+    for chunk in chunks:
+        ordinal = seen.get(chunk.heading_path, 0)
+        seen[chunk.heading_path] = ordinal + 1
+        keys.append(f"{source_path}#{' > '.join(chunk.heading_path)}#{ordinal}")
+    return keys
 
 
 def chunk_markdown(markdown: str, *, max_chars: int = DEFAULT_MAX_CHARS) -> list[TextChunk]:

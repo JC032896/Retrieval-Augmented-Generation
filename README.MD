@@ -334,6 +334,55 @@ OIDC_LOGIN_CLAIM=email                                         # users.login과 
 - 감사 기록 저장에 실패해도 이미 보낸 답변은 그대로 두고, 운영 로그에 `audit_write_failed`를 남긴다.
   로그 수집 시스템에서 이 이벤트에 경보를 걸어야 한다.
 
+### 인덱스 수명 관리 (스키마, 마이그레이션 0005)
+
+RAG 구현 감사(2026-11-11)에서 나온 출처·버전 메타데이터, 원문과 인덱스 동기화 문제에 대한 대응이다.
+수집할 때 아래 값을 함께 남긴다.
+
+| 테이블 | 컬럼 | 뜻 |
+|---|---|---|
+| `documents` | `content_sha256` | 원문 파일 바이트의 해시. 원문이 바뀌었는지 판단하는 기준 |
+| | `source_mtime` | 원문 파일 수정 시각 (참고용. git checkout 등으로도 바뀌므로 판단에는 쓰지 않는다) |
+| | `embedding_model` | 이 문서의 조각을 임베딩한 모델 이름. 다른 모델의 벡터가 섞이는 것을 막는 데 쓴다 |
+| | `effective_from`, `effective_to` | 시행일과 마지막 유효일(그날까지 포함). `acl.yaml`에서 읽고, 근거가 있는 날짜만 적는다 |
+| `chunks` | `chunk_key` | "어느 조항인가": `{원문 경로}#{제목 경로}#{같은 제목 경로 안의 순번}`. 문서 안에서 유일 |
+| | `content_sha256` | "정확히 어떤 문장인가": 조각 본문(제목 경로 포함)의 해시 |
+| `chunk_snapshots` | `content_sha256`, `content` | 감사 기록이 가리키는 조각 본문. 내용 해시당 한 번만 저장한다 |
+
+- `chunks.id`는 내부 키로만 쓴다. 재수집하면 바뀌므로 인용·감사·재현에는 `chunk_key`와 `content_sha256`을 쓴다.
+- 0005 이전에 수집한 행은 새 컬럼이 비어 있다. 제목 경로가 DB에 없어 기존 행에서 키를 계산할 수 없으므로
+  백필하지 않고, 한 번 재수집해서 채운다.
+- 시행일은 추정하지 않는다. 지금 샘플에는 본문에 날짜가 있는 2개(16번 `effective_to: 2025-12-31`,
+  17번 `2023-07-01 ~ 2023-12-31`)만 있고, 나머지는 "시행일 미상"이다. 날짜로 판을 고르는 검색은 아직 없다.
+- 요청 형식에는 `PROMPT_TEMPLATE_VERSION`(`answer/prompt.py`)을 붙인다. 요청 문자열이 바뀌면 버전을 올려야
+  하고, `tests/answer/test_prompt_version.py`가 해시로 이를 강제한다.
+
+**한계**
+- `chunk_key`에 원문 경로가 들어가므로 **파일 이름을 바꾸면 그 문서의 모든 키가 바뀐다.**
+- 같은 제목 경로 안에서 앞쪽 조각이 나뉘거나 합쳐지면 뒤쪽 조각의 순번이 밀린다. 다른 섹션의 키는 그대로다.
+
+### 배포: DB 계정 분리
+
+마이그레이션 0005가 로그인할 수 없는 역할 두 개를 만든다(이미 있으면 그대로 둔다).
+
+| 역할 | 업무 테이블 (`documents`, `document_acl`, `chunks`, `users`) | 감사 테이블 (`audit_log`, `chunk_snapshots`) |
+|---|---|---|
+| `rag_app` | 읽기·쓰기 | **쓰기만** (읽기 불가) |
+| `rag_auditor` | 접근 불가 | **읽기만** |
+
+`chunk_snapshots`에는 기밀 문서의 본문 사본이 들어가므로, 앱 계정이 뚫려도 읽을 수 없게 한다.
+운영에서는 로그인 계정을 나눠 각 역할을 부여한다.
+
+```sql
+CREATE ROLE rag_service LOGIN PASSWORD '...' IN ROLE rag_app;      -- 앱 (.env의 POSTGRES_USER)
+CREATE ROLE rag_audit_ops LOGIN PASSWORD '...' IN ROLE rag_auditor; -- 감사 담당자, 재현 스크립트
+-- 마이그레이션·보관 기간 삭제는 테이블 소유자 계정으로 실행한다
+```
+
+**개발 환경의 한계**: 로컬과 CI는 `docker-compose.yml`의 `rag` 계정 하나(슈퍼유저)를 쓰므로 이 제한이
+적용되지 않는다. 역할 권한은 테스트에서 `SET ROLE`로 따로 검증한다(`tests/db/test_migrations_lifecycle.py`).
+역할을 만들려면 마이그레이션 계정에 `CREATEROLE` 권한이 필요하다. 없으면 DBA가 두 역할을 먼저 만든다.
+
 ---
 
 ## 참고

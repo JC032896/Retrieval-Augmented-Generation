@@ -23,6 +23,10 @@ from sqlalchemy import (
 from sqlalchemy.dialects.postgresql import ARRAY
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 
+# DB 역할 (마이그레이션 0005). 앱은 감사 테이블에 쓰기만, 감사자는 읽기만 한다
+APP_ROLE = "rag_app"
+AUDITOR_ROLE = "rag_auditor"
+
 # answered 답함, refused 거절, error 실패, cancelled 사용자가 연결을 끊음
 AUDIT_OUTCOMES = ("answered", "refused", "error", "cancelled")
 
@@ -73,3 +77,17 @@ class AuditLog(AuditBase):
     retrieval_ms: Mapped[int] = mapped_column(Integer)
     first_token_ms: Mapped[int | None] = mapped_column(Integer)  # 첫 글자를 보낼 때까지 (검색 포함)
     total_ms: Mapped[int] = mapped_column(Integer)
+
+
+class ChunkSnapshot(AuditBase):
+    """감사 기록이 가리키는 청크 본문. 내용 해시당 한 번만 저장한다 (3단계에서 채운다).
+
+    원문이 재수집으로 바뀌어도 "그때 LLM이 본 본문"을 복원하려고 둔다. 기밀 문서의 본문 사본이므로
+    읽기는 감사자 역할(rag_auditor)만 한다.
+    """
+
+    __tablename__ = "chunk_snapshots"
+
+    content_sha256: Mapped[str] = mapped_column(Text, primary_key=True)
+    content: Mapped[str] = mapped_column(Text)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())

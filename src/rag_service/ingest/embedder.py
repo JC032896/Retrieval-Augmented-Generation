@@ -35,6 +35,7 @@ class SentenceTransformerEmbedder:
         loader: Callable[[str], Any] = _load_sentence_transformer,
         batch_size: int = 16,
     ) -> None:
+        self.model_name = model_name
         self._model = loader(model_name)
         self._batch_size = batch_size
         dim = self._model.get_sentence_embedding_dimension()
@@ -57,3 +58,9 @@ class SentenceTransformerEmbedder:
             convert_to_numpy=True,
         )
         return [[float(value) for value in vector] for vector in vectors]
+
+
+def embedding_model_name(embedder: Embedder) -> str:
+    """DB에 기록할 임베딩 모델 이름. model_name이 없는 구현(테스트용 가짜)은 클래스 이름."""
+    name = getattr(embedder, "model_name", None)
+    return name if isinstance(name, str) and name else type(embedder).__name__

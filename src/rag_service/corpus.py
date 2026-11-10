@@ -3,7 +3,8 @@
 파일 구성 (samples/ 참고):
   org.yaml   departments, roles, users
   acl.yaml   documents: 문서 파일별 제목, 보안 등급, 열람 가능한 부서와 역할,
-             수명(status: current 기본값, superseded 폐지/대체)
+             수명(status: current 기본값, superseded 폐지/대체),
+             시행일(effective_from, effective_to: 마지막 유효일 포함, 비우면 미상 또는 현재까지)
   docs/      문서 본문
 
 권한 규칙은 can_view 하나로 정의한다. 검색 SQL의 권한 필터와 평가의 유출 검사는
@@ -11,6 +12,7 @@
 """
 
 from dataclasses import dataclass
+from datetime import date
 from pathlib import Path
 from typing import Annotated, Any, Literal
 
@@ -49,6 +51,9 @@ class DocumentEntry(_Strict):
     departments: list[str] = []
     roles: list[str] = []
     status: DocumentStatus = "current"
+    # 문서 본문 등 근거가 있는 날짜만 적는다. 추정값은 넣지 않는다 (비우면 "시행일 미상")
+    effective_from: date | None = None
+    effective_to: date | None = None  # 마지막 유효일 (그날까지 포함)
 
 
 class AclFile(_Strict):
@@ -118,6 +123,8 @@ def _validate(corpus: Corpus) -> None:
             errors.append(f"{doc.file}: 열람 가능한 부서나 역할이 없음")
         errors += [f"{doc.file}: 없는 부서 {d}" for d in doc.departments if d not in departments]
         errors += [f"{doc.file}: 없는 역할 {r}" for r in doc.roles if r not in roles]
+        if doc.effective_from and doc.effective_to and doc.effective_from > doc.effective_to:
+            errors.append(f"{doc.file}: effective_from이 effective_to보다 늦음")
 
     listed = {doc.file for doc in corpus.documents}
     docs_dir = corpus.root / "docs"

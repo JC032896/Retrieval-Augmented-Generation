@@ -3,6 +3,8 @@
 # 전 직원 공개 문서는 roles에 모든 역할을 적는다.
 # status: current(현행, 기본값) 또는 superseded(폐지되었거나 새 판으로 대체됨).
 #         superseded 문서는 기본 검색에서 빠지고, 지난 규정을 찾을 때만 포함한다.
+# effective_from / effective_to: 시행일과 마지막 유효일(그날까지 포함). 문서 본문 등 근거가 있는
+#         날짜만 적고, 모르면 비운다 (추정값 금지). 비어 있으면 "시행일 미상"으로 본다.
 
 documents:
   # 전 직원
@@ -94,12 +96,15 @@ documents:
     security_level: 1
     roles: [사원, 팀장, 임원]
     status: superseded
+    effective_to: 2025-12-31  # 본문: "2026년 1월 1일부로 폐지"
 
   - file: 17_remote_work_pilot_2023.md
     title: 재택근무 시범 운영 안내 (2023년, 종료)
     security_level: 1
     roles: [사원, 팀장, 임원]
     status: superseded
+    effective_from: 2023-07-01  # 본문: "2023년 7월 1일부터 12월 31일까지"
+    effective_to: 2023-12-31
 
   - file: 18_it_security_annex.md
     title: IT 보안 정책 부속서

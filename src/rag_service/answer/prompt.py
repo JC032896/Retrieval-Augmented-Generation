@@ -10,6 +10,10 @@ from html import escape
 from rag_service.answer.refusal import REFUSAL_MESSAGE
 from rag_service.retrieval.hits import SearchHit
 
+# SYSTEM_PROMPT나 build_prompt의 출력이 바이트 하나라도 바뀌면 올린다. 감사 기록에 함께 남겨
+# "그때 어떤 형식의 요청이었는지"를 재현한다. tests/answer/test_prompt_version.py가 해시로 지킨다
+PROMPT_TEMPLATE_VERSION = "2026-11-09.1"
+
 SYSTEM_PROMPT = f"""\
 당신은 사내 문서 질의 도우미입니다. 사용자 질문에 <documents> 안의 근거 조각만 보고 답합니다.
 
