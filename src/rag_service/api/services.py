@@ -12,6 +12,7 @@ from sqlalchemy.orm import Session, sessionmaker
 
 from rag_service.answer.llm import ClaudeLLM, StreamingLLM
 from rag_service.api.auth import Authenticator, build_authenticator
+from rag_service.audit.record import AuditPolicy
 from rag_service.config import get_settings
 from rag_service.ingest.embedder import Embedder, SentenceTransformerEmbedder
 from rag_service.ingest.tokenizer import KoreanTokenizer
@@ -26,6 +27,7 @@ class Services:
     tokenizer: KoreanTokenizer
     llm: StreamingLLM | None  # ANTHROPIC_API_KEY가 없으면 None (질문 API가 503을 돌려준다)
     authenticator: Authenticator | None  # AUTH_MODE=disabled면 None
+    audit: AuditPolicy = AuditPolicy()
 
 
 @lru_cache
@@ -49,4 +51,5 @@ def get_services() -> Services:
         tokenizer=KoreanTokenizer(),
         llm=llm,
         authenticator=build_authenticator(settings.auth_mode, settings.oidc),
+        audit=AuditPolicy(settings.audit_store_text, settings.audit_retention_days),
     )

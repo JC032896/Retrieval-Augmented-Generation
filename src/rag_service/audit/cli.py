@@ -1,0 +1,30 @@
+"""감사 기록 관리 명령. 사용법: uv run python -m rag_service.audit purge [--days 90]
+
+보관 기간이 지난 기록을 지운다. 매일 한 번 스케줄러(cron, 작업 스케줄러, Kubernetes CronJob)로
+실행한다. 기간은 --days가 없으면 설정 AUDIT_RETENTION_DAYS(기본 90일)를 쓴다.
+"""
+
+import argparse
+from collections.abc import Sequence
+
+from sqlalchemy import Engine, create_engine
+from sqlalchemy.orm import Session
+
+from rag_service.audit.record import purge
+from rag_service.config import get_settings
+
+
+def main(argv: Sequence[str] | None = None, *, engine: Engine | None = None) -> int:
+    parser = argparse.ArgumentParser(prog="python -m rag_service.audit")
+    commands = parser.add_subparsers(dest="command", required=True)
+    purge_parser = commands.add_parser("purge", help="보관 기간이 지난 감사 기록 삭제")
+    purge_parser.add_argument("--days", type=int, help="이 일수보다 오래된 기록을 지운다")
+    args = parser.parse_args(argv)
+
+    settings = get_settings()
+    days = args.days if args.days is not None else settings.audit_retention_days
+    engine = engine or create_engine(settings.database_url)
+    with Session(engine) as session, session.begin():
+        deleted = purge(session, older_than_days=days)
+    print(f"{days}일보다 오래된 감사 기록 {deleted}건 삭제")
+    return 0

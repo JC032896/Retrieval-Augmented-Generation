@@ -3,7 +3,7 @@
 from functools import lru_cache
 from typing import Literal
 
-from pydantic import SecretStr, model_validator
+from pydantic import Field, SecretStr, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 from sqlalchemy import URL
 
@@ -35,6 +35,11 @@ class Settings(BaseSettings):
     oidc_issuer: str | None = None  # 예: https://login.microsoftonline.com/<테넌트>/v2.0
     oidc_audience: str | None = None  # 로그인 시스템에 등록한 이 앱의 id
     oidc_login_claim: str = "email"  # users.login과 맞출 토큰 값
+
+    # 감사 기록 (rag_service.audit). 질문·답변 원문에는 개인정보가 섞일 수 있어 보관 기간을 둔다
+    audit_store_text: bool = True  # false면 원문 대신 길이와 해시만 남긴다
+    audit_retention_days: int = Field(default=90, ge=1)  # purge 명령이 이보다 오래된 기록을 지운다
+    log_level: Literal["DEBUG", "INFO", "WARNING", "ERROR"] = "INFO"
 
     @model_validator(mode="after")
     def _check_oidc(self) -> "Settings":
