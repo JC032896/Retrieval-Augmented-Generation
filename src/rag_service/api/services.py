@@ -48,5 +48,5 @@ def get_services() -> Services:
         reranker=CrossEncoderReranker(),
         tokenizer=KoreanTokenizer(),
         llm=llm,
-        authenticator=build_authenticator(settings.auth_mode),
+        authenticator=build_authenticator(settings.auth_mode, settings.oidc),
     )

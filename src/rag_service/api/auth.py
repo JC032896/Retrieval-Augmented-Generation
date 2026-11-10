@@ -1,8 +1,8 @@
 """요청한 사용자 확인.
 
 신원(누구인가)과 권한 속성(부서, 역할, 보안 등급)을 나눈다.
-- 신원: Authenticator가 요청에서 로그인 id를 꺼낸다. 지금은 개발용 헤더 방식만 있고,
-  다음 단계에서 SSO 표준인 JWT(OIDC) 서명 검증을 더한다.
+- 신원: Authenticator가 요청에서 로그인 id를 꺼낸다. 운영은 회사 로그인 시스템이 발급한
+  OIDC 토큰(oidc.py), 개발과 데모는 X-User-Id 헤더를 쓴다.
 - 권한 속성: 항상 DB users 테이블에서 읽는다. 요청에 실려 온 값은 믿지 않으므로, 퇴사나 등급
   변경이 다음 요청부터 바로 반영되고, 등록되지 않은 사용자는 아무 문서도 보지 못한다.
 """
@@ -14,14 +14,14 @@ from typing import Literal, Protocol
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
+from rag_service.api.errors import AuthError, AuthUnavailableError
+from rag_service.api.oidc import OidcAuthenticator, OidcConfig
 from rag_service.db.models import User
 
-AuthMode = Literal["disabled", "dev_header"]
+__all__ = ["AuthError", "AuthUnavailableError"]  # 오류는 errors.py에 있고 여기서 함께 내보낸다
+
+AuthMode = Literal["disabled", "dev_header", "oidc"]
 DEV_USER_HEADER = "X-User-Id"
-
-
-class AuthError(Exception):
-    """요청에서 사용자를 확인할 수 없다 (HTTP 401)."""
 
 
 @dataclass(frozen=True)
@@ -37,7 +37,10 @@ class CurrentUser:
 
 class Authenticator(Protocol):
     def login(self, headers: Mapping[str, str]) -> str:
-        """요청 헤더에서 확인된 로그인 id를 돌려준다. 확인할 수 없으면 AuthError."""
+        """요청 헤더에서 확인된 로그인 id를 돌려준다.
+
+        확인할 수 없으면 AuthError, 확인 수단(로그인 서버 등)이 멈췄으면 AuthUnavailableError.
+        """
         ...
 
 
@@ -51,10 +54,14 @@ class DevHeaderAuthenticator:
         return value
 
 
-def build_authenticator(mode: AuthMode) -> Authenticator | None:
+def build_authenticator(mode: AuthMode, oidc: OidcConfig | None = None) -> Authenticator | None:
     """disabled면 None. 질문 API는 이때 요청을 받지 않는다."""
     if mode == "dev_header":
         return DevHeaderAuthenticator()
+    if mode == "oidc":
+        if oidc is None:
+            raise ValueError("AUTH_MODE=oidc에는 OIDC_ISSUER와 OIDC_AUDIENCE가 필요합니다")
+        return OidcAuthenticator(oidc)
     return None
 
 

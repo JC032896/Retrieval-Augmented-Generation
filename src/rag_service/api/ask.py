@@ -23,7 +23,7 @@ from pydantic import BaseModel, StringConstraints
 from rag_service.answer.generate import DEFAULT_CONTEXT_SIZE, Answer, stream_answer
 from rag_service.answer.llm import LLMError, StreamingLLM, estimate_cost
 from rag_service.answer.verify import verify_answer
-from rag_service.api.auth import AuthError, CurrentUser, load_user
+from rag_service.api.auth import AuthError, AuthUnavailableError, CurrentUser, load_user
 from rag_service.api.services import Services, get_services
 from rag_service.ingest.tokenizer import KoreanTokenizer
 from rag_service.retrieval.hits import SearchHit
@@ -33,6 +33,8 @@ logger = logging.getLogger(__name__)
 router = APIRouter()
 
 MAX_QUESTION_CHARS = 1000
+# 401 응답에 붙이는 표준 머리글 (토큰을 Bearer 방식으로 보내라는 뜻)
+BEARER_CHALLENGE = {"WWW-Authenticate": "Bearer"}
 
 ServicesDep = Annotated[Services, Depends(get_services)]
 
@@ -49,11 +51,14 @@ def current_user(request: Request, services: ServicesDep) -> CurrentUser:
     try:
         login = services.authenticator.login(request.headers)
     except AuthError as error:
-        raise HTTPException(401, str(error)) from error
+        raise HTTPException(401, str(error), headers=BEARER_CHALLENGE) from error
+    except AuthUnavailableError as error:
+        logger.exception("사용자 확인 수단이 동작하지 않음")
+        raise HTTPException(503, str(error)) from error
     with services.sessions() as session:
         user = load_user(session, login)
     if user is None:
-        raise HTTPException(401, "등록되지 않은 사용자입니다")
+        raise HTTPException(401, "등록되지 않은 사용자입니다", headers=BEARER_CHALLENGE)
     return user
 
 

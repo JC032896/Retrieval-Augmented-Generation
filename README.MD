@@ -274,7 +274,34 @@ curl -N -X POST localhost:8000/ask -H "X-User-Id: kim" -H "Content-Type: applica
 - LLM이 거절 문구로 시작하면 그 텍스트는 흘려보내지 않고 `done(refused=true)`만 보낸다.
   "문서에서"까지만 왔을 때는 판단이 설 때까지 모아 둔다.
 - `AUTH_MODE=dev_header`는 헤더 값을 그대로 믿는 개발·데모 전용이다 (누구나 다른 사람 행세 가능).
-  기본값 `disabled`에서는 질문 API가 503을 돌려준다. SSO(JWT/OIDC) 검증은 다음 단계에서 더한다.
+  기본값 `disabled`에서는 질문 API가 503을 돌려준다.
+
+#### 회사 로그인 연동 (OIDC)
+
+운영에서는 `AUTH_MODE=oidc`로 회사가 이미 쓰는 로그인 시스템의 토큰을 받는다 (`api/oidc.py`).
+OIDC 표준만 구현했으므로 회사마다 코드를 바꾸지 않고 설정만 넣는다.
+
+```
+AUTH_MODE=oidc
+OIDC_ISSUER=https://login.microsoftonline.com/<테넌트 ID>/v2.0   # Microsoft 365
+OIDC_AUDIENCE=<로그인 시스템에 등록한 이 앱의 ID>
+OIDC_LOGIN_CLAIM=email                                         # users.login과 맞출 토큰 값
+```
+
+| 회사 상황 | 로그인 시스템 |
+|---|---|
+| Microsoft 365를 쓰는 회사 | Entra ID |
+| Google Workspace를 쓰는 회사 | Google |
+| 계정 시스템이 없는 회사 | Keycloak(오픈소스)을 함께 띄운다 (배포 단계에서 예시 제공 예정) |
+| SAML 방식의 오래된 사내 SSO | Keycloak이 중계한다 (앱은 계속 OIDC만 쓴다) |
+
+- 요청은 `Authorization: Bearer <토큰>`으로 보낸다. 로그인 서버의 공개 키로 서명, 발급자, 대상 앱,
+  만료를 확인하고, 공개 키 서명 알고리즘만 허용한다 (`none`이나 HS256으로 위조한 토큰 거부).
+- 공개 키는 캐시한다. 모르는 키 id가 오면 키 교체로 보고 다시 받되, 위조 토큰으로 로그인 서버에
+  요청이 몰리지 않게 60초에 한 번으로 제한한다.
+- 로그인 서버에 연결할 수 없으면 503, 토큰이 잘못됐으면 401(`WWW-Authenticate: Bearer`)이다.
+- 메일 주소로 사용자를 찾을 때는 소문자로 바꾸고, 로그인 서버가 확인 안 된 메일이라고 표시한
+  토큰은 거부한다. 이때 `users.login`(수집 시 `org.yaml`의 id)도 소문자 메일 주소여야 한다.
 
 ---
 

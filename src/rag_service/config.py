@@ -3,9 +3,11 @@
 from functools import lru_cache
 from typing import Literal
 
-from pydantic import SecretStr
+from pydantic import SecretStr, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 from sqlalchemy import URL
+
+from rag_service.api.oidc import OidcConfig, check_issuer_url
 
 
 class Settings(BaseSettings):
@@ -28,7 +30,25 @@ class Settings(BaseSettings):
     # API가 요청한 사용자를 확인하는 방식 (rag_service.api.auth 참고)
     # - disabled: 질문 API를 막는다 (기본값. 설정하지 않은 서버가 열린 채로 뜨지 않게)
     # - dev_header: X-User-Id 헤더를 그대로 믿는다. 개발과 데모 전용 (누구나 다른 사람 행세 가능)
-    auth_mode: Literal["disabled", "dev_header"] = "disabled"
+    # - oidc: 회사 로그인 시스템이 발급한 토큰을 검증한다 (운영용, OIDC_* 설정 필요)
+    auth_mode: Literal["disabled", "dev_header", "oidc"] = "disabled"
+    oidc_issuer: str | None = None  # 예: https://login.microsoftonline.com/<테넌트>/v2.0
+    oidc_audience: str | None = None  # 로그인 시스템에 등록한 이 앱의 id
+    oidc_login_claim: str = "email"  # users.login과 맞출 토큰 값
+
+    @model_validator(mode="after")
+    def _check_oidc(self) -> "Settings":
+        if self.auth_mode == "oidc":
+            if not self.oidc_issuer or not self.oidc_audience:
+                raise ValueError("AUTH_MODE=oidc에는 OIDC_ISSUER와 OIDC_AUDIENCE가 필요합니다")
+            check_issuer_url(self.oidc_issuer)
+        return self
+
+    @property
+    def oidc(self) -> OidcConfig | None:
+        if not self.oidc_issuer or not self.oidc_audience:
+            return None
+        return OidcConfig(self.oidc_issuer, self.oidc_audience, self.oidc_login_claim)
 
     @property
     def database_url(self) -> URL:
