@@ -19,7 +19,8 @@ import time
 import uuid
 from collections.abc import Callable, Generator
 from dataclasses import asdict
-from typing import Annotated, Any
+from datetime import UTC, datetime
+from typing import Annotated, Any, NoReturn
 
 from fastapi import APIRouter, Depends, HTTPException, Request
 from fastapi.sse import EventSourceResponse, format_sse_event
@@ -30,6 +31,7 @@ from rag_service.answer.llm import LLMError, StreamingLLM, estimate_cost
 from rag_service.answer.prompt import SYSTEM_PROMPT, build_prompt
 from rag_service.answer.verify import verify_answer
 from rag_service.api.auth import AuthError, AuthUnavailableError, CurrentUser, load_user
+from rag_service.api.limits import LimitExceeded, check_daily
 from rag_service.api.services import Services, get_services
 from rag_service.audit.record import AskResult, Outcome, build_entry, write_entry
 from rag_service.audit.request import llm_params
@@ -97,19 +99,33 @@ def ask(
     request_id = uuid.uuid4().hex
     started = time.perf_counter()
     with services.sessions() as session:
-        hits = search(
-            session,
-            query=body.question,
-            query_vector=services.embedder.embed([body.question])[0],
-            viewer=user,
-            tokenizer=services.tokenizer,
-            retriever="vector_rerank",  # 평가 1위 (README 6절)
-            limit=DEFAULT_CONTEXT_SIZE,
-            reranker=services.reranker,
-        )
+        exceeded = check_daily(session, user.login, services.limits, datetime.now(UTC))
+    slot = (
+        exceeded
+        if exceeded is not None
+        else services.in_flight.acquire(user.login, services.limits.concurrent_per_user)
+    )
+    if isinstance(slot, LimitExceeded):
+        _reject(slot, user=user, client_ip=_client_ip(request))
+    try:
+        with services.sessions() as session:
+            hits = search(
+                session,
+                query=body.question,
+                query_vector=services.embedder.embed([body.question])[0],
+                viewer=user,
+                tokenizer=services.tokenizer,
+                retriever="vector_rerank",  # 평가 1위 (README 6절)
+                limit=DEFAULT_CONTEXT_SIZE,
+                reranker=services.reranker,
+            )
+    except BaseException:
+        services.in_flight.release(slot)
+        raise
     retrieval_ms = _elapsed_ms(started)
 
     def finish(result: AskResult) -> None:
+        services.in_flight.release(slot)
         record_ask(
             services,
             request_id=request_id,
@@ -131,6 +147,19 @@ def ask(
     # 프록시(nginx 등)가 응답을 모아 두지 않고 바로 흘려보내게 한다
     headers = {"Cache-Control": "no-cache", "X-Accel-Buffering": "no", "X-Request-ID": request_id}
     return EventSourceResponse(events, headers=headers)
+
+
+def _reject(exceeded: LimitExceeded, *, user: CurrentUser, client_ip: str | None) -> NoReturn:
+    """한도 초과: 운영 로그를 남기고 429로 끝낸다 (LLM을 부르지 않으므로 감사 기록은 없다)."""
+    log_event(
+        logger,
+        "rate_limited",
+        level=logging.WARNING,
+        reason=exceeded.reason,
+        user=user.login,
+        client_ip=client_ip,
+    )
+    raise HTTPException(429, exceeded.message, headers={"Retry-After": str(exceeded.retry_after)})
 
 
 def answer_events(

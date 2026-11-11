@@ -26,6 +26,13 @@ class Settings(BaseSettings):
     llm_model: str = "claude-sonnet-5-5"
     llm_effort: Literal["low", "medium", "high"] = "medium"
     llm_timeout_seconds: float = 120.0
+    # LLM 사용 한도 (rag_service.api.limits). 비우면 그 한도를 두지 않는다. 넘으면 질문 API가 429
+    llm_daily_requests_per_user: int | None = Field(default=200, ge=1)  # 사용자별 하루 질문 수
+    llm_daily_budget_usd: float | None = Field(default=20.0, gt=0)  # 회사 전체 하루 비용 (달러)
+    llm_concurrent_per_user: int | None = Field(
+        default=3, ge=1
+    )  # 사용자별 동시 질문 (프로세스마다)
+    usage_utc_offset_hours: int = Field(default=9, ge=-12, le=14)  # "하루"의 기준 시간대 (9 = 한국)
 
     # API가 요청한 사용자를 확인하는 방식 (rag_service.api.auth 참고)
     # - disabled: 질문 API를 막는다 (기본값. 설정하지 않은 서버가 열린 채로 뜨지 않게)
