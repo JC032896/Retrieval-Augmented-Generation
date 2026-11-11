@@ -1,0 +1,126 @@
+{
+  "realm": "hanbit",
+  "displayName": "한빛소프트 (데모)",
+  "enabled": true,
+  "accessTokenLifespan": 900,
+  "clients": [
+    {
+      "clientId": "rag-service",
+      "name": "사내 문서 질의 (데모)",
+      "enabled": true,
+      "publicClient": true,
+      "standardFlowEnabled": true,
+      "directAccessGrantsEnabled": true,
+      "redirectUris": [
+        "http://localhost:*"
+      ],
+      "webOrigins": [
+        "+"
+      ],
+      "protocolMappers": [
+        {
+          "name": "rag-service audience",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-audience-mapper",
+          "config": {
+            "included.client.audience": "rag-service",
+            "access.token.claim": "true",
+            "id.token.claim": "false"
+          }
+        }
+      ]
+    }
+  ],
+  "users": [
+    {
+      "username": "kim",
+      "enabled": true,
+      "email": "kim@hanbit.example",
+      "emailVerified": true,
+      "firstName": "사원",
+      "lastName": "김",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "demo-kim",
+          "temporary": false
+        }
+      ]
+    },
+    {
+      "username": "lee",
+      "enabled": true,
+      "email": "lee@hanbit.example",
+      "emailVerified": true,
+      "firstName": "팀장",
+      "lastName": "이",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "demo-lee",
+          "temporary": false
+        }
+      ]
+    },
+    {
+      "username": "park",
+      "enabled": true,
+      "email": "park@hanbit.example",
+      "emailVerified": true,
+      "firstName": "인사",
+      "lastName": "박",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "demo-park",
+          "temporary": false
+        }
+      ]
+    },
+    {
+      "username": "choi",
+      "enabled": true,
+      "email": "choi@hanbit.example",
+      "emailVerified": true,
+      "firstName": "재무",
+      "lastName": "최",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "demo-choi",
+          "temporary": false
+        }
+      ]
+    },
+    {
+      "username": "jung",
+      "enabled": true,
+      "email": "jung@hanbit.example",
+      "emailVerified": true,
+      "firstName": "영업",
+      "lastName": "정",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "demo-jung",
+          "temporary": false
+        }
+      ]
+    },
+    {
+      "username": "han",
+      "enabled": true,
+      "email": "han@hanbit.example",
+      "emailVerified": true,
+      "firstName": "임원",
+      "lastName": "한",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "demo-han",
+          "temporary": false
+        }
+      ]
+    }
+  ]
+}

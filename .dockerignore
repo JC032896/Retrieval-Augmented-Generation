@@ -1,0 +1,18 @@
+# 이미지에는 Dockerfile이 COPY하는 것만 필요하다. 비밀(.env)과 개발 파일이 빌드 문맥에 들어가지 않게 한다
+**/.env
+**/.env.*
+.git
+.venv
+.claude
+.mypy_cache
+.ruff_cache
+.pytest_cache
+.coverage
+**/__pycache__
+tests
+eval
+docs
+samples
+deploy
+CODEREVIEW.md
+RESEARCH.md

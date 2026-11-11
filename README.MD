@@ -118,7 +118,8 @@
 - [x] **3단계: 검색**: 벡터 검색 → BM25 추가 → RRF → 리랭커. 단계마다 평가해서 비교표 작성
 - [x] **4단계: 답변 생성**: 인용 프롬프트, 거절 기준값 조정, 인용 검증, SSE 스트리밍, 회사 로그인(OIDC)
 - [x] **5단계: CI**: GitHub Actions에서 평가 실행과 품질 게이트 (보호 경로 해시 재계산 포함)
-- [ ] **6단계: 운영 준비**: 로그와 감사 기록, LLM 사용 한도, 배포(앱 이미지, Keycloak 예시, `/health` DB 확인)
+- [x] **6단계: 운영 준비**: 로그와 감사 기록, LLM 사용 한도, 설치형 배포(앱 이미지, 운영 compose, Keycloak 예시, `/health`·`/ready`)
+  - [ ] 6-4: 답변 LLM 선택(Claude API 또는 사내 모델: OpenAI 호환 API로 vLLM·Ollama 연결)
 - [ ] **7단계: 서비스화**: 증분 수집, Celery 비동기 수집, UI, 데모 GIF
 
 
@@ -457,6 +458,32 @@ uv run python scripts/replay.py 42 --call               # 같은 요청을 LLM�
 - 감사 테이블을 읽으므로 감사자 계정(`rag_auditor`)으로 실행한다.
 - 한계: 템플릿 버전이 다르면 지금 코드로는 재현하지 않는다 (그 버전의 코드로 실행). LLM은 같은 요청에도
   답이 달라질 수 있어, `--call`의 답이 당시 답과 같다는 보장은 없다. 재현을 보장하는 것은 "요청"이다.
+
+### 설치형 배포 (6단계)
+
+회사 서버에 Docker Compose로 설치한다. 절차, 정기 작업, 백업·복구, 폐쇄망 설치는 [deploy/README.md](deploy/README.md).
+
+| 파일 | 내용 |
+|---|---|
+| `Dockerfile` | 앱 이미지(약 2.5GB, CPU용 PyTorch). 모델 파일은 넣지 않고 `/models` 볼륨에서 읽는다 |
+| `deploy/compose.yaml` | `db`(포트 비공개) → `migrate`(스키마, 로그인 계정) → `app`(127.0.0.1만), 선택 `keycloak` |
+| `deploy/.env.example` | 운영 설정. 소유자·앱·감사자 비밀번호를 나누고, 앱 컨테이너에는 소유자 비밀번호를 넘기지 않는다 |
+| `deploy/keycloak/hanbit-realm.json` | 데모 로그인: `samples/org.yaml`의 직원 6명과 이 앱(토큰 대상 `rag-service`) |
+
+- **모델 준비**: `python -m rag_service.deploy download-models`로 볼륨에 한 번 받고, 앱은 `HF_HUB_OFFLINE=1`로
+  읽는다. 폐쇄망이면 받아 둔 모델 폴더를 복사해 넣는다. 서버가 시작할 때 미리 읽어서(`PRELOAD_MODELS=true`)
+  첫 사용자가 기다리지 않는다. 읽는 동안 `/ask`는 503(`Retry-After: 30`)이다.
+- **상태 확인**: `/health`는 DB, 모델(`lazy|loading|ready|error`), 인덱스 신선도 요약(항상 200).
+  `/ready`는 질문을 받을 수 있을 때만 200이라 컨테이너 상태 검사와 부하 분산기에 쓴다.
+- **계정**: `migrate`가 `python -m rag_service.deploy create-db-users`로 앱 계정(`rag_app` 역할)과 감사 담당
+  계정(`rag_auditor` 역할)을 만든다. 수집은 앱 계정, 보관 기간 삭제는 소유자 계정으로 실행한다.
+- **검증(2026-11-11, 이 PC)**: 이미지 빌드 → 모델 볼륨(복사, 오프라인) → `up` → 모델 읽기 13초 → `/ready` 200 →
+  샘플 22개 수집과 `check` 오류 0 → Keycloak 토큰(kim)으로 `/ask` 인증 통과(API 키를 넣지 않아 503에서 멈춤),
+  위조 토큰 401 → 실제 DB에서 앱 계정은 `audit_log`를, 감사 계정은 `documents`를 읽을 수 없음.
+- **설정 빈 값**: compose는 비운 변수를 빈 문자열로 넘기므로, 빈 값은 "설정 안 함"으로 읽는다
+  (예: `LLM_DAILY_BUDGET_USD=`이면 예산 한도 없음).
+- **한계**: 답변은 Claude API(외부 호출)뿐이라 완전 폐쇄망은 아직 안 된다(6-4). Keycloak 예시는 데모 설정
+  (http, 고정 비밀번호, password grant)이고, Kubernetes(Helm)는 제공하지 않는다(무엇을 바꾸면 되는지만 정리).
 
 ### 배포: DB 계정 분리
 

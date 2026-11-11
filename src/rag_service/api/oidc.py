@@ -19,7 +19,7 @@ import json
 import threading
 import time
 import urllib.request
-from collections.abc import Callable, Mapping
+from collections.abc import Callable, Mapping, Sequence
 from dataclasses import dataclass
 from typing import Any
 from urllib.parse import urlparse
@@ -42,12 +42,19 @@ class OidcConfig:
     issuer: str  # 로그인 서버 주소. 토큰의 iss와 정확히 같아야 한다
     audience: str  # 이 앱의 id. 토큰의 aud에 있어야 한다
     login_claim: str = "email"  # users.login과 맞출 토큰 값 (Keycloak은 preferred_username도 흔함)
+    # http를 허용할 내부 호스트 (예: compose 네트워크 안의 "keycloak"). 운영에서는 비워 둔다
+    allow_http_hosts: tuple[str, ...] = ()
 
 
-def check_issuer_url(issuer: str) -> str:
-    """https만 허용한다. 개발용 로그인 서버(localhost)만 예외로 http를 허용한다."""
+def check_issuer_url(issuer: str, allow_http_hosts: Sequence[str] = ()) -> str:
+    """https만 허용한다. 개발용 로그인 서버(localhost)와 명시한 내부 호스트만 http를 허용한다.
+
+    allow_http_hosts는 같은 docker 네트워크 안의 데모용 Keycloak처럼 외부에 노출되지 않는
+    경우에만 쓴다 (OIDC_ALLOW_HTTP_HOSTS). 토큰 서명은 그대로 검증하지만, 공개 키를 받는
+    통신은 암호화되지 않는다.
+    """
     url = urlparse(issuer)
-    local = url.hostname in ("localhost", "127.0.0.1")
+    local = url.hostname in ("localhost", "127.0.0.1", *allow_http_hosts)
     if url.scheme == "https" or (url.scheme == "http" and local):
         return issuer
     raise ValueError(f"OIDC 발급자 주소는 https여야 합니다: {issuer}")
@@ -118,7 +125,7 @@ class SigningKeys:
 class OidcAuthenticator:
     def __init__(self, config: OidcConfig, *, keys: SigningKeys | None = None) -> None:
         self.config = config
-        self._keys = keys or SigningKeys(check_issuer_url(config.issuer))
+        self._keys = keys or SigningKeys(check_issuer_url(config.issuer, config.allow_http_hosts))
 
     def login(self, headers: Mapping[str, str]) -> str:
         token = _bearer_token(headers)

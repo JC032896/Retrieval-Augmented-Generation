@@ -3,7 +3,7 @@
 from functools import lru_cache
 from typing import Literal
 
-from pydantic import Field, SecretStr, model_validator
+from pydantic import Field, SecretStr, field_validator, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 from sqlalchemy import URL
 
@@ -42,6 +42,8 @@ class Settings(BaseSettings):
     oidc_issuer: str | None = None  # 예: https://login.microsoftonline.com/<테넌트>/v2.0
     oidc_audience: str | None = None  # 로그인 시스템에 등록한 이 앱의 id
     oidc_login_claim: str = "email"  # users.login과 맞출 토큰 값
+    # http를 허용할 내부 호스트 (쉼표로 구분). deploy/의 데모 Keycloak("keycloak") 전용, 운영은 비움
+    oidc_allow_http_hosts: str = ""
 
     # 감사 기록 (rag_service.audit). 질문·답변 원문에는 개인정보가 섞일 수 있어 보관 기간을 둔다
     audit_store_text: bool = True  # false면 원문 대신 길이와 해시만 남긴다
@@ -49,9 +51,26 @@ class Settings(BaseSettings):
     # 비우면(기본) 지우지 않는다. 보관 기간은 회사의 개인정보·감사 정책으로 정한다
     audit_retention_days: int | None = Field(default=None, ge=1)
     log_level: Literal["DEBUG", "INFO", "WARNING", "ERROR"] = "INFO"
+    # 서버 시작 때 임베딩·리랭커 모델을 미리 읽는다 (rag_service.api.readiness). 운영 compose는 true
+    preload_models: bool = False
     # LLM 요청 원문(근거 조각 본문 포함)을 DEBUG 로그로 남긴다. 개발 전용이라 AUTH_MODE=oidc와 함께
     # 켤 수 없고, LOG_LEVEL=DEBUG일 때만 실제로 출력된다
     log_prompts: bool = False
+
+    @field_validator(
+        "anthropic_api_key",
+        "oidc_issuer",
+        "oidc_audience",
+        "audit_retention_days",
+        "llm_daily_requests_per_user",
+        "llm_daily_budget_usd",
+        "llm_concurrent_per_user",
+        mode="before",
+    )
+    @classmethod
+    def _empty_is_unset(cls, value: object) -> object:
+        """빈 값(KEY=)은 설정하지 않은 것으로 본다. compose는 비운 변수도 빈 문자열로 넘긴다."""
+        return None if value == "" else value
 
     @model_validator(mode="after")
     def _check_oidc(self) -> "Settings":
@@ -60,14 +79,20 @@ class Settings(BaseSettings):
         if self.auth_mode == "oidc":
             if not self.oidc_issuer or not self.oidc_audience:
                 raise ValueError("AUTH_MODE=oidc에는 OIDC_ISSUER와 OIDC_AUDIENCE가 필요합니다")
-            check_issuer_url(self.oidc_issuer)
+            check_issuer_url(self.oidc_issuer, self.allow_http_hosts)
         return self
 
     @property
     def oidc(self) -> OidcConfig | None:
         if not self.oidc_issuer or not self.oidc_audience:
             return None
-        return OidcConfig(self.oidc_issuer, self.oidc_audience, self.oidc_login_claim)
+        return OidcConfig(
+            self.oidc_issuer, self.oidc_audience, self.oidc_login_claim, self.allow_http_hosts
+        )
+
+    @property
+    def allow_http_hosts(self) -> tuple[str, ...]:
+        return tuple(h.strip() for h in self.oidc_allow_http_hosts.split(",") if h.strip())
 
     @property
     def database_url(self) -> URL:

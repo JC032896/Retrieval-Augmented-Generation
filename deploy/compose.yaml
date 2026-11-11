@@ -1,0 +1,114 @@
+# 설치형 배포 예시 (서버 한 대). 사용법은 deploy/README.md
+#   cd deploy && cp .env.example .env   # 비밀번호와 API 키를 채운다
+#   docker compose build
+#   docker compose run --rm -e HF_HUB_OFFLINE=0 app python -m rag_service.deploy download-models
+#   docker compose up -d                 # 로그인 시스템이 없으면: docker compose --profile keycloak up -d
+#   docker compose run --rm app python -m rag_service.ingest /data/corpus
+#
+# 원칙
+# - DB는 포트를 열지 않는다 (같은 compose 네트워크의 컨테이너만 접속)
+# - 앱은 이 서버(127.0.0.1)에만 연다. 직원 접속은 회사 리버스 프록시(HTTPS)를 앞에 둔다
+# - 계정을 나눈다: 마이그레이션·보관 기간 삭제는 소유자 계정, 앱은 rag_app 역할의 로그인 계정
+# - 비밀은 .env에서 읽고, 서비스마다 필요한 값만 넘긴다 (앱 컨테이너는 소유자 비밀번호를 모른다)
+
+name: rag-service
+
+x-app-image: &app-image
+  image: ${APP_IMAGE:-rag-service:latest}
+  build:
+    context: ..
+    dockerfile: Dockerfile
+
+services:
+  db:
+    image: pgvector/pgvector:pg17
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${DB_OWNER_USER:-rag_owner}
+      POSTGRES_PASSWORD: ${DB_OWNER_PASSWORD:?DB_OWNER_PASSWORD를 .env에 설정하세요}
+      POSTGRES_DB: ${DB_NAME:-rag}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+  # 시작할 때마다 한 번 실행하고 끝난다: 스키마를 최신으로 올리고 앱·감사자 로그인 계정을 맞춘다.
+  # 보관 기간 삭제도 이 서비스(소유자 계정)로 실행한다:
+  #   docker compose run --rm migrate python -m rag_service.audit purge
+  migrate:
+    <<: *app-image
+    command: ["sh", "-c", "alembic upgrade head && python -m rag_service.deploy create-db-users"]
+    restart: "no"
+    environment:
+      POSTGRES_HOST: db
+      POSTGRES_DB: ${DB_NAME:-rag}
+      POSTGRES_USER: ${DB_OWNER_USER:-rag_owner}
+      POSTGRES_PASSWORD: ${DB_OWNER_PASSWORD}
+      APP_DB_USER: ${APP_DB_USER:-rag_service}
+      APP_DB_PASSWORD: ${APP_DB_PASSWORD:?APP_DB_PASSWORD를 .env에 설정하세요}
+      AUDIT_DB_USER: ${AUDIT_DB_USER:-rag_audit_ops}
+      AUDIT_DB_PASSWORD: ${AUDIT_DB_PASSWORD:-}
+      AUDIT_RETENTION_DAYS: ${AUDIT_RETENTION_DAYS-}
+    depends_on:
+      db:
+        condition: service_healthy
+
+  app:
+    <<: *app-image
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:${APP_PORT:-8000}:8000"
+    volumes:
+      - models:/models
+      # 수집할 문서 폴더 (org.yaml, acl.yaml, docs/). 앱은 읽기만 한다
+      - ${CORPUS_DIR:-../samples}:/data/corpus:ro
+    environment:
+      POSTGRES_HOST: db
+      POSTGRES_DB: ${DB_NAME:-rag}
+      POSTGRES_USER: ${APP_DB_USER:-rag_service}
+      POSTGRES_PASSWORD: ${APP_DB_PASSWORD}
+      PRELOAD_MODELS: "true"
+      HF_HUB_OFFLINE: "1"
+      # 리버스 프록시가 보내는 X-Forwarded-For를 믿을 주소 (감사 기록의 client_ip)
+      FORWARDED_ALLOW_IPS: ${FORWARDED_ALLOW_IPS:-127.0.0.1}
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
+      LLM_MODEL: ${LLM_MODEL:-claude-sonnet-5-5}
+      AUTH_MODE: ${AUTH_MODE:-oidc}
+      OIDC_ISSUER: ${OIDC_ISSUER:-}
+      OIDC_AUDIENCE: ${OIDC_AUDIENCE:-}
+      OIDC_LOGIN_CLAIM: ${OIDC_LOGIN_CLAIM:-email}
+      OIDC_ALLOW_HTTP_HOSTS: ${OIDC_ALLOW_HTTP_HOSTS:-}
+      AUDIT_STORE_TEXT: ${AUDIT_STORE_TEXT:-true}
+      # 값을 비우면(KEY=) 그 한도를 두지 않는다. 변수가 아예 없으면 기본값
+      LLM_DAILY_REQUESTS_PER_USER: ${LLM_DAILY_REQUESTS_PER_USER-200}
+      LLM_DAILY_BUDGET_USD: ${LLM_DAILY_BUDGET_USD-20}
+      LLM_CONCURRENT_PER_USER: ${LLM_CONCURRENT_PER_USER-3}
+      LOG_LEVEL: ${LOG_LEVEL:-INFO}
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+
+  # 로그인 시스템이 없는 회사용 (선택). samples/org.yaml의 직원을 미리 넣은 데모 realm을 읽는다.
+  # 데모 비밀번호와 http는 운영에서 쓰지 않는다 (deploy/README.md "Keycloak" 참고)
+  keycloak:
+    image: quay.io/keycloak/keycloak:26.0
+    profiles: ["keycloak"]
+    command: ["start-dev", "--import-realm"]
+    restart: unless-stopped
+    environment:
+      KC_BOOTSTRAP_ADMIN_USERNAME: admin
+      KC_BOOTSTRAP_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD:?KEYCLOAK_ADMIN_PASSWORD를 .env에 설정하세요}
+      # 토큰의 발급자(iss)를 앱이 접속하는 주소로 고정한다. 관리 화면은 이 서버의 localhost로 연다
+      KC_HOSTNAME: http://keycloak:8080
+      KC_HOSTNAME_ADMIN: http://localhost:8080
+    volumes:
+      - ./keycloak:/opt/keycloak/data/import:ro
+    ports:
+      - "127.0.0.1:8080:8080"
+
+volumes:
+  pgdata:
+  models:

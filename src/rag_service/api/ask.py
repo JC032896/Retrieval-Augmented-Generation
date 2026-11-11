@@ -32,6 +32,7 @@ from rag_service.answer.prompt import SYSTEM_PROMPT, build_prompt
 from rag_service.answer.verify import verify_answer
 from rag_service.api.auth import AuthError, AuthUnavailableError, CurrentUser, load_user
 from rag_service.api.limits import LimitExceeded, check_daily
+from rag_service.api.readiness import require_models
 from rag_service.api.services import Services, get_services
 from rag_service.audit.record import AskResult, Outcome, build_entry, write_entry
 from rag_service.audit.request import llm_params
@@ -87,7 +88,11 @@ def current_user(request: Request, services: ServicesDep) -> CurrentUser:
 
 # response_class=EventSourceResponse는 함수가 생성기일 때 쓰는 표시다. 여기서는 검색을 응답 전에
 # 끝내려고 일반 함수에서 응답 객체를 직접 돌려주므로, 문서(OpenAPI)에만 형식을 적는다
-@router.post("/ask", responses={200: {"content": {"text/event-stream": {}}}})
+@router.post(
+    "/ask",
+    responses={200: {"content": {"text/event-stream": {}}}},
+    dependencies=[Depends(require_models)],  # 모델을 미리 읽는 중이면 503 (다른 의존성보다 먼저)
+)
 def ask(
     request: Request,
     body: AskRequest,
