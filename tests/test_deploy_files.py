@@ -15,18 +15,19 @@ ROOT = Path(__file__).resolve().parents[1]
 DEPLOY = ROOT / "deploy"
 
 
-def _compose() -> dict[str, Any]:
-    data: dict[str, Any] = yaml.safe_load((DEPLOY / "compose.yaml").read_text(encoding="utf-8"))
+def _compose(name: str = "compose.yaml") -> dict[str, Any]:
+    data: dict[str, Any] = yaml.safe_load((DEPLOY / name).read_text(encoding="utf-8"))
     return data
 
 
 def test_database_is_not_published_and_app_listens_on_localhost_only() -> None:
     services = _compose()["services"]
+    demo = _compose("compose.override.yaml")["services"]
 
     assert "ports" not in services["db"]
     assert all(port.startswith("127.0.0.1:") for port in services["app"]["ports"])
-    assert all(port.startswith("127.0.0.1:") for port in services["keycloak"]["ports"])
-    assert services["keycloak"]["profiles"] == ["keycloak"]
+    assert all(port.startswith("127.0.0.1:") for port in demo["keycloak"]["ports"])
+    assert services["ollama"]["profiles"] == ["ollama"]
 
 
 def test_app_uses_its_own_account_and_never_sees_the_owner_password() -> None:
@@ -34,9 +35,12 @@ def test_app_uses_its_own_account_and_never_sees_the_owner_password() -> None:
     app = services["app"]["environment"]
 
     assert app["POSTGRES_USER"] == "${APP_DB_USER:-rag_service}"
+    assert app["POSTGRES_PASSWORD_FILE"] == "/run/rag/app/app_db_password"
     assert "DB_OWNER" not in json.dumps(app)
+    assert not any("owner" in str(volume) for volume in services["app"]["volumes"])
     assert (app["HF_HUB_OFFLINE"], app["PRELOAD_MODELS"]) == ("1", "true")
-    assert "DB_OWNER_PASSWORD" in json.dumps(services["migrate"]["environment"])
+    migrate = services["migrate"]["environment"]
+    assert migrate["POSTGRES_PASSWORD_FILE"] == "/run/rag/owner/db_owner_password"
     assert services["app"]["depends_on"] == {
         "migrate": {"condition": "service_completed_successfully"}
     }
