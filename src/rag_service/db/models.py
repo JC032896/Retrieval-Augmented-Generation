@@ -67,6 +67,9 @@ class Document(Base):
     embedding_model: Mapped[str | None] = mapped_column(Text)  # 이 문서의 조각을 임베딩한 모델
     effective_from: Mapped[date | None] = mapped_column(Date)  # 시행일 (비면 미상)
     effective_to: Mapped[date | None] = mapped_column(Date)  # 마지막 유효일 포함 (비면 미상/현재)
+    # 증분 수집 (마이그레이션 0006). --prune은 같은 corpus_root의 문서만 지운다
+    corpus_root: Mapped[str | None] = mapped_column(Text)  # 수집한 코퍼스 폴더 (절대 경로)
+    synced_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))  # 마지막 동기화
 
 
 class DocumentAcl(Base):
