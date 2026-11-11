@@ -10,7 +10,8 @@ from functools import lru_cache
 from sqlalchemy import create_engine
 from sqlalchemy.orm import Session, sessionmaker
 
-from rag_service.answer.llm import ClaudeLLM, StreamingLLM
+from rag_service.answer.llm import StreamingLLM
+from rag_service.answer.providers import build_llm
 from rag_service.api.auth import Authenticator, build_authenticator
 from rag_service.api.limits import InFlight, UsageLimits
 from rag_service.audit.record import AuditPolicy
@@ -36,17 +37,7 @@ class Services:
 @lru_cache
 def get_services() -> Services:
     settings = get_settings()
-    key = settings.anthropic_api_key
-    llm = (
-        None
-        if key is None
-        else ClaudeLLM(
-            model=settings.llm_model,
-            api_key=key.get_secret_value(),
-            effort=settings.llm_effort,
-            timeout=settings.llm_timeout_seconds,
-        )
-    )
+    llm = build_llm(settings)
     return Services(
         sessions=sessionmaker(create_engine(settings.database_url, pool_pre_ping=True)),
         embedder=SentenceTransformerEmbedder(),

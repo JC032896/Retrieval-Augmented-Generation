@@ -18,6 +18,8 @@ from sqlalchemy import Engine, create_engine, select
 from sqlalchemy.orm import Session
 
 from rag_service.answer.llm import LLM, ClaudeLLM
+from rag_service.answer.openai_compat import PROVIDER as OPENAI_COMPATIBLE
+from rag_service.answer.openai_compat import OpenAICompatibleLLM
 from rag_service.answer.prompt import PROMPT_TEMPLATE_VERSION, SYSTEM_PROMPT, build_prompt
 from rag_service.audit.models import AuditLog, ChunkSnapshot
 from rag_service.audit.request import hits_from_snapshot, llm_params, request_sha256
@@ -59,7 +61,17 @@ def rebuild_prompt(session: Session, entry: AuditLog, question: str) -> str:
 
 
 def default_llm_factory(params: Mapping[str, Any]) -> LLM:
-    key = get_settings().anthropic_api_key
+    """당시 파라미터로 같은 LLM을 만든다. 키는 지금 설정에서 읽는다 (감사 기록에는 키가 없다)."""
+    settings = get_settings()
+    if params.get("provider") == OPENAI_COMPATIBLE:
+        local_key = settings.llm_api_key
+        return OpenAICompatibleLLM(
+            base_url=params["base_url"],
+            model=params["model"],
+            api_key=local_key.get_secret_value() if local_key else None,
+            max_tokens=params["max_tokens"],
+        )
+    key = settings.anthropic_api_key
     return ClaudeLLM(
         model=params["model"],
         api_key=key.get_secret_value() if key else None,

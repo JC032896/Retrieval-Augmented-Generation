@@ -103,7 +103,10 @@ curl -N -X POST localhost:8000/ask -H "Authorization: Bearer $TOKEN" -H "Content
 3. 앱은 `HF_HUB_OFFLINE=1`(기본값)로 인터넷 없이 모델을 읽는다.
 
 **남는 외부 통신은 Claude API(답변 생성)뿐이다.** 질문할 때 근거 문서 조각이 Anthropic으로 전송되므로
-회사 보안 정책의 허용이 필요하다. 완전 폐쇄망이면 답변 LLM을 사내 모델로 바꿔야 한다 (로드맵 6-4).
+회사 보안 정책의 허용이 필요하다. 완전 폐쇄망이면 답변 LLM을 사내 모델로 바꾼다:
+`LLM_PROVIDER=openai_compatible`, `LLM_BASE_URL`(사내 vLLM·Ollama 주소), `LLM_MODEL`.
+함께 띄우는 예시는 `docker compose --profile ollama up -d` 후 `docker compose exec ollama ollama pull <모델>`
+(모델 파일도 인터넷이 되는 곳에서 받아 볼륨째 옮긴다). 품질 차이는 README "답변 LLM 선택" 참고.
 
 ## 규모가 커지면
 | | 이 compose | 바꿀 것 |

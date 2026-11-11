@@ -23,6 +23,11 @@ class Settings(BaseSettings):
 
     # 답변 생성 LLM. 키는 .env의 ANTHROPIC_API_KEY에만 둔다 (커밋 금지)
     anthropic_api_key: SecretStr | None = None
+    # 답변 LLM 제공자 (answer/providers.py). openai_compatible이면 사내 서버(vLLM, Ollama 등)를
+    # 부르고, LLM_MODEL은 그 서버의 모델 이름이다. 평가 결과는 README "답변 LLM 선택" 참고
+    llm_provider: Literal["claude", "openai_compatible"] = "claude"
+    llm_base_url: str | None = None  # 예: http://gpu-server:8000/v1 (openai_compatible에서만)
+    llm_api_key: SecretStr | None = None  # 사내 서버가 키를 요구할 때만
     llm_model: str = "claude-sonnet-5-5"
     llm_effort: Literal["low", "medium", "high"] = "medium"
     llm_timeout_seconds: float = 120.0
@@ -59,6 +64,8 @@ class Settings(BaseSettings):
 
     @field_validator(
         "anthropic_api_key",
+        "llm_base_url",
+        "llm_api_key",
         "oidc_issuer",
         "oidc_audience",
         "audit_retention_days",
@@ -74,6 +81,12 @@ class Settings(BaseSettings):
 
     @model_validator(mode="after")
     def _check_oidc(self) -> "Settings":
+        if self.llm_provider == "openai_compatible" and not (
+            self.llm_base_url and self.llm_base_url.startswith(("http://", "https://"))
+        ):
+            raise ValueError(
+                "LLM_PROVIDER=openai_compatible에는 LLM_BASE_URL(http/https)이 필요합니다"
+            )
         if self.log_prompts and self.auth_mode == "oidc":
             raise ValueError("LOG_PROMPTS는 개발 전용입니다 (AUTH_MODE=oidc와 함께 켤 수 없음)")
         if self.auth_mode == "oidc":

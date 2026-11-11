@@ -74,8 +74,12 @@ services:
       HF_HUB_OFFLINE: "1"
       # 리버스 프록시가 보내는 X-Forwarded-For를 믿을 주소 (감사 기록의 client_ip)
       FORWARDED_ALLOW_IPS: ${FORWARDED_ALLOW_IPS:-127.0.0.1}
+      # 답변 LLM: claude(기본) 또는 openai_compatible(사내 vLLM·Ollama, 아래 ollama 서비스 참고)
+      LLM_PROVIDER: ${LLM_PROVIDER:-claude}
       ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
       LLM_MODEL: ${LLM_MODEL:-claude-sonnet-5-5}
+      LLM_BASE_URL: ${LLM_BASE_URL:-}
+      LLM_API_KEY: ${LLM_API_KEY:-}
       AUTH_MODE: ${AUTH_MODE:-oidc}
       OIDC_ISSUER: ${OIDC_ISSUER:-}
       OIDC_AUDIENCE: ${OIDC_AUDIENCE:-}
@@ -109,6 +113,30 @@ services:
     ports:
       - "127.0.0.1:8080:8080"
 
+  # 사내 LLM 예시 (선택): docker compose --profile ollama up -d
+  #   docker compose exec ollama ollama pull <모델>   (예: gemma3:12b, 한 번만)
+  #   설정: LLM_PROVIDER=openai_compatible, LLM_BASE_URL=http://ollama:11434/v1, LLM_MODEL=<모델>
+  # GPU를 쓰려면 NVIDIA Container Toolkit을 설치하고 아래 deploy 주석을 푼다 (없으면 CPU로 매우 느리다).
+  # 동시 사용자가 많으면 Ollama 대신 vLLM 같은 서버를 별도 GPU 서버에 둔다
+  ollama:
+    image: ollama/ollama:0.40.11
+    profiles: ["ollama"]
+    restart: unless-stopped
+    environment:
+      # 문맥 길이를 넉넉히 둔다. 샘플 문서의 요청(근거 5개 + 시스템 프롬프트)은 약 1천 토큰이지만,
+      # 조각이 긴 문서에서 기본값(4096)을 넘으면 Ollama가 앞부분을 오류 없이 잘라내 근거가 사라진다
+      OLLAMA_CONTEXT_LENGTH: "8192"
+    volumes:
+      - ollama:/root/.ollama
+    # deploy:
+    #   resources:
+    #     reservations:
+    #       devices:
+    #         - driver: nvidia
+    #           count: all
+    #           capabilities: [gpu]
+
 volumes:
   pgdata:
   models:
+  ollama:
