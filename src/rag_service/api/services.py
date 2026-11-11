@@ -51,5 +51,7 @@ def get_services() -> Services:
         tokenizer=KoreanTokenizer(),
         llm=llm,
         authenticator=build_authenticator(settings.auth_mode, settings.oidc),
-        audit=AuditPolicy(settings.audit_store_text, settings.audit_retention_days),
+        audit=AuditPolicy(
+            settings.audit_store_text, settings.audit_retention_days, settings.log_prompts
+        ),
     )

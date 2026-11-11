@@ -25,12 +25,14 @@ from fastapi import APIRouter, Depends, HTTPException, Request
 from fastapi.sse import EventSourceResponse, format_sse_event
 from pydantic import BaseModel, StringConstraints
 
-from rag_service.answer.generate import DEFAULT_CONTEXT_SIZE, Answer, stream_answer
+from rag_service.answer.generate import DEFAULT_CONTEXT_SIZE, Answer, request_context, stream_answer
 from rag_service.answer.llm import LLMError, StreamingLLM, estimate_cost
+from rag_service.answer.prompt import SYSTEM_PROMPT, build_prompt
 from rag_service.answer.verify import verify_answer
 from rag_service.api.auth import AuthError, AuthUnavailableError, CurrentUser, load_user
 from rag_service.api.services import Services, get_services
 from rag_service.audit.record import AskResult, Outcome, build_entry, write_entry
+from rag_service.audit.request import llm_params
 from rag_service.ingest.tokenizer import KoreanTokenizer
 from rag_service.logs import log_event
 from rag_service.retrieval.hits import SearchHit
@@ -168,6 +170,8 @@ def answer_events(
         raise
     finally:
         context = answer.context if answer is not None else hits[:DEFAULT_CONTEXT_SIZE]
+        # LLM 요청에 실제로 넣은 조각. 답이 없으면(오류, 연결 끊김) 같은 규칙으로 다시 고른다
+        sent = answer.context if answer is not None else request_context(hits)
         on_finish(
             AskResult(
                 outcome=outcome or "error",  # 예상하지 못한 예외
@@ -177,6 +181,7 @@ def answer_events(
                 retrieval_ms=retrieval_ms,
                 first_token_ms=clock.first_ms,
                 total_ms=clock.elapsed_ms(),
+                request_context=sent,
             )
         )
 
@@ -198,7 +203,18 @@ def record_ask(
         question=question,
         result=result,
         policy=services.audit,
+        llm_params=llm_params(services.llm) if services.llm is not None else None,
     )
+    if services.audit.log_prompts and result.request_context:
+        # 개발 전용 (LOG_PROMPTS). 운영 로그에는 원문을 넣지 않는다
+        log_event(
+            logger,
+            "llm_request",
+            level=logging.DEBUG,
+            request_id=request_id,
+            system=SYSTEM_PROMPT,
+            prompt=build_prompt(question, result.request_context),
+        )
     log_event(
         logger,
         "ask",
@@ -217,7 +233,7 @@ def record_ask(
         total_ms=entry.total_ms,
     )
     try:
-        write_entry(services.sessions, entry)
+        write_entry(services.sessions, entry, result.request_context)
     except Exception:
         # 감사 기록 누락은 운영자가 반드시 알아야 한다. 로그 수집 시스템에서 경보를 건다
         logger.exception("audit_write_failed", extra={"fields": {"request_id": request_id}})

@@ -14,6 +14,7 @@ HIT_COLUMNS = (
     Chunk.section,
     Chunk.page,
     Chunk.content,
+    Chunk.chunk_key,
 )
 
 
@@ -26,6 +27,7 @@ class SearchHit:
     page: int | None
     content: str
     score: float  # 검색기마다 의미가 다르다 (벡터: 코사인 유사도, 키워드: BM25, 하이브리드: RRF)
+    chunk_key: str | None = None  # 감사 기록용 "어느 조항인가" (0005 이전에 수집한 조각은 없음)
 
 
 def to_hit(row: Sequence[Any], score: float) -> SearchHit:
@@ -38,4 +40,5 @@ def to_hit(row: Sequence[Any], score: float) -> SearchHit:
         page=row[4],
         content=row[5],
         score=score,
+        chunk_key=row[6],
     )

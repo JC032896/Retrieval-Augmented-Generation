@@ -111,6 +111,17 @@ def _hide_refusal(deltas: Generator[str, None, Completion]) -> Generator[str, No
     return completion
 
 
+def request_context(
+    hits: Sequence[SearchHit],
+    *,
+    min_score: float | None = DEFAULT_MIN_SCORE,
+    context_size: int = DEFAULT_CONTEXT_SIZE,
+) -> tuple[SearchHit, ...]:
+    """LLM 요청에 넣을 근거 조각. 점수 관문에서 거절하면(LLM을 부르지 않으면) 빈 튜플."""
+    context = _select_context(hits, min_score=min_score, context_size=context_size)
+    return () if isinstance(context, Answer) else context
+
+
 def _select_context(
     hits: Sequence[SearchHit], *, min_score: float | None, context_size: int
 ) -> tuple[SearchHit, ...] | Answer:

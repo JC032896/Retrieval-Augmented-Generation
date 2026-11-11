@@ -326,7 +326,8 @@ OIDC_LOGIN_CLAIM=email                                         # users.login과 
 | 남는 경우 | 답변, 거절, LLM 실패, 사용자가 중간에 연결을 끊은 경우 | 위와 같고, 로그인 실패(401)도 남긴다 |
 
 - 질문에는 개인정보가 섞일 수 있어 원문 저장은 설정으로 끌 수 있다 (`AUDIT_STORE_TEXT=false`면
-  길이와 해시만). 보관 기간(`AUDIT_RETENTION_DAYS`, 기본 90일)이 지난 기록은 하루 한 번 지운다:
+  길이와 해시만). 보관 기간은 기본으로 두지 않는다(지우지 않음). 회사 정책에 맞춰 `AUDIT_RETENTION_DAYS`를
+  정하면, 그보다 오래된 기록과 남은 기록이 가리키지 않는 조각 스냅샷을 하루 한 번 지운다:
   `uv run python -m rag_service.audit purge` (cron, 작업 스케줄러 등으로 실행).
 - 사용자는 외래 키가 아니라 그 시점의 값을 복사한다. 퇴사나 부서 이동 뒤에도 "그때 어떤 권한으로
   무엇을 봤는지"가 남는다. 감사 테이블은 업무 테이블과 메타데이터를 나눠 두어, 나중에 별도 DB나
@@ -403,6 +404,37 @@ uv run python -m rag_service.ingest check samples      # 원문과 인덱스 비
 - 사용자(`users`)는 지금도 마지막에 수집한 폴더의 `org.yaml`과 같게 맞춘다. 여러 폴더를 한 DB에
   수집하려면 조직 정보를 한 곳에 두어야 한다.
 
+### 감사 재현 (마이그레이션 0007)
+
+감사 기록에 LLM 요청을 다시 만들 수 있는 요소만 남긴다 (요청 본문 전체는 저장하지 않는다).
+
+| 컬럼 | 내용 |
+|---|---|
+| `prompt_template_version` | 요청 형식 버전 (`answer/prompt.py`의 `PROMPT_TEMPLATE_VERSION`) |
+| `model_params` | 요청한 모델과 파라미터 (`max_tokens`, `effort`, 대체 모델 설정) |
+| `context_chunks` | 요청에 넣은 순서대로 `chunk_key`, `content_sha256`, 파일, 제목, 섹션, 페이지 |
+| `request_sha256` | 실제로 보낸 요청(파라미터 + 시스템 프롬프트 + 사용자 메시지)의 해시 |
+
+- 요청에 넣은 조각 본문은 `chunk_snapshots`에 내용 해시당 한 번만 저장한다 (감사 기록과 한 트랜잭션).
+  원문이 바뀌어 재수집해도 "그때 LLM이 본 본문"이 남는다. 질문 원문 저장을 꺼도 스냅샷은 남긴다
+  (사용자 입력이 아니라 문서 본문이므로).
+- 점수 관문에서 거절해 LLM을 부르지 않은 기록은 재현 정보가 비어 있다.
+- 개발 중에는 `LOG_PROMPTS=true`(+`LOG_LEVEL=DEBUG`)로 요청 원문을 로그로 볼 수 있다.
+  운영(`AUTH_MODE=oidc`)에서는 켤 수 없고, 운영 로그에는 계속 원문을 넣지 않는다.
+
+```
+uv run python scripts/replay.py 42                      # 요청을 다시 만들어 당시 해시와 비교
+uv run python scripts/replay.py 42 --question "..."     # 질문 원문을 저장하지 않은 기록 (해시만 비교)
+uv run python scripts/replay.py 42 --call               # 같은 요청을 LLM에 다시 보냄 (API 비용 발생)
+```
+
+- 종료 코드: 0 해시 일치, 1 불일치, 2 재현할 수 없음 (기록 없음, 재현 정보 없음, 템플릿 버전이 다름,
+  스냅샷이 지워짐, 질문 원문 없음 등 이유를 출력한다).
+- `--call`은 기본으로 하지 않는다. 지금 설정한 LLM의 파라미터가 당시와 다르면 호출하지 않는다.
+- 감사 테이블을 읽으므로 감사자 계정(`rag_auditor`)으로 실행한다.
+- 한계: 템플릿 버전이 다르면 지금 코드로는 재현하지 않는다 (그 버전의 코드로 실행). LLM은 같은 요청에도
+  답이 달라질 수 있어, `--call`의 답이 당시 답과 같다는 보장은 없다. 재현을 보장하는 것은 "요청"이다.
+
 ### 배포: DB 계정 분리
 
 마이그레이션 0005가 로그인할 수 없는 역할 두 개를 만든다(이미 있으면 그대로 둔다).
@@ -418,12 +450,14 @@ uv run python -m rag_service.ingest check samples      # 원문과 인덱스 비
 ```sql
 CREATE ROLE rag_service LOGIN PASSWORD '...' IN ROLE rag_app;      -- 앱 (.env의 POSTGRES_USER)
 CREATE ROLE rag_audit_ops LOGIN PASSWORD '...' IN ROLE rag_auditor; -- 감사 담당자, 재현 스크립트
--- 마이그레이션·보관 기간 삭제는 테이블 소유자 계정으로 실행한다
+-- 마이그레이션·보관 기간 삭제(purge)는 테이블 소유자 계정으로 실행한다
 ```
 
 **개발 환경의 한계**: 로컬과 CI는 `docker-compose.yml`의 `rag` 계정 하나(슈퍼유저)를 쓰므로 이 제한이
 적용되지 않는다. 역할 권한은 테스트에서 `SET ROLE`로 따로 검증한다(`tests/db/test_migrations_lifecycle.py`).
 역할을 만들려면 마이그레이션 계정에 `CREATEROLE` 권한이 필요하다. 없으면 DBA가 두 역할을 먼저 만든다.
+앱은 스냅샷을 읽지 않고 쓰려고 충돌 대상 없는 `ON CONFLICT DO NOTHING`을 쓴다. 충돌 대상을 적으면
+`SELECT` 권한이 필요하기 때문이다 (`tests/db/test_migrations_audit_replay.py`).
 
 ---
 

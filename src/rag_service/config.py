@@ -38,11 +38,18 @@ class Settings(BaseSettings):
 
     # 감사 기록 (rag_service.audit). 질문·답변 원문에는 개인정보가 섞일 수 있어 보관 기간을 둔다
     audit_store_text: bool = True  # false면 원문 대신 길이와 해시만 남긴다
-    audit_retention_days: int = Field(default=90, ge=1)  # purge 명령이 이보다 오래된 기록을 지운다
+    # purge 명령이 이보다 오래된 기록과, 남은 기록이 가리키지 않는 조각 스냅샷을 지운다.
+    # 비우면(기본) 지우지 않는다. 보관 기간은 회사의 개인정보·감사 정책으로 정한다
+    audit_retention_days: int | None = Field(default=None, ge=1)
     log_level: Literal["DEBUG", "INFO", "WARNING", "ERROR"] = "INFO"
+    # LLM 요청 원문(근거 조각 본문 포함)을 DEBUG 로그로 남긴다. 개발 전용이라 AUTH_MODE=oidc와 함께
+    # 켤 수 없고, LOG_LEVEL=DEBUG일 때만 실제로 출력된다
+    log_prompts: bool = False
 
     @model_validator(mode="after")
     def _check_oidc(self) -> "Settings":
+        if self.log_prompts and self.auth_mode == "oidc":
+            raise ValueError("LOG_PROMPTS는 개발 전용입니다 (AUTH_MODE=oidc와 함께 켤 수 없음)")
         if self.auth_mode == "oidc":
             if not self.oidc_issuer or not self.oidc_audience:
                 raise ValueError("AUTH_MODE=oidc에는 OIDC_ISSUER와 OIDC_AUDIENCE가 필요합니다")

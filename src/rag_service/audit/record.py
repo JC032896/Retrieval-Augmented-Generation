@@ -1,17 +1,22 @@
-"""감사 기록 만들기, 저장, 보관 기간이 지난 기록 삭제."""
+"""감사 기록 만들기, 저장(조각 스냅샷 포함), 보관 기간이 지난 기록 삭제."""
 
 import hashlib
+from collections.abc import Mapping, Sequence
 from dataclasses import dataclass
 from datetime import UTC, datetime, timedelta
-from typing import Literal
+from typing import Any, Literal
 
-from sqlalchemy import delete
+from sqlalchemy import delete, text
+from sqlalchemy.dialects.postgresql import insert
 from sqlalchemy.orm import Session, sessionmaker
 
 from rag_service.answer.generate import Answer
 from rag_service.answer.llm import estimate_cost
+from rag_service.answer.prompt import PROMPT_TEMPLATE_VERSION, SYSTEM_PROMPT, build_prompt
 from rag_service.api.auth import CurrentUser
-from rag_service.audit.models import AuditLog
+from rag_service.audit.models import AuditLog, ChunkSnapshot
+from rag_service.audit.request import content_sha256, context_chunks, request_sha256
+from rag_service.retrieval.hits import SearchHit
 
 Outcome = Literal["answered", "refused", "error", "cancelled"]  # models.AUDIT_OUTCOMES와 같다
 
@@ -19,7 +24,8 @@ Outcome = Literal["answered", "refused", "error", "cancelled"]  # models.AUDIT_O
 @dataclass(frozen=True)
 class AuditPolicy:
     store_text: bool = True  # 질문·답변 원문 저장 (끄면 길이와 해시만)
-    retention_days: int = 90  # purge 명령이 이보다 오래된 기록을 지운다
+    retention_days: int | None = None  # purge가 이보다 오래된 기록을 지운다 (None: 지우지 않음)
+    log_prompts: bool = False  # LLM 요청 원문을 DEBUG 로그로 (개발 전용, config.Settings 참고)
 
 
 @dataclass(frozen=True)
@@ -33,6 +39,8 @@ class AskResult:
     retrieval_ms: int
     first_token_ms: int | None
     total_ms: int
+    # LLM 요청에 넣은 근거 조각 (순서 = 프롬프트 번호). 점수 관문에서 거절했으면 비어 있다
+    request_context: tuple[SearchHit, ...] = ()
 
 
 def build_entry(
@@ -43,9 +51,13 @@ def build_entry(
     question: str,
     result: AskResult,
     policy: AuditPolicy,
+    llm_params: Mapping[str, Any] | None = None,
 ) -> AuditLog:
+    """llm_params는 audit.request.llm_params(llm). LLM을 불렀을 때만 재현 정보를 남긴다."""
     answer = result.answer
     completion = answer.completion if answer else None
+    sent = result.request_context
+    replayable = bool(sent) and llm_params is not None
     return AuditLog(
         request_id=request_id,
         client_ip=client_ip,
@@ -73,11 +85,34 @@ def build_entry(
         retrieval_ms=result.retrieval_ms,
         first_token_ms=result.first_token_ms,
         total_ms=result.total_ms,
+        prompt_template_version=PROMPT_TEMPLATE_VERSION if replayable else None,
+        model_params=dict(llm_params) if replayable and llm_params is not None else None,
+        context_chunks=[dict(chunk) for chunk in context_chunks(sent)] if replayable else None,
+        request_sha256=(
+            request_sha256(llm_params, system=SYSTEM_PROMPT, prompt=build_prompt(question, sent))
+            if replayable and llm_params is not None
+            else None
+        ),
     )
 
 
-def write_entry(sessions: sessionmaker[Session], entry: AuditLog) -> None:
+def write_entry(
+    sessions: sessionmaker[Session], entry: AuditLog, snapshots: Sequence[SearchHit] = ()
+) -> None:
+    """감사 기록과, 요청에 넣은 조각 본문(snapshots)을 한 트랜잭션으로 저장한다.
+
+    본문은 내용 해시당 한 번만 저장한다 (이미 있으면 건너뜀). 앱 계정(rag_app)은 chunk_snapshots를
+    읽을 수 없다. 충돌 대상을 적은 ON CONFLICT (content_sha256)는 SELECT 권한이 필요하므로,
+    대상 없는 ON CONFLICT DO NOTHING을 쓴다 (유일 제약이 기본 키 하나뿐이라 결과는 같다).
+    """
+    rows = {content_sha256(hit.content): hit.content for hit in snapshots}
     with sessions.begin() as session:
+        if rows:
+            session.execute(
+                insert(ChunkSnapshot)
+                .values([{"content_sha256": k, "content": v} for k, v in rows.items()])
+                .on_conflict_do_nothing()
+            )
         session.add(entry)
 
 
@@ -91,3 +126,17 @@ def purge(session: Session, *, older_than_days: int, now: datetime | None = None
     cutoff = (now or datetime.now(UTC)) - timedelta(days=older_than_days)
     result = session.connection().execute(delete(AuditLog).where(AuditLog.created_at < cutoff))
     return result.rowcount
+
+
+# 조각 목록이 없는 기록(0007 이전, LLM을 부르지 않음)은 배열이 아니므로 건너뛴다
+ORPHAN_SNAPSHOTS = text(
+    "DELETE FROM chunk_snapshots s WHERE NOT EXISTS ("
+    " SELECT 1 FROM audit_log a CROSS JOIN LATERAL jsonb_array_elements("
+    "  CASE WHEN jsonb_typeof(a.context_chunks) = 'array' THEN a.context_chunks END) e"
+    " WHERE e->>'content_sha256' = s.content_sha256)"
+)
+
+
+def purge_orphan_snapshots(session: Session) -> int:
+    """어느 감사 기록도 가리키지 않는 조각 스냅샷을 지우고 지운 개수를 돌려준다."""
+    return session.connection().execute(ORPHAN_SNAPSHOTS).rowcount

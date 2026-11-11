@@ -8,6 +8,7 @@
 """
 
 from datetime import datetime
+from typing import Any
 
 from sqlalchemy import (
     BigInteger,
@@ -20,7 +21,7 @@ from sqlalchemy import (
     Text,
     func,
 )
-from sqlalchemy.dialects.postgresql import ARRAY
+from sqlalchemy.dialects.postgresql import ARRAY, JSONB
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 
 # DB 역할 (마이그레이션 0005). 앱은 감사 테이블에 쓰기만, 감사자는 읽기만 한다
@@ -78,9 +79,19 @@ class AuditLog(AuditBase):
     first_token_ms: Mapped[int | None] = mapped_column(Integer)  # 첫 글자를 보낼 때까지 (검색 포함)
     total_ms: Mapped[int] = mapped_column(Integer)
 
+    # 재현 (마이그레이션 0007). LLM을 부르지 않은 기록(점수 관문 거절)은 비어 있다.
+    # scripts/replay.py가 이 값과 chunk_snapshots로 요청을 다시 만들어 request_sha256과 비교한다
+    prompt_template_version: Mapped[str | None] = mapped_column(Text)
+    model_params: Mapped[dict[str, Any] | None] = mapped_column(
+        JSONB(none_as_null=True)
+    )  # 요청한 모델·파라미터
+    # 요청에 넣은 순서대로 [{chunk_key, content_sha256, file, title, section, page}]
+    context_chunks: Mapped[list[dict[str, Any]] | None] = mapped_column(JSONB(none_as_null=True))
+    request_sha256: Mapped[str | None] = mapped_column(Text)  # audit/request.py 참고
+
 
 class ChunkSnapshot(AuditBase):
-    """감사 기록이 가리키는 청크 본문. 내용 해시당 한 번만 저장한다 (3단계에서 채운다).
+    """감사 기록이 가리키는 청크 본문. 내용 해시당 한 번만 저장한다 (audit/record.write_entry).
 
     원문이 재수집으로 바뀌어도 "그때 LLM이 본 본문"을 복원하려고 둔다. 기밀 문서의 본문 사본이므로
     읽기는 감사자 역할(rag_auditor)만 한다.
