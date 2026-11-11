@@ -1,0 +1,41 @@
+# 데모 로그인: compose.yaml과 함께 자동으로 읽힌다 (docker compose up -d).
+# samples/org.yaml의 직원(kim, lee, park, choi, jung, han)이 들어 있는 Keycloak을 띄우고 앱을 거기에 연결한다.
+# 비밀번호는 demo-<아이디>. 관리 화면 http://localhost:8080/admin (admin / 아래 명령으로 확인)
+#   docker compose exec keycloak cat /run/rag/keycloak/keycloak_admin_password
+#
+# 운영에서는 이 파일을 지우고(또는 docker compose -f compose.yaml ...), .env에 회사 로그인 시스템의
+# OIDC_ISSUER, OIDC_AUDIENCE, OIDC_LOGIN_CLAIM을 채운다. 데모 설정(http, 고정 비밀번호, start-dev)은
+# 운영에 쓰지 않는다 (deploy/README.md "로그인").
+
+services:
+  app:
+    environment:
+      AUTH_MODE: oidc
+      OIDC_ISSUER: http://keycloak:8080/realms/hanbit
+      OIDC_AUDIENCE: rag-service
+      OIDC_LOGIN_CLAIM: preferred_username
+      OIDC_ALLOW_HTTP_HOSTS: keycloak
+
+  keycloak:
+    image: quay.io/keycloak/keycloak:26.0
+    restart: unless-stopped
+    # 관리자 비밀번호는 setup이 만든 파일에서 읽는다 (Keycloak은 파일로 받는 설정이 없다)
+    entrypoint:
+      - bash
+      - -c
+      - >-
+        KC_BOOTSTRAP_ADMIN_PASSWORD="$$(cat /run/rag/keycloak/keycloak_admin_password)"
+        exec /opt/keycloak/bin/kc.sh start-dev --import-realm
+    environment:
+      KC_BOOTSTRAP_ADMIN_USERNAME: admin
+      # 토큰의 발급자(iss)를 앱이 접속하는 주소로 고정한다. 관리 화면은 이 서버의 localhost로 연다
+      KC_HOSTNAME: http://keycloak:8080
+      KC_HOSTNAME_ADMIN: http://localhost:8080
+    volumes:
+      - ./keycloak:/opt/keycloak/data/import:ro
+      - keycloak-secrets:/run/rag/keycloak:ro
+    ports:
+      - "127.0.0.1:8080:8080"
+    depends_on:
+      setup:
+        condition: service_completed_successfully

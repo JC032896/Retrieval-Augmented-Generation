@@ -1,6 +1,7 @@
 """환경 변수(.env 포함)에서 읽는 서비스 설정."""
 
 from functools import lru_cache
+from pathlib import Path
 from typing import Literal
 
 from pydantic import Field, SecretStr, field_validator, model_validator
@@ -17,6 +18,9 @@ class Settings(BaseSettings):
 
     postgres_user: str = "rag"
     postgres_password: str = "rag"
+    # 비밀번호를 파일에서 읽는다 (deploy/compose.yaml: 첫 실행 때 setup이 만든 비밀 볼륨).
+    # 있으면 위 값보다 우선한다
+    postgres_password_file: Path | None = None
     postgres_host: str = "localhost"
     postgres_port: int = 5432
     postgres_db: str = "rag"
@@ -78,6 +82,12 @@ class Settings(BaseSettings):
     def _empty_is_unset(cls, value: object) -> object:
         """빈 값(KEY=)은 설정하지 않은 것으로 본다. compose는 비운 변수도 빈 문자열로 넘긴다."""
         return None if value == "" else value
+
+    @model_validator(mode="after")
+    def _read_password_file(self) -> "Settings":
+        if self.postgres_password_file is not None:
+            self.postgres_password = self.postgres_password_file.read_text(encoding="utf-8").strip()
+        return self
 
     @model_validator(mode="after")
     def _check_oidc(self) -> "Settings":

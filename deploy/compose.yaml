@@ -1,15 +1,15 @@
-# 설치형 배포 예시 (서버 한 대). 사용법은 deploy/README.md
-#   cd deploy && cp .env.example .env   # 비밀번호와 API 키를 채운다
-#   docker compose build
-#   docker compose run --rm -e HF_HUB_OFFLINE=0 app python -m rag_service.deploy download-models
-#   docker compose up -d                 # 로그인 시스템이 없으면: docker compose --profile keycloak up -d
-#   docker compose run --rm app python -m rag_service.ingest /data/corpus
+# 설치형 배포 (서버 한 대). 사용법은 deploy/README.md
+#   cd deploy && docker compose up -d
+#
+# 처음 실행하면 setup이 비밀번호를 만들고 검색 모델(약 6GB)을 받는다. 진행 상황: docker compose logs -f setup
+# 같은 폴더의 compose.override.yaml(데모 로그인 Keycloak)이 함께 읽힌다. 회사 로그인 시스템을 쓰면 그 파일을
+# 지우고 .env에 OIDC_*를 채운다 (deploy/README.md "로그인").
 #
 # 원칙
 # - DB는 포트를 열지 않는다 (같은 compose 네트워크의 컨테이너만 접속)
 # - 앱은 이 서버(127.0.0.1)에만 연다. 직원 접속은 회사 리버스 프록시(HTTPS)를 앞에 둔다
-# - 계정을 나눈다: 마이그레이션·보관 기간 삭제는 소유자 계정, 앱은 rag_app 역할의 로그인 계정
-# - 비밀은 .env에서 읽고, 서비스마다 필요한 값만 넘긴다 (앱 컨테이너는 소유자 비밀번호를 모른다)
+# - 계정을 나눈다: 마이그레이션·보관 기간 삭제는 소유자 계정, 앱과 수집은 rag_app 역할의 로그인 계정
+# - 비밀번호는 비밀 볼륨의 파일로 넘기고, 볼륨은 필요한 서비스에만 붙인다 (앱은 소유자 비밀번호를 모른다)
 
 name: rag-service
 
@@ -19,23 +19,55 @@ x-app-image: &app-image
     context: ..
     dockerfile: Dockerfile
 
+x-app-db: &app-db
+  POSTGRES_HOST: db
+  POSTGRES_DB: ${DB_NAME:-rag}
+  POSTGRES_USER: ${APP_DB_USER:-rag_service}
+  POSTGRES_PASSWORD_FILE: /run/rag/app/app_db_password
+
 services:
+  # 시작할 때마다 한 번 실행하고 끝난다. 비밀번호 파일은 없을 때만 만들고(.env에 값이 있으면 그 값),
+  # 모델은 없는 파일만 받는다. OFFLINE_INSTALL=1이면 받지 않고 있는지만 확인한다 (폐쇄망)
+  setup:
+    <<: *app-image
+    user: "0"  # 비밀 볼륨과 모델 볼륨에 처음 쓰기 위해서만 root. 끝나면 모델을 앱 사용자에게 넘긴다
+    command: ["sh", "-c", "python -m rag_service.deploy prepare && chown -R 10001 /models"]
+    restart: "no"
+    environment:
+      OWNER_SECRETS_DIR: /run/rag/owner
+      APP_SECRETS_DIR: /run/rag/app
+      KEYCLOAK_SECRETS_DIR: /run/rag/keycloak
+      DB_OWNER_PASSWORD: ${DB_OWNER_PASSWORD:-}
+      APP_DB_PASSWORD: ${APP_DB_PASSWORD:-}
+      AUDIT_DB_PASSWORD: ${AUDIT_DB_PASSWORD:-}
+      KEYCLOAK_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD:-}
+      HF_HUB_OFFLINE: ${OFFLINE_INSTALL:-0}
+    volumes:
+      - models:/models
+      - owner-secrets:/run/rag/owner
+      - app-secrets:/run/rag/app
+      - keycloak-secrets:/run/rag/keycloak
+
   db:
     image: pgvector/pgvector:pg17
     restart: unless-stopped
     environment:
       POSTGRES_USER: ${DB_OWNER_USER:-rag_owner}
-      POSTGRES_PASSWORD: ${DB_OWNER_PASSWORD:?DB_OWNER_PASSWORD를 .env에 설정하세요}
+      POSTGRES_PASSWORD_FILE: /run/rag/owner/db_owner_password
       POSTGRES_DB: ${DB_NAME:-rag}
     volumes:
       - pgdata:/var/lib/postgresql/data
+      - owner-secrets:/run/rag/owner:ro
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
       interval: 5s
       timeout: 3s
       retries: 20
+    depends_on:
+      setup:
+        condition: service_completed_successfully
 
-  # 시작할 때마다 한 번 실행하고 끝난다: 스키마를 최신으로 올리고 앱·감사자 로그인 계정을 맞춘다.
+  # 시작할 때마다 한 번: 스키마를 최신으로 올리고 앱·감사자 로그인 계정을 맞춘다.
   # 보관 기간 삭제도 이 서비스(소유자 계정)로 실행한다:
   #   docker compose run --rm migrate python -m rag_service.audit purge
   migrate:
@@ -46,15 +78,34 @@ services:
       POSTGRES_HOST: db
       POSTGRES_DB: ${DB_NAME:-rag}
       POSTGRES_USER: ${DB_OWNER_USER:-rag_owner}
-      POSTGRES_PASSWORD: ${DB_OWNER_PASSWORD}
+      POSTGRES_PASSWORD_FILE: /run/rag/owner/db_owner_password
       APP_DB_USER: ${APP_DB_USER:-rag_service}
-      APP_DB_PASSWORD: ${APP_DB_PASSWORD:?APP_DB_PASSWORD를 .env에 설정하세요}
+      APP_DB_PASSWORD_FILE: /run/rag/app/app_db_password
       AUDIT_DB_USER: ${AUDIT_DB_USER:-rag_audit_ops}
-      AUDIT_DB_PASSWORD: ${AUDIT_DB_PASSWORD:-}
+      AUDIT_DB_PASSWORD_FILE: /run/rag/app/audit_db_password
       AUDIT_RETENTION_DAYS: ${AUDIT_RETENTION_DAYS-}
+    volumes:
+      - owner-secrets:/run/rag/owner:ro
+      - app-secrets:/run/rag/app:ro
     depends_on:
       db:
         condition: service_healthy
+
+  # 시작할 때마다 한 번: 문서 폴더를 증분 수집한다 (바뀐 문서만). 앱 시작을 막지 않는다
+  sync:
+    <<: *app-image
+    command: ["python", "-m", "rag_service.ingest", "/data/corpus"]
+    restart: "no"
+    environment:
+      <<: *app-db
+      HF_HUB_OFFLINE: "1"
+    volumes:
+      - models:/models
+      - ${CORPUS_DIR:-../samples}:/data/corpus:ro
+      - app-secrets:/run/rag/app:ro
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
 
   app:
     <<: *app-image
@@ -63,13 +114,11 @@ services:
       - "127.0.0.1:${APP_PORT:-8000}:8000"
     volumes:
       - models:/models
-      # 수집할 문서 폴더 (org.yaml, acl.yaml, docs/). 앱은 읽기만 한다
+      # 수집한 문서 폴더 (org.yaml, acl.yaml, docs/). 앱은 읽기만 한다 (/health의 신선도 요약)
       - ${CORPUS_DIR:-../samples}:/data/corpus:ro
+      - app-secrets:/run/rag/app:ro
     environment:
-      POSTGRES_HOST: db
-      POSTGRES_DB: ${DB_NAME:-rag}
-      POSTGRES_USER: ${APP_DB_USER:-rag_service}
-      POSTGRES_PASSWORD: ${APP_DB_PASSWORD}
+      <<: *app-db
       PRELOAD_MODELS: "true"
       HF_HUB_OFFLINE: "1"
       # 리버스 프록시가 보내는 X-Forwarded-For를 믿을 주소 (감사 기록의 client_ip)
@@ -94,24 +143,6 @@ services:
     depends_on:
       migrate:
         condition: service_completed_successfully
-
-  # 로그인 시스템이 없는 회사용 (선택). samples/org.yaml의 직원을 미리 넣은 데모 realm을 읽는다.
-  # 데모 비밀번호와 http는 운영에서 쓰지 않는다 (deploy/README.md "Keycloak" 참고)
-  keycloak:
-    image: quay.io/keycloak/keycloak:26.0
-    profiles: ["keycloak"]
-    command: ["start-dev", "--import-realm"]
-    restart: unless-stopped
-    environment:
-      KC_BOOTSTRAP_ADMIN_USERNAME: admin
-      KC_BOOTSTRAP_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD:?KEYCLOAK_ADMIN_PASSWORD를 .env에 설정하세요}
-      # 토큰의 발급자(iss)를 앱이 접속하는 주소로 고정한다. 관리 화면은 이 서버의 localhost로 연다
-      KC_HOSTNAME: http://keycloak:8080
-      KC_HOSTNAME_ADMIN: http://localhost:8080
-    volumes:
-      - ./keycloak:/opt/keycloak/data/import:ro
-    ports:
-      - "127.0.0.1:8080:8080"
 
   # 사내 LLM 예시 (선택): docker compose --profile ollama up -d
   #   docker compose exec ollama ollama pull <모델>   (예: gemma3:12b, 한 번만)
@@ -140,3 +171,7 @@ volumes:
   pgdata:
   models:
   ollama:
+  # 비밀번호 파일. 서비스마다 필요한 볼륨만 붙인다
+  owner-secrets:      # DB 소유자: setup, db, migrate
+  app-secrets:        # 앱·감사 계정: setup, migrate, sync, app
+  keycloak-secrets:   # 데모 Keycloak 관리자: setup, keycloak

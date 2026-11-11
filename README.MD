@@ -507,25 +507,32 @@ LLM_API_KEY=                               # 서버가 키를 요구할 때만
 
 ### 설치형 배포 (6단계)
 
-회사 서버에 Docker Compose로 설치한다. 절차, 정기 작업, 백업·복구, 폐쇄망 설치는 [deploy/README.md](deploy/README.md).
+회사 서버에 Docker Compose로 설치한다. **`cd deploy && docker compose up -d` 한 줄**이면 샘플 문서와 데모 로그인까지
+준비된다(설정 파일 없이). 절차, 정기 작업, 백업·복구, 폐쇄망 설치는 [deploy/README.md](deploy/README.md).
 
 | 파일 | 내용 |
 |---|---|
 | `Dockerfile` | 앱 이미지(약 2.5GB, CPU용 PyTorch). 모델 파일은 넣지 않고 `/models` 볼륨에서 읽는다 |
-| `deploy/compose.yaml` | `db`(포트 비공개) → `migrate`(스키마, 로그인 계정) → `app`(127.0.0.1만), 선택 `keycloak` |
-| `deploy/.env.example` | 운영 설정. 소유자·앱·감사자 비밀번호를 나누고, 앱 컨테이너에는 소유자 비밀번호를 넘기지 않는다 |
+| `deploy/compose.yaml` | `setup`(비밀번호·모델) → `db`(포트 비공개) → `migrate`(스키마, 로그인 계정) → `sync`(문서 증분 수집), `app`(127.0.0.1만) |
+| `deploy/compose.override.yaml` | 데모 로그인(Keycloak)과 앱 연결. 자동으로 함께 읽히고, 운영에서는 지운다 |
+| `deploy/.env.example` | 선택 설정(API 키, 회사 로그인, 문서 폴더, 한도). 비밀번호는 비워 두면 자동 생성 |
 | `deploy/keycloak/hanbit-realm.json` | 데모 로그인: `samples/org.yaml`의 직원 6명과 이 앱(토큰 대상 `rag-service`) |
 
-- **모델 준비**: `python -m rag_service.deploy download-models`로 볼륨에 한 번 받고, 앱은 `HF_HUB_OFFLINE=1`로
-  읽는다. 폐쇄망이면 받아 둔 모델 폴더를 복사해 넣는다. 서버가 시작할 때 미리 읽어서(`PRELOAD_MODELS=true`)
-  첫 사용자가 기다리지 않는다. 읽는 동안 `/ask`는 503(`Retry-After: 30`)이다.
+- **첫 실행 자동 준비**: `setup`(`python -m rag_service.deploy prepare`)이 시작할 때마다 한 번 돈다. 비밀번호 파일이
+  없으면 무작위로 만들고(출력하지 않음), 모델은 없는 파일만 받는다. 비밀번호는 비밀 볼륨 세 개(소유자, 앱·감사,
+  Keycloak)에 나눠 담아 필요한 서비스에만 붙이고, 서비스는 `*_PASSWORD_FILE`로 읽는다. 앱 컨테이너는 소유자
+  비밀번호를 볼 수 없다. root로 도는 것은 `setup` 하나뿐이다.
+- **모델 준비**: 앱은 `HF_HUB_OFFLINE=1`로 모델 볼륨만 읽는다. 폐쇄망은 받아 둔 모델 볼륨을 옮기고
+  `OFFLINE_INSTALL=1`. 서버가 시작할 때 미리 읽어서(`PRELOAD_MODELS=true`) 첫 사용자가 기다리지 않는다.
+  읽는 동안 `/ask`는 503(`Retry-After: 30`)이다.
 - **상태 확인**: `/health`는 DB, 모델(`lazy|loading|ready|error`), 인덱스 신선도 요약(항상 200).
   `/ready`는 질문을 받을 수 있을 때만 200이라 컨테이너 상태 검사와 부하 분산기에 쓴다.
 - **계정**: `migrate`가 `python -m rag_service.deploy create-db-users`로 앱 계정(`rag_app` 역할)과 감사 담당
   계정(`rag_auditor` 역할)을 만든다. 수집은 앱 계정, 보관 기간 삭제는 소유자 계정으로 실행한다.
-- **검증(2026-11-11, 이 PC)**: 이미지 빌드 → 모델 볼륨(복사, 오프라인) → `up` → 모델 읽기 13초 → `/ready` 200 →
-  샘플 22개 수집과 `check` 오류 0 → Keycloak 토큰(kim)으로 `/ask` 인증 통과(API 키를 넣지 않아 503에서 멈춤),
-  위조 토큰 401 → 실제 DB에서 앱 계정은 `audit_log`를, 감사 계정은 `documents`를 읽을 수 없음.
+- **검증(2026-11-11, 이 PC)**: 설정 파일 없이 `docker compose up -d` 한 번 → 비밀번호 4개 생성 → 모델 확인 →
+  마이그레이션·계정 생성 → 샘플 22개 수집 → `/ready` 200 → 데모 Keycloak 토큰(kim)으로 `/ask` 인증 통과(API 키가
+  없어 503에서 멈춤). 다시 실행하면 비밀번호를 그대로 둔다. 컨테이너마다 보이는 비밀 볼륨이 정해진 것뿐임을 확인.
+  이전 검증: 위조 토큰 401, 실제 DB에서 앱 계정은 `audit_log`를, 감사 계정은 `documents`를 읽을 수 없음.
 - **설정 빈 값**: compose는 비운 변수를 빈 문자열로 넘기므로, 빈 값은 "설정 안 함"으로 읽는다
   (예: `LLM_DAILY_BUDGET_USD=`이면 예산 한도 없음).
 - **한계**: 완전 폐쇄망은 답변 LLM을 사내 모델로 바꿔야 한다(위 "답변 LLM 선택"). Keycloak 예시는 데모 설정
