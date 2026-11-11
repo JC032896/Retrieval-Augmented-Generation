@@ -69,27 +69,37 @@ def test_code_tokens_are_searchable_as_whole_words(db_session: Session, corpus: 
     assert "SEC-PW-01 비밀번호 규칙" in sections
 
 
-def test_reingest_replaces_instead_of_duplicating(db_session: Session, corpus: Corpus) -> None:
+def test_reingest_of_unchanged_corpus_skips_everything(db_session: Session, corpus: Corpus) -> None:
     _ingest(db_session, corpus)
     first_ids = set(db_session.scalars(select(Document.id)))
     chunk_count = db_session.scalar(select(func.count()).select_from(Chunk))
 
-    _ingest(db_session, corpus)
+    stats = ingest_corpus(db_session, corpus, embedder=FakeEmbedder(), tokenizer=tokenizer)
+    db_session.commit()
 
+    assert (stats.embedded, len(stats.skipped)) == (0, 22)
     assert db_session.scalar(select(func.count()).select_from(Document)) == 22
     assert db_session.scalar(select(func.count()).select_from(Chunk)) == chunk_count
-    assert first_ids.isdisjoint(db_session.scalars(select(Document.id)))
+    assert first_ids == set(db_session.scalars(select(Document.id)))
 
 
-def test_documents_missing_from_corpus_are_removed(db_session: Session, corpus: Corpus) -> None:
+def test_documents_missing_from_corpus_are_removed_only_with_prune(
+    db_session: Session, corpus: Corpus
+) -> None:
     _ingest(db_session, corpus)
     smaller = dataclasses.replace(corpus, documents=corpus.documents[1:])
+    removed_file = corpus.documents[0].file
 
-    stats = ingest_corpus(db_session, smaller, embedder=FakeEmbedder(), tokenizer=tokenizer)
+    kept = ingest_corpus(db_session, smaller, embedder=FakeEmbedder(), tokenizer=tokenizer)
+    assert (kept.removed, kept.unlisted) == (0, (removed_file,))
+    assert db_session.scalar(select(Document).where(Document.source_path == removed_file))
+
+    stats = ingest_corpus(
+        db_session, smaller, embedder=FakeEmbedder(), tokenizer=tokenizer, prune=True
+    )
     db_session.commit()
 
     assert stats.removed == 1
-    removed_file = corpus.documents[0].file
     assert db_session.scalar(select(Document).where(Document.source_path == removed_file)) is None
 
 

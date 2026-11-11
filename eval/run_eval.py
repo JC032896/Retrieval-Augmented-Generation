@@ -282,6 +282,8 @@ class CachedEmbedder:
     def __init__(self, cache: EmbeddingCache, fallback: Embedder | None = None) -> None:
         self.cache = cache
         self.fallback = fallback
+        # 수집이 documents.embedding_model에 기록하는 이름. 캐시 모델과 같아야 check가 통과한다
+        self.model_name = cache.model
 
     def embed(self, texts: Sequence[str]) -> list[list[float]]:
         missing = [t for t in dict.fromkeys(texts) if self.cache.get(t) is None]

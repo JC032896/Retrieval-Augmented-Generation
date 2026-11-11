@@ -52,6 +52,12 @@ jobs:
       - name: 품질 게이트 --full
         run: bash .claude/scripts/quality_gate.sh --full
 
+      # 게이트의 평가가 방금 수집한 rag_eval DB가 원문(samples)·임베딩 모델과 맞는지 확인한다 (읽기 전용)
+      - name: 인덱스 신선도 점검 (평가 DB)
+        env:
+          POSTGRES_DB: rag_eval
+        run: uv run python -m rag_service.ingest check samples
+
       - name: 게이트 로그
         if: always()
         run: cat .claude/state/gate.log || true
