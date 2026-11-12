@@ -121,6 +121,8 @@ services:
       # 수집한 문서 폴더 (org.yaml, acl.yaml, docs/). 앱은 읽기만 한다 (/health의 신선도 요약)
       - ${CORPUS_DIR:-../samples}:/data/corpus:ro
       - app-secrets:/run/rag/app:ro
+      # 관리 화면에서 올린 문서의 원문 (권한의 원본은 DB). DB와 함께 백업한다
+      - uploads:/data/uploads
     environment:
       <<: *app-db
       PRELOAD_MODELS: "true"
@@ -149,6 +151,9 @@ services:
       AUDIT_DB_USER: ${AUDIT_DB_USER:-rag_audit_ops}
       AUDIT_DB_PASSWORD_FILE: /run/rag/app/audit_db_password
       AUDIT_STORE_TEXT: ${AUDIT_STORE_TEXT:-true}
+      UPLOAD_DIR: /data/uploads
+      # 리버스 프록시의 요청 크기 제한(nginx client_max_body_size)도 이보다 크게 둔다
+      UPLOAD_MAX_MB: ${UPLOAD_MAX_MB:-30}
       # 값을 비우면(KEY=) 그 한도를 두지 않는다. 변수가 아예 없으면 기본값
       LLM_DAILY_REQUESTS_PER_USER: ${LLM_DAILY_REQUESTS_PER_USER-200}
       LLM_DAILY_BUDGET_USD: ${LLM_DAILY_BUDGET_USD-20}
@@ -184,6 +189,7 @@ services:
 volumes:
   pgdata:
   models:
+  uploads:            # 관리 화면에서 올린 문서 원문: app
   ollama:
   # 비밀번호 파일. 서비스마다 필요한 볼륨만 붙인다
   owner-secrets:      # DB 소유자: setup, db, migrate

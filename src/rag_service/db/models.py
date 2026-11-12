@@ -39,6 +39,10 @@ ACL_KINDS = ("department", "role")
 # 문서 수명: current 현행, superseded 폐지되었거나 새 판으로 대체됨 (기록으로만 남긴다)
 DOCUMENT_STATUSES = ("current", "superseded")
 
+# 문서 출처 (마이그레이션 0009): folder 문서 폴더의 acl.yaml에서 수집 (관리 화면은 읽기 전용),
+# upload 관리 화면에서 올림 (권한의 원본이 DB)
+DOCUMENT_ORIGINS = ("folder", "upload")
+
 
 class Base(DeclarativeBase):
     pass
@@ -51,6 +55,13 @@ class Document(Base):
         CheckConstraint(
             "status IN (" + ", ".join(f"'{status}'" for status in DOCUMENT_STATUSES) + ")",
             name="ck_documents_status",
+        ),
+        CheckConstraint(
+            "origin IN (" + ", ".join(f"'{origin}'" for origin in DOCUMENT_ORIGINS) + ")",
+            name="ck_documents_origin",
+        ),
+        CheckConstraint(
+            "origin = 'folder' OR owner_department IS NOT NULL", name="ck_documents_upload_owner"
         ),
     )
 
@@ -70,6 +81,9 @@ class Document(Base):
     # 증분 수집 (마이그레이션 0006). --prune은 같은 corpus_root의 문서만 지운다
     corpus_root: Mapped[str | None] = mapped_column(Text)  # 수집한 코퍼스 폴더 (절대 경로)
     synced_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))  # 마지막 동기화
+    # 관리 화면 업로드 (마이그레이션 0009)
+    origin: Mapped[str] = mapped_column(Text, server_default=text("'folder'"))
+    owner_department: Mapped[str | None] = mapped_column(Text)  # 올린 문서를 관리하는 부서
 
 
 class DocumentAcl(Base):

@@ -52,7 +52,11 @@ DB 소유자·앱·감사 담당 계정과 데모 Keycloak 관리자 비밀번�
 ### 회사 문서 넣기
 `.env`의 `CORPUS_DIR`을 회사 문서 폴더로 바꾸고 `docker compose up -d`. 폴더 형식은 샘플(`samples/`)과 같다:
 `org.yaml`(부서·역할·직원), `acl.yaml`(문서별 제목, 보안 등급, 볼 수 있는 부서·역할), `docs/`(PDF, DOCX, MD).
-시작할 때마다 `sync`가 바뀐 문서만 다시 수집한다. 관리 화면에서 올리는 방식은 다음 단계에서 추가한다.
+시작할 때마다 `sync`가 바뀐 문서만 다시 수집한다.
+
+관리 화면(API는 `/admin/api/documents`)에서 올린 문서는 `uploads` 볼륨에 두고 권한은 DB에 저장한다.
+두 방식을 함께 써도 서로 지우거나 덮어쓰지 않는다 (README "문서 올리기와 권한 지정"). 리버스 프록시의
+요청 크기 제한(nginx `client_max_body_size`)을 `UPLOAD_MAX_MB`(기본 30MB)보다 크게 둔다.
 
 질문은 `POST /ask`에 `Authorization: Bearer <로그인 토큰>`을 붙여 보낸다 (README "질문 API").
 
@@ -73,6 +77,8 @@ DB 소유자·앱·감사 담당 계정과 데모 Keycloak 관리자 비밀번�
 ```bash
 # 백업 (매일 권장, 결과 파일은 다른 저장소로 옮긴다). 비밀 볼륨도 함께 보관한다
 docker compose exec db pg_dump -U rag_owner -Fc rag > rag-$(date +%F).dump
+# 관리 화면에서 올린 문서 원문 (DB 백업과 같은 시점에)
+docker compose exec app tar czf - -C /data/uploads docs > uploads-$(date +%F).tgz
 
 # 업데이트: 백업 → 새 버전 코드 받기 → 다시 시작. 버전이 바뀌면 그 버전의 이미지를 받고,
 # setup·migrate·sync가 필요한 일을 한다

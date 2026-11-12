@@ -16,6 +16,7 @@ from collections.abc import Callable
 from dataclasses import dataclass
 from datetime import datetime
 from functools import lru_cache
+from pathlib import Path
 from typing import Annotated, Any
 
 from fastapi import APIRouter, Depends, HTTPException, Query, Request
@@ -60,6 +61,8 @@ class AdminServices:
     role_groups: RoleGroups = RoleGroups()
     llm: LlmInfo = LlmInfo("claude", "", configured=False)
     limits: UsageLimits = UsageLimits()
+    upload_dir: Path = Path("data/uploads")
+    upload_max_bytes: int = 30 * 1024 * 1024
 
 
 def _sessions(url: URL) -> sessionmaker[Session]:
@@ -84,6 +87,8 @@ def get_admin_services() -> AdminServices:
             concurrent_per_user=settings.llm_concurrent_per_user,
             utc_offset_hours=settings.usage_utc_offset_hours,
         ),
+        upload_dir=settings.upload_dir,
+        upload_max_bytes=settings.upload_max_mb * 1024 * 1024,
     )
 
 
@@ -126,6 +131,7 @@ def require(*allowed: AdminRole) -> Callable[[Admin], Admin]:
 AnyAdminDep = Annotated[Admin, Depends(require(*AdminRole))]
 CentralAdminDep = Annotated[Admin, Depends(require(AdminRole.ADMIN))]
 AuditorDep = Annotated[Admin, Depends(require(AdminRole.AUDITOR))]
+DocumentsDep = Annotated[Admin, Depends(require(AdminRole.ADMIN, AdminRole.DOC_MANAGER))]
 
 
 class MeOut(BaseModel):

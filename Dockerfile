@@ -13,7 +13,9 @@ RUN uv sync --frozen --no-dev --no-editable
 
 # 2단계: 실행 이미지 (빌드 도구 없이 가상 환경만 복사)
 FROM python:3.12-slim
-RUN useradd --create-home --uid 10001 rag && mkdir /models && chown rag /models
+# /data/uploads: 관리 화면에서 올린 문서. 새 볼륨은 이 폴더의 소유자(rag)를 물려받는다
+RUN useradd --create-home --uid 10001 rag && mkdir -p /models /data/uploads \
+    && chown rag /models /data/uploads
 WORKDIR /app
 COPY --from=build /app/.venv /app/.venv
 COPY alembic.ini ./

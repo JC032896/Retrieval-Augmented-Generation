@@ -17,6 +17,7 @@ from sqlalchemy.orm import Session, sessionmaker
 
 from rag_service import __version__
 from rag_service.api.admin import router as admin_router
+from rag_service.api.admin_documents import router as documents_router
 from rag_service.api.ask import router as ask_router
 from rag_service.api.readiness import MODELS, start_warm_up
 from rag_service.config import get_settings
@@ -37,6 +38,7 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
 app = FastAPI(title="rag-service", version=__version__, lifespan=lifespan)
 app.include_router(ask_router)
 app.include_router(admin_router)
+app.include_router(documents_router)
 
 
 @lru_cache

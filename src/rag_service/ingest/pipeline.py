@@ -94,11 +94,13 @@ def ingest_corpus(
 
     entries = {entry.file: entry for entry in corpus.documents}
     chunks = embedded = 0
+    root = corpus_root_key(corpus.root)
     for file in plan.added + plan.changed:
-        written, used = _write_document(
+        written, used = write_document(
             session,
-            corpus,
             entries[file],
+            corpus.doc_path(entries[file]),
+            root=root,
             embedder=embedder,
             tokenizer=tokenizer,
             max_chars=max_chars,
@@ -106,7 +108,7 @@ def ingest_corpus(
         chunks += written
         embedded += used
     for file in plan.updated:
-        _update_metadata(session, entries[file], corpus_root_key(corpus.root))
+        update_metadata(session, entries[file], root)
     embedded += _reembed_stored(session, plan.reembedded, embedder=embedder, model=model)
 
     session.execute(
@@ -220,17 +222,24 @@ def sync_users(session: Session, corpus: Corpus) -> int:
     return len(entries)
 
 
-def _write_document(
+def write_document(
     session: Session,
-    corpus: Corpus,
     entry: DocumentEntry,
+    path: Path,
     *,
+    root: str,
     embedder: Embedder,
     tokenizer: KoreanTokenizer,
-    max_chars: int,
+    max_chars: int = DEFAULT_MAX_CHARS,
+    origin: str = "folder",
+    owner_department: str | None = None,
 ) -> tuple[int, int]:
-    """문서 하나를 (다시) 저장하고 (조각 수, 새로 임베딩한 텍스트 수)를 돌려준다."""
-    path = corpus.doc_path(entry)
+    """문서 하나를 (다시) 저장하고 (조각 수, 새로 임베딩한 텍스트 수)를 돌려준다.
+
+    entry.file이 source_path, path가 원문 파일, root가 corpus_root다. 폴더 수집과 관리 화면
+    업로드(origin="upload", ingest/uploads.py)가 함께 쓴다. 같은 source_path의 기존 행은 지우고
+    새로 넣으므로 문서 id가 바뀐다.
+    """
     pieces = chunk_document(path, max_chars=max_chars)
     keys = chunk_keys(entry.file, pieces)
     hashes = [text_sha256(piece.text) for piece in pieces]
@@ -259,7 +268,9 @@ def _write_document(
         embedding_model=model,
         effective_from=entry.effective_from,
         effective_to=entry.effective_to,
-        corpus_root=corpus_root_key(corpus.root),
+        corpus_root=root,
+        origin=origin,
+        owner_department=owner_department,
     )
     session.add(document)
     session.flush()  # document.id를 받아온다
@@ -302,7 +313,7 @@ def _acl_rows(document_id: int, entry: DocumentEntry) -> list[DocumentAcl]:
     ] + [DocumentAcl(document_id=document_id, kind="role", value=r) for r in entry.roles]
 
 
-def _update_metadata(session: Session, entry: DocumentEntry, root: str) -> None:
+def update_metadata(session: Session, entry: DocumentEntry, root: str) -> None:
     """원문이 그대로인 문서의 권한·제목·상태·시행일·폴더를 고친다 (재임베딩 없음)."""
     document = session.scalars(select(Document).where(Document.source_path == entry.file)).one()
     document.title = entry.title

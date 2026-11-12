@@ -64,6 +64,9 @@ class Settings(BaseSettings):
     # false면 계정이 있어도 연결하지 않는다: 앱 프로세스가 감사 담당 비밀번호를 쓰지 않으므로
     # 앱이 뚫려도 감사 기록이 새지 않는다. 감사 조사는 scripts/replay.py 등 별도 도구로 한다
     admin_audit_view: bool = True
+    # 관리 화면에서 올린 문서의 원문을 두는 폴더 (deploy/compose.yaml의 uploads 볼륨). 백업 대상이다
+    upload_dir: Path = Path("data/uploads")
+    upload_max_mb: int = Field(default=30, ge=1, le=500)  # 파일 하나의 최대 크기
     audit_db_user: str | None = None
     audit_db_password: SecretStr | None = None
     audit_db_password_file: Path | None = None  # 있으면 audit_db_password보다 우선
