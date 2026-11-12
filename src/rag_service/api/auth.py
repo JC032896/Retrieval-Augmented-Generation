@@ -15,13 +15,16 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from rag_service.api.errors import AuthError, AuthUnavailableError
+from rag_service.api.identity import Identity, clean_groups
 from rag_service.api.oidc import OidcAuthenticator, OidcConfig
 from rag_service.db.models import User
 
-__all__ = ["AuthError", "AuthUnavailableError"]  # 오류는 errors.py에 있고 여기서 함께 내보낸다
+# 오류와 신원은 errors.py, identity.py에 있고 여기서 함께 내보낸다
+__all__ = ["AuthError", "AuthUnavailableError", "Identity"]
 
 AuthMode = Literal["disabled", "dev_header", "oidc"]
 DEV_USER_HEADER = "X-User-Id"
+DEV_GROUPS_HEADER = "X-User-Groups"  # 쉼표로 구분 (예: rag-admin,rag-auditor)
 
 
 @dataclass(frozen=True)
@@ -43,15 +46,26 @@ class Authenticator(Protocol):
         """
         ...
 
+    def identify(self, headers: Mapping[str, str]) -> Identity:
+        """login과 같고, 로그인 시스템이 알려 준 그룹을 함께 돌려준다 (관리 화면 역할용)."""
+        ...
+
 
 class DevHeaderAuthenticator:
-    """X-User-Id 헤더 값을 그대로 믿는다. 개발·데모 전용 (누구나 다른 사람 행세를 할 수 있다)."""
+    """X-User-Id, X-User-Groups 헤더 값을 그대로 믿는다.
+
+    개발·데모 전용 (누구나 다른 사람 행세를 하고 관리자 그룹을 주장할 수 있다).
+    """
 
     def login(self, headers: Mapping[str, str]) -> str:
         value = headers.get(DEV_USER_HEADER, "").strip()
         if not value:
             raise AuthError(f"{DEV_USER_HEADER} 헤더가 없습니다")
         return value
+
+    def identify(self, headers: Mapping[str, str]) -> Identity:
+        groups = headers.get(DEV_GROUPS_HEADER, "").split(",")
+        return Identity(self.login(headers), clean_groups(groups))
 
 
 def build_authenticator(mode: AuthMode, oidc: OidcConfig | None = None) -> Authenticator | None:

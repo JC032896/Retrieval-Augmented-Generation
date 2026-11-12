@@ -13,6 +13,7 @@
    (none이나 HS256을 허용하면 공개 키를 비밀 키처럼 써서 토큰을 위조할 수 있다).
 4. 설정한 클레임(기본 email)의 값을 로그인 id로 돌려준다. 권한 속성은 여기서 읽지 않는다
    (auth.py 참고). email을 쓸 때 로그인 서버가 "확인 안 된 메일"이라고 표시했으면 거부한다.
+5. 관리 화면용으로 그룹 클레임(기본 groups)도 함께 돌려준다 (identify, api/roles.py).
 """
 
 import json
@@ -27,6 +28,7 @@ from urllib.parse import urlparse
 import jwt
 
 from rag_service.api.errors import AuthError, AuthUnavailableError
+from rag_service.api.identity import Identity, clean_groups
 
 # 공개 키(비대칭) 서명만 허용한다
 ALLOWED_ALGORITHMS = ("RS256", "RS384", "RS512", "PS256", "PS384", "PS512", "ES256", "ES384")
@@ -44,6 +46,8 @@ class OidcConfig:
     login_claim: str = "email"  # users.login과 맞출 토큰 값 (Keycloak은 preferred_username도 흔함)
     # http를 허용할 내부 호스트 (예: compose 네트워크 안의 "keycloak"). 운영에서는 비워 둔다
     allow_http_hosts: tuple[str, ...] = ()
+    # 관리 화면 역할을 정할 그룹 목록이 들어 있는 토큰 값 (api/roles.py)
+    groups_claim: str = "groups"
 
 
 def check_issuer_url(issuer: str, allow_http_hosts: Sequence[str] = ()) -> str:
@@ -128,6 +132,13 @@ class OidcAuthenticator:
         self._keys = keys or SigningKeys(check_issuer_url(config.issuer, config.allow_http_hosts))
 
     def login(self, headers: Mapping[str, str]) -> str:
+        return self._login_from(self._claims(headers))
+
+    def identify(self, headers: Mapping[str, str]) -> Identity:
+        claims = self._claims(headers)
+        return Identity(self._login_from(claims), self._groups_from(claims))
+
+    def _claims(self, headers: Mapping[str, str]) -> dict[str, Any]:
         token = _bearer_token(headers)
         try:
             kid = jwt.get_unverified_header(token).get("kid")
@@ -144,7 +155,16 @@ class OidcAuthenticator:
             )
         except jwt.PyJWTError as error:
             raise AuthError("토큰이 유효하지 않습니다") from error
-        return self._login_from(claims)
+        return claims
+
+    def _groups_from(self, claims: Mapping[str, Any]) -> frozenset[str]:
+        """그룹 값이 없거나 형식이 다르면 그룹 없음 (관리 역할 없음). 질문 API는 그대로 쓴다."""
+        value = claims.get(self.config.groups_claim)
+        if isinstance(value, str):
+            return clean_groups([value])
+        if isinstance(value, list):
+            return clean_groups(value)
+        return frozenset()
 
     def _login_from(self, claims: Mapping[str, Any]) -> str:
         claim = self.config.login_claim

@@ -138,6 +138,16 @@ services:
       OIDC_AUDIENCE: ${OIDC_AUDIENCE:-}
       OIDC_LOGIN_CLAIM: ${OIDC_LOGIN_CLAIM:-email}
       OIDC_ALLOW_HTTP_HOSTS: ${OIDC_ALLOW_HTTP_HOSTS:-}
+      # 관리 화면 역할: 토큰의 그룹 값 이름과 역할마다 대응하는 그룹 (README "관리 API")
+      OIDC_GROUPS_CLAIM: ${OIDC_GROUPS_CLAIM:-groups}
+      ADMIN_GROUP: ${ADMIN_GROUP:-rag-admin}
+      DOC_MANAGER_GROUP: ${DOC_MANAGER_GROUP:-rag-doc-manager}
+      AUDITOR_GROUP: ${AUDITOR_GROUP:-rag-auditor}
+      # 관리 화면의 감사 기록은 감사 담당 계정(rag_auditor 역할, 감사 테이블 읽기만)으로 읽는다.
+      # ADMIN_AUDIT_VIEW=false면 앱이 이 계정을 쓰지 않는다 (README "관리 API")
+      ADMIN_AUDIT_VIEW: ${ADMIN_AUDIT_VIEW:-true}
+      AUDIT_DB_USER: ${AUDIT_DB_USER:-rag_audit_ops}
+      AUDIT_DB_PASSWORD_FILE: /run/rag/app/audit_db_password
       AUDIT_STORE_TEXT: ${AUDIT_STORE_TEXT:-true}
       # 값을 비우면(KEY=) 그 한도를 두지 않는다. 변수가 아예 없으면 기본값
       LLM_DAILY_REQUESTS_PER_USER: ${LLM_DAILY_REQUESTS_PER_USER-200}

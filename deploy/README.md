@@ -88,7 +88,10 @@ docker compose start app
 
 ## 로그인
 - **데모 (기본)**: `compose.override.yaml`이 Keycloak을 띄우고 앱을 연결한다. `samples/org.yaml`의 직원
-  kim, lee, park, choi, jung, han이 들어 있고 비밀번호는 `demo-<아이디>`다.
+  kim, lee, park, choi, jung, han이 들어 있고 비밀번호는 `demo-<아이디>`다. 관리 역할 그룹은 han(중앙 관리자),
+  lee(개발팀 문서 담당), park(감사 담당)에 들어 있다.
+- **관리 역할**: 회사 로그인 시스템에 그룹 세 개(기본 이름 `rag-admin`, `rag-doc-manager`, `rag-auditor`)를 만들고
+  토큰에 그룹 값(`groups`)이 실리게 한다. 이름이 다르면 `.env`의 `ADMIN_GROUP` 등을 바꾼다 (README "관리 API").
 - **회사 로그인 시스템 (운영)**: `compose.override.yaml`을 지우고(또는 `docker compose -f compose.yaml up -d`),
   그 시스템(Microsoft 365, Google Workspace, 사내 SSO)에 이 앱을 등록한 뒤 `.env`의 `OIDC_ISSUER`,
   `OIDC_AUDIENCE`, `OIDC_LOGIN_CLAIM`을 채운다. `users.login`(문서 폴더 `org.yaml`의 id)이 토큰의 그 값

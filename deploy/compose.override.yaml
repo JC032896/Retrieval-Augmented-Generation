@@ -1,6 +1,7 @@
 # 데모 로그인: compose.yaml과 함께 자동으로 읽힌다 (docker compose up -d).
 # samples/org.yaml의 직원(kim, lee, park, choi, jung, han)이 들어 있는 Keycloak을 띄우고 앱을 거기에 연결한다.
-# 비밀번호는 demo-<아이디>. 관리 화면 http://localhost:8080/admin (admin / 아래 명령으로 확인)
+# 비밀번호는 demo-<아이디>. 관리 역할 그룹: han 중앙 관리자(rag-admin), lee 부서 문서 담당(rag-doc-manager),
+# park 감사 담당(rag-auditor). Keycloak 관리 화면 http://localhost:8080/admin (admin / 아래 명령으로 확인)
 #   docker compose exec keycloak cat /run/rag/keycloak/keycloak_admin_password
 #
 # 운영에서는 이 파일을 지우고(또는 docker compose -f compose.yaml ...), .env에 회사 로그인 시스템의

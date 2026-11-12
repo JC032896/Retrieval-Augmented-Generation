@@ -9,6 +9,7 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 from sqlalchemy import URL
 
 from rag_service.api.oidc import OidcConfig, check_issuer_url
+from rag_service.api.roles import RoleGroups
 
 
 class Settings(BaseSettings):
@@ -53,6 +54,19 @@ class Settings(BaseSettings):
     oidc_login_claim: str = "email"  # users.login과 맞출 토큰 값
     # http를 허용할 내부 호스트 (쉼표로 구분). deploy/의 데모 Keycloak("keycloak") 전용, 운영은 비움
     oidc_allow_http_hosts: str = ""
+    # 관리 화면 역할 (rag_service.api.roles). 토큰의 그룹 값 이름과, 역할마다 대응하는 그룹
+    oidc_groups_claim: str = "groups"
+    admin_group: str = "rag-admin"  # 중앙 관리자
+    doc_manager_group: str = "rag-doc-manager"  # 부서 문서 담당
+    auditor_group: str = "rag-auditor"  # 감사 담당
+    # 관리 화면에서 감사 기록을 읽는 감사 담당 DB 계정 (rag_auditor 역할: 감사 테이블 읽기만).
+    # 앱 계정은 감사 기록을 읽을 수 없어서 따로 연결한다. 비우면 관리 화면의 감사 기록이 503.
+    # false면 계정이 있어도 연결하지 않는다: 앱 프로세스가 감사 담당 비밀번호를 쓰지 않으므로
+    # 앱이 뚫려도 감사 기록이 새지 않는다. 감사 조사는 scripts/replay.py 등 별도 도구로 한다
+    admin_audit_view: bool = True
+    audit_db_user: str | None = None
+    audit_db_password: SecretStr | None = None
+    audit_db_password_file: Path | None = None  # 있으면 audit_db_password보다 우선
 
     # 감사 기록 (rag_service.audit). 질문·답변 원문에는 개인정보가 섞일 수 있어 보관 기간을 둔다
     audit_store_text: bool = True  # false면 원문 대신 길이와 해시만 남긴다
@@ -76,6 +90,9 @@ class Settings(BaseSettings):
         "llm_daily_requests_per_user",
         "llm_daily_budget_usd",
         "llm_concurrent_per_user",
+        "audit_db_user",
+        "audit_db_password",
+        "audit_db_password_file",
         mode="before",
     )
     @classmethod
@@ -87,6 +104,9 @@ class Settings(BaseSettings):
     def _read_password_file(self) -> "Settings":
         if self.postgres_password_file is not None:
             self.postgres_password = self.postgres_password_file.read_text(encoding="utf-8").strip()
+        if self.audit_db_password_file is not None:
+            password = self.audit_db_password_file.read_text(encoding="utf-8").strip()
+            self.audit_db_password = SecretStr(password)
         return self
 
     @model_validator(mode="after")
@@ -110,8 +130,16 @@ class Settings(BaseSettings):
         if not self.oidc_issuer or not self.oidc_audience:
             return None
         return OidcConfig(
-            self.oidc_issuer, self.oidc_audience, self.oidc_login_claim, self.allow_http_hosts
+            self.oidc_issuer,
+            self.oidc_audience,
+            self.oidc_login_claim,
+            self.allow_http_hosts,
+            self.oidc_groups_claim,
         )
+
+    @property
+    def role_groups(self) -> RoleGroups:
+        return RoleGroups(self.admin_group, self.doc_manager_group, self.auditor_group)
 
     @property
     def allow_http_hosts(self) -> tuple[str, ...]:
@@ -127,6 +155,15 @@ class Settings(BaseSettings):
             host=self.postgres_host,
             port=self.postgres_port,
             database=self.postgres_db,
+        )
+
+    @property
+    def audit_database_url(self) -> URL | None:
+        """감사 담당 계정으로 같은 DB에 접속하는 주소. 계정이나 비밀번호가 없으면 None."""
+        if not self.audit_db_user or self.audit_db_password is None:
+            return None
+        return self.database_url.set(
+            username=self.audit_db_user, password=self.audit_db_password.get_secret_value()
         )
 
 

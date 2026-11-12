@@ -120,6 +120,8 @@
 - [x] **5단계: CI**: GitHub Actions에서 평가 실행과 품질 게이트 (보호 경로 해시 재계산 포함)
 - [x] **6단계: 운영 준비**: 로그와 감사 기록, LLM 사용 한도, 설치형 배포(앱 이미지, 운영 compose, Keycloak 예시, `/health`·`/ready`)
   - [x] 6-4: 답변 LLM 선택(Claude API 또는 사내 모델: OpenAI 호환 API로 vLLM·Ollama 연결, gemma3:12b 평가)
+  - [x] 설치 한 줄(`docker compose up -d`)과 버전별 이미지 배포(GHCR)
+- [ ] **관리 화면**: 관리 API와 그룹 기반 역할(B-1 완료) → 문서 업로드·권한 지정 → React 화면
 - [ ] **7단계: 서비스화**: 증분 수집, Celery 비동기 수집, UI, 데모 GIF
 
 
@@ -543,6 +545,40 @@ LLM_API_KEY=                               # 서버가 키를 요구할 때만
 - **한계**: 완전 폐쇄망은 답변 LLM을 사내 모델로 바꿔야 한다(위 "답변 LLM 선택"). Keycloak 예시는 데모 설정
   (http, 고정 비밀번호, password grant)이고, Kubernetes(Helm)는 제공하지 않는다(무엇을 바꾸면 되는지만 정리).
 
+### 관리 API (관리 화면 B-1)
+
+관리 화면(React, 다음 단계)이 부르는 API다 (`api/admin.py`). 사용자 확인은 질문 API와 같고, **관리 역할은 회사
+로그인 시스템 토큰의 그룹 값으로 정한다** (`api/roles.py`). 문서 열람 권한(부서·역할·등급)은 지금처럼 DB
+`users`에서 읽으므로, 그룹은 관리 화면에서 무엇을 할 수 있는지에만 쓰인다.
+
+| 역할 | 그룹 (기본값, 설정으로 변경) | 할 수 있는 일 |
+|---|---|---|
+| 중앙 관리자 | `ADMIN_GROUP=rag-admin` | 설치 상태, 사용자 목록 (B-2부터 전체 문서와 권한) |
+| 부서 문서 담당 | `DOC_MANAGER_GROUP=rag-doc-manager` | 설치 상태 (B-2부터 자기 부서 문서 올리기와 권한 지정) |
+| 감사 담당 | `AUDITOR_GROUP=rag-auditor` | 감사 기록 목록과 한 건(질문·답변 원문, 재현 정보) |
+
+| API | 역할 | 내용 |
+|---|---|---|
+| `GET /admin/api/me` | 로그인한 누구나 | 이름, 부서, 관리 역할 목록. 역할이 없어도 200 (화면이 "권한 없음"을 보여 준다) |
+| `GET /admin/api/status` | 관리 역할 누구나 | DB, 모델, 인덱스 신선도, 답변 LLM 설정 여부, 감사 DB 연결, 사용 한도 |
+| `GET /admin/api/users` | 중앙 관리자 | `org.yaml`에서 수집한 사용자와 권한 속성 (보기만) |
+| `GET /admin/api/audit` | 감사 담당 | 최근 기록부터. `login`, `outcome`, `since`(포함), `until`(제외), `before_id`로 다음 페이지 |
+| `GET /admin/api/audit/{id}` | 감사 담당 | 답변 원문, 근거 조각 목록, 요청 해시 (`scripts/replay.py`로 재현) |
+
+- **역할은 서로 포함하지 않는다.** 중앙 관리자도 감사 담당 그룹에 없으면 감사 기록을 볼 수 없다(403). 운영 관리와
+  감사 조사를 나누려는 것이다 (PRODUCT.md "역할을 섞지 않는다"). 거절은 운영 로그 `admin_forbidden`에 남는다.
+- **감사 기록은 감사 담당 DB 계정으로 읽는다.** 앱 계정(`rag_app`)은 감사 기록을 읽을 수 없으므로 앱이 감사 담당
+  계정(`AUDIT_DB_USER`, `rag_auditor` 역할)으로 따로 연결한다. 감사 기록을 본 사실(누가, 어떤 조건으로, 몇 건)은
+  운영 로그 `admin_audit_viewed`에 남기고 질문 원문은 넣지 않는다.
+- **트레이드오프**: 이 연결 때문에 앱 프로세스가 감사 담당 비밀번호를 갖는다. 앱이 뚫리면 감사 기록도 읽힐 수 있다
+  ("배포: DB 계정 분리"의 보호가 약해진다). 이를 허용하지 않는 회사는 `ADMIN_AUDIT_VIEW=false`로 끄고, 감사 조사는
+  감사 담당 계정으로 별도 도구(`scripts/replay.py`, DB 클라이언트)를 쓴다. 이때 감사 API는 503이다.
+- 그룹 값의 이름은 `OIDC_GROUPS_CLAIM`(기본 `groups`)이다. Entra ID는 그룹 이름 대신 그룹 객체 ID를 보내므로
+  `ADMIN_GROUP` 등에 그 ID를 넣는다. Keycloak은 그룹 매퍼의 "Full group path"를 끄거나 `/rag-admin`처럼 경로로 적는다.
+- 개발 모드(`AUTH_MODE=dev_header`)는 `X-User-Groups: rag-admin,rag-auditor` 헤더를 그대로 믿는다 (데모 전용).
+- 데모 로그인(`deploy/compose.override.yaml`)에는 han(중앙 관리자), lee(개발팀 문서 담당), park(감사 담당)이 들어 있다.
+- 모델을 읽지 않으므로 서버가 모델을 읽는 중에도 관리 API는 응답한다.
+
 ### 배포: DB 계정 분리
 
 마이그레이션 0005가 로그인할 수 없는 역할 두 개를 만든다(이미 있으면 그대로 둔다).
@@ -553,6 +589,7 @@ LLM_API_KEY=                               # 서버가 키를 요구할 때만
 | `rag_auditor` | 접근 불가 | **읽기만** |
 
 `chunk_snapshots`에는 기밀 문서의 본문 사본이 들어가므로, 앱 계정이 뚫려도 읽을 수 없게 한다.
+단, 관리 화면의 감사 기록 보기를 켜면(기본) 앱 프로세스가 감사 담당 계정도 쓴다 ("관리 API"의 트레이드오프).
 운영에서는 로그인 계정을 나눠 각 역할을 부여한다.
 
 ```sql

@@ -30,7 +30,8 @@ from rag_service.answer.generate import DEFAULT_CONTEXT_SIZE, Answer, request_co
 from rag_service.answer.llm import LLMError, StreamingLLM, estimate_cost
 from rag_service.answer.prompt import SYSTEM_PROMPT, build_prompt
 from rag_service.answer.verify import verify_answer
-from rag_service.api.auth import AuthError, AuthUnavailableError, CurrentUser, load_user
+from rag_service.api.auth import CurrentUser
+from rag_service.api.current import authenticate, client_ip
 from rag_service.api.limits import LimitExceeded, check_daily
 from rag_service.api.readiness import require_models
 from rag_service.api.services import Services, get_services
@@ -45,8 +46,6 @@ logger = logging.getLogger(__name__)
 router = APIRouter()
 
 MAX_QUESTION_CHARS = 1000
-# 401 응답에 붙이는 표준 머리글 (토큰을 Bearer 방식으로 보내라는 뜻)
-BEARER_CHALLENGE = {"WWW-Authenticate": "Bearer"}
 
 ServicesDep = Annotated[Services, Depends(get_services)]
 
@@ -58,32 +57,7 @@ class AskRequest(BaseModel):
 
 
 def current_user(request: Request, services: ServicesDep) -> CurrentUser:
-    if services.authenticator is None:
-        raise HTTPException(503, "사용자 확인 방식이 설정되지 않았습니다 (AUTH_MODE)")
-    client_ip = _client_ip(request)
-    try:
-        login = services.authenticator.login(request.headers)
-    except AuthError as error:
-        log_event(
-            logger, "auth_failed", level=logging.WARNING, reason=str(error), client_ip=client_ip
-        )
-        raise HTTPException(401, str(error), headers=BEARER_CHALLENGE) from error
-    except AuthUnavailableError as error:
-        logger.exception("사용자 확인 수단이 동작하지 않음")
-        raise HTTPException(503, str(error)) from error
-    with services.sessions() as session:
-        user = load_user(session, login)
-    if user is None:
-        log_event(
-            logger,
-            "auth_failed",
-            level=logging.WARNING,
-            reason="unregistered",
-            login=login,
-            client_ip=client_ip,
-        )
-        raise HTTPException(401, "등록되지 않은 사용자입니다", headers=BEARER_CHALLENGE)
-    return user
+    return authenticate(request, services.authenticator, services.sessions, logger).user
 
 
 # response_class=EventSourceResponse는 함수가 생성기일 때 쓰는 표시다. 여기서는 검색을 응답 전에
@@ -111,7 +85,7 @@ def ask(
         else services.in_flight.acquire(user.login, services.limits.concurrent_per_user)
     )
     if isinstance(slot, LimitExceeded):
-        _reject(slot, user=user, client_ip=_client_ip(request))
+        _reject(slot, user=user, client_ip=client_ip(request))
     try:
         with services.sessions() as session:
             hits = search(
@@ -134,7 +108,7 @@ def ask(
         record_ask(
             services,
             request_id=request_id,
-            client_ip=_client_ip(request),
+            client_ip=client_ip(request),
             user=user,
             question=body.question,
             result=result,
@@ -342,11 +316,6 @@ def answer_payload(answer: Answer, *, question: str, tokenizer: KoreanTokenizer)
 
 def _elapsed_ms(started: float) -> int:
     return round((time.perf_counter() - started) * 1000)
-
-
-def _client_ip(request: Request) -> str | None:
-    # 프록시 뒤에서는 uvicorn --proxy-headers --forwarded-allow-ips로 실제 주소를 받는다
-    return request.client.host if request.client else None
 
 
 def _event(name: str, data: dict[str, Any]) -> bytes:
