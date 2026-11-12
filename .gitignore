@@ -10,6 +10,9 @@ coverage.xml
 htmlcov/
 dist/
 
+# 관리 화면(web/admin) 의존성
+node_modules/
+
 # 비밀 정보
 .env
 .env.*

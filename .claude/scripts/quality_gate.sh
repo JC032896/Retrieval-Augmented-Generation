@@ -3,6 +3,7 @@
 #   --fast : 1~2분 안에 끝나는 검사. 보호 경로 무결성 → 훅 설정 → venv 시작 코드 → lock 일치
 #            → format 체크 → 타입체크 → lint → 억제 주석 증가 → 관련 테스트
 #   --full : fast 검사 + 전체 테스트/커버리지 + eval + baseline 비교
+#   관리 화면(web/admin)은 --fast에서 바뀌었을 때만, --full에서는 항상 검사한다 (9번)
 #   --full --no-compare : 지표만 모으고 baseline 비교는 생략 (make_baseline.sh 전용)
 # 종료 코드: 0 통과, 1 실패, 3 게이트 자체 오류 (stop-gate는 3을 받으면 통과시킨다: fail-open)
 # 출력: 검사별 결과 + 실패한 검사의 핵심 에러 30줄 이내. 전체 로그는 .claude/state/gate.log
@@ -156,6 +157,35 @@ else
     check "baseline 비교" 60 "${METRICS[@]}" compare \
       --metrics "$STATE/metrics.json" "${base_arg[@]}"
     cmp_out=$(sed -n '/===== baseline 비교/,$p' "$LOG" | grep -aE '^(PASS|FAIL|SKIPPED|  )' || true)
+  fi
+fi
+
+# ---------- 9. 관리 화면 (web/admin: React + TypeScript) ----------
+# 타입체크(tsc), lint·format(biome ci), 억제 주석 0개, API 타입이 명세 사본과 같은지, 테스트(vitest).
+# --fast는 web/admin이 바뀌었을 때만, --full은 항상. CI는 npm ci를 한 뒤라 node_modules가 반드시 있다
+WEB=web/admin
+web_changed() {
+  { git diff --name-only HEAD; git ls-files --others --exclude-standard; } 2>/dev/null \
+    | grep -q "^$WEB/"
+}
+if [ -d "$WEB" ]; then
+  if [ ! -e "$WEB/node_modules/.bin/tsc" ]; then
+    if [ "${CI:-}" = "true" ]; then
+      check "화면 의존성" 5 bash -c 'echo "web/admin/node_modules 없음: CI에서 npm ci를 먼저 실행해야 한다"; exit 1'
+    else
+      skip "화면 검사" "node_modules 없음 (cd $WEB && npm ci)"
+    fi
+  elif [ "$MODE" = "--full" ] || web_changed; then
+    check "화면 타입체크" 120 bash -c "cd $WEB && node_modules/.bin/tsc -p . --noEmit"
+    check "화면 lint" 60 bash -c "cd $WEB && node_modules/.bin/biome ci ."
+    check "화면 억제 주석" 30 bash -c \
+      "! grep -rnE '@ts-ignore|@ts-expect-error|@ts-nocheck|biome-ignore|eslint-disable' $WEB/src"
+    check "화면 API 타입" 60 bash -c "cd $WEB && t=\$(mktemp) && \
+      node_modules/.bin/openapi-typescript src/api/openapi.json -o \"\$t\" >/dev/null 2>&1 && \
+      cmp -s src/api/schema.d.ts \"\$t\" || { echo 'schema.d.ts가 openapi.json과 다르다: npm run gen:api'; exit 1; }"
+    check "화면 테스트" 120 bash -c "cd $WEB && node_modules/.bin/vitest run"
+  else
+    skip "화면 검사" "web/admin 변경 없음"
   fi
 fi
 

@@ -53,7 +53,10 @@ def test_everything_waits_for_setup_and_demo_login_is_an_override() -> None:
     assert base["db"]["depends_on"]["setup"]["condition"] == "service_completed_successfully"
     assert demo["keycloak"]["depends_on"]["setup"]["condition"] == "service_completed_successfully"
     assert "keycloak" not in base
-    assert demo["app"]["environment"]["OIDC_ISSUER"] == "http://keycloak:8080/realms/hanbit"
+    # 브라우저(관리 화면 로그인)와 앱이 같은 주소를 쓴다 (tests/test_deploy_admin_ui.py)
+    assert demo["app"]["environment"]["OIDC_ISSUER"] == (
+        "http://keycloak.localhost:8080/realms/hanbit"
+    )
     assert "keycloak_admin_password" in " ".join(demo["keycloak"]["entrypoint"])
 
 

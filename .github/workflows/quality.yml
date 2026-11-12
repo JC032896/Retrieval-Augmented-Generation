@@ -51,6 +51,17 @@ jobs:
       - name: 의존성 설치
         run: uv sync --frozen
 
+      # 관리 화면(web/admin): package-lock.json 그대로 설치한다. 게이트가 타입체크·lint·테스트를 돌린다
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: web/admin/package-lock.json
+
+      - name: 화면 의존성 설치
+        working-directory: web/admin
+        run: npm ci --no-audit --no-fund
+
       - name: 품질 게이트 --full
         run: bash .claude/scripts/quality_gate.sh --full
 

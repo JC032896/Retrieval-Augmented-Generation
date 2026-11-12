@@ -48,6 +48,13 @@ LOCK = ROOT / LOCK_REL
 # (패턴, 새 파일 추가 허용 여부). 여러 규칙에 걸리면 가장 엄격한 쪽을 따른다.
 RULES: list[tuple[str, bool]] = [
     ("tests/*", True),  # 기존 테스트 수정/삭제는 금지, 새 테스트 추가는 허용
+    # 관리 화면(web/admin): 테스트와 테스트 도우미는 tests/와 같은 규칙, 검사 도구 설정은 보호
+    ("web/admin/src/*.test.ts", True),
+    ("web/admin/src/*.test.tsx", True),
+    ("web/admin/src/test/*", True),
+    ("web/admin/biome.json", False),
+    ("web/admin/tsconfig.json", False),
+    ("web/admin/vitest.config.ts", False),
     ("conftest.py", False),
     ("*/conftest.py", False),
     ("pytest.ini", False),
