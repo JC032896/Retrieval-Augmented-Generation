@@ -1,6 +1,6 @@
 [project]
 name = "rag-service"
-version = "0.1.0"
+version = "0.2.0"
 description = "권한 인식 한국어 문서 질의 서비스 (RAG)"
 requires-python = ">=3.12,<3.13"
 dependencies = [
