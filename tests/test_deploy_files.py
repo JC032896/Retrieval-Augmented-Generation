@@ -70,7 +70,10 @@ def test_demo_realm_users_match_the_sample_organization() -> None:
 
     assert [u["username"] for u in realm["users"]] == [u["id"] for u in org["users"]]
     [client] = realm["clients"]
-    [mapper] = client["protocolMappers"]
+    # 매퍼는 토큰 대상(aud)과 그룹(관리 화면 역할, tests/test_deploy_admin.py) 두 개
+    [mapper] = [
+        m for m in client["protocolMappers"] if m["protocolMapper"] == "oidc-audience-mapper"
+    ]
     assert mapper["config"]["included.client.audience"] == client["clientId"] == "rag-service"
 
 
