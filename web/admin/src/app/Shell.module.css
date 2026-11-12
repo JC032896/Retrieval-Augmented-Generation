@@ -1,0 +1,143 @@
+.frame {
+  display: grid;
+  grid-template-columns: var(--rail-width) minmax(0, 1fr);
+  min-height: 100vh;
+}
+
+.rail {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+  padding: var(--space-5) var(--space-4);
+  background: var(--kraft);
+  color: var(--kraft-ink);
+}
+
+.org {
+  display: grid;
+  gap: 2px;
+  padding: 0 var(--space-2);
+}
+
+.logo {
+  max-width: 120px;
+  max-height: 40px;
+  margin-bottom: var(--space-2);
+}
+
+.orgName {
+  font-size: var(--text-lg);
+  font-weight: 700;
+}
+
+.product {
+  font-size: var(--text-xs);
+  opacity: 0.85;
+}
+
+.nav {
+  display: grid;
+  gap: var(--space-1);
+}
+
+.link {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: 10px var(--space-3);
+  border-radius: var(--radius);
+  color: var(--kraft-ink);
+  text-decoration: none;
+  transition: background-color var(--duration-fast) var(--ease-out);
+}
+
+.link:hover {
+  background: var(--kraft-deep);
+}
+
+.link:focus-visible {
+  outline-color: var(--kraft-ink);
+}
+
+.link[aria-current="page"] {
+  background: var(--paper);
+  color: var(--ink);
+  font-weight: 700;
+}
+
+.who {
+  margin-top: auto;
+  display: grid;
+  gap: 2px;
+  padding: var(--space-3) var(--space-2) 0;
+  border-top: 1px solid rgb(255 248 238 / 0.3);
+  font-size: var(--text-xs);
+}
+
+.name {
+  font-size: var(--text-sm);
+  font-weight: 700;
+}
+
+.signOut {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  justify-self: start;
+  margin-top: var(--space-3);
+  padding: 6px var(--space-2);
+  border: 0;
+  border-radius: var(--radius);
+  background: transparent;
+  color: var(--kraft-ink);
+  cursor: pointer;
+}
+
+.signOut:hover {
+  background: var(--kraft-deep);
+}
+
+.signOut:focus-visible {
+  outline-color: var(--kraft-ink);
+}
+
+.main {
+  min-width: 0;
+  padding: var(--space-6) var(--space-7);
+}
+
+.main:focus {
+  outline: none;
+}
+
+/* 좁은 화면: 메뉴 띠가 위로 올라가 가로로 놓인다 */
+@media (max-width: 900px) {
+  .frame {
+    grid-template-columns: 1fr;
+  }
+
+  .rail {
+    position: static;
+    height: auto;
+    gap: var(--space-3);
+    padding: var(--space-3) var(--space-4);
+  }
+
+  .nav {
+    display: flex;
+    flex-wrap: wrap;
+  }
+
+  .who {
+    margin-top: 0;
+    border-top: 0;
+    padding-top: 0;
+  }
+
+  .main {
+    padding: var(--space-5) var(--space-4);
+  }
+}

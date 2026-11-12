@@ -1,0 +1,50 @@
+.track {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  white-space: nowrap;
+}
+
+.steps {
+  display: flex;
+  align-items: center;
+}
+
+.steps li {
+  position: relative;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--rule);
+  transition: background-color var(--duration-step) var(--ease-out);
+}
+
+/* 점 사이의 선. 앞 점이 끝나야 선이 이어진다 */
+.steps li + li {
+  margin-left: 30px;
+}
+
+.steps li + li::before {
+  content: "";
+  position: absolute;
+  right: 10px;
+  top: 4px;
+  width: 30px;
+  height: 2px;
+  background: var(--rule);
+  transition: background-color var(--duration-step) var(--ease-out);
+  transition-delay: inherit;
+}
+
+.steps li.done {
+  background: var(--kraft);
+}
+
+.steps li.done::before {
+  background: var(--kraft);
+}
+
+.summary {
+  font-size: var(--text-sm);
+  color: var(--ink);
+}

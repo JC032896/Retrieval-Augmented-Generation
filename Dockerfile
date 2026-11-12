@@ -1,5 +1,13 @@
 # 앱 이미지: FastAPI + 검색 모델 실행 환경 (CPU). 모델 파일은 넣지 않는다 (/models 볼륨, deploy/README 참고)
 #   docker build -t rag-service .
+# 0단계: 관리 화면(web/admin, React) 빌드. 결과(dist)만 실행 이미지로 옮긴다
+FROM node:22-slim AS web
+WORKDIR /web
+COPY web/admin/package.json web/admin/package-lock.json ./
+RUN npm ci --no-audit --no-fund
+COPY web/admin/ ./
+RUN npm run build
+
 # 1단계: uv로 의존성 설치 (PyTorch는 pyproject의 pytorch-cpu 인덱스에서 CPU 빌드만 받는다)
 FROM python:3.12-slim AS build
 RUN pip install --no-cache-dir uv==0.13.7
@@ -21,11 +29,13 @@ COPY --from=build /app/.venv /app/.venv
 COPY alembic.ini ./
 COPY migrations ./migrations
 COPY scripts/replay.py ./scripts/replay.py
+COPY --from=web /web/dist ./web/admin
 ENV PATH=/app/.venv/bin:$PATH \
     PYTHONUNBUFFERED=1 \
     HF_HOME=/models \
     HF_HUB_OFFLINE=1 \
-    PRELOAD_MODELS=true
+    PRELOAD_MODELS=true \
+    ADMIN_UI_DIR=/app/web/admin
 USER rag
 EXPOSE 8000
 # /ready: DB에 연결되고 모델을 다 읽었을 때만 200. 모델을 읽는 데 1~2분 걸려서 시작 유예를 둔다

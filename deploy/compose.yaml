@@ -152,6 +152,10 @@ services:
       AUDIT_DB_PASSWORD_FILE: /run/rag/app/audit_db_password
       AUDIT_STORE_TEXT: ${AUDIT_STORE_TEXT:-true}
       UPLOAD_DIR: /data/uploads
+      # 관리 화면 (http://<서버>/admin): 화면에 보이는 회사 이름·로고, 브라우저 로그인 클라이언트 id
+      COMPANY_NAME: ${COMPANY_NAME:-}
+      COMPANY_LOGO_URL: ${COMPANY_LOGO_URL:-}
+      ADMIN_UI_CLIENT_ID: ${ADMIN_UI_CLIENT_ID:-}
       # 리버스 프록시의 요청 크기 제한(nginx client_max_body_size)도 이보다 크게 둔다
       UPLOAD_MAX_MB: ${UPLOAD_MAX_MB:-30}
       # 값을 비우면(KEY=) 그 한도를 두지 않는다. 변수가 아예 없으면 기본값

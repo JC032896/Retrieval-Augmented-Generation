@@ -164,12 +164,18 @@ class LimitsOut(BaseModel):
     utc_offset_hours: int
 
 
+class LlmOut(BaseModel):
+    provider: str
+    model: str
+    configured: bool  # False면 질문 API가 503 (Claude인데 API 키가 없음)
+
+
 class StatusOut(BaseModel):
     version: str
     db: str  # ok | error
     models: dict[str, str]  # status(ready, loading, lazy, error), 실패하면 error에 이유
     index: dict[str, Any]  # ingest.check.index_summary
-    llm: dict[str, Any]
+    llm: LlmOut
     audit_db: bool  # 감사 담당 계정으로 연결하도록 설정했는가
     limits: LimitsOut
 
@@ -193,11 +199,11 @@ def status(_: AnyAdminDep, services: AdminServicesDep) -> StatusOut:
         db=db,
         models=models,
         index=index,
-        llm={
-            "provider": services.llm.provider,
-            "model": services.llm.model,
-            "configured": services.llm.configured,
-        },
+        llm=LlmOut(
+            provider=services.llm.provider,
+            model=services.llm.model,
+            configured=services.llm.configured,
+        ),
         audit_db=services.audit_sessions is not None,
         limits=LimitsOut(
             daily_requests_per_user=limits.daily_requests_per_user,

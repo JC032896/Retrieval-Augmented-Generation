@@ -1,0 +1,26 @@
+{
+  "detector": {
+    "ignoreRules": [],
+    "ignoreFiles": [],
+    "ignoreValues": [
+      {
+        "rule": "cramped-padding",
+        "value": "*",
+        "files": [
+          ".impeccable/mocks/decision/model-pick.html"
+        ],
+        "createdAt": "2026-11-12T11:58:28.605Z",
+        "reason": "Claude: unchosen decision-round sketch (user picked assigned.html); not shipped, .impeccable/mocks is gitignored"
+      },
+      {
+        "rule": "cramped-padding",
+        "value": "*",
+        "files": [
+          ".impeccable/mocks/decision/challenger-airport.html"
+        ],
+        "createdAt": "2026-11-12T11:58:28.691Z",
+        "reason": "Claude: unchosen decision-round sketch (user picked assigned.html); not shipped, .impeccable/mocks is gitignored"
+      }
+    ]
+  }
+}

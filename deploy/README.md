@@ -36,6 +36,9 @@ docker compose up -d
 - 앱 이미지는 받은 코드의 버전과 같은 태그(`ghcr.io/jc032896/rag-service:<버전>`)를 GitHub 이미지 저장소에서 받는다.
   받을 수 없으면(아직 올리지 않은 버전 등) 이 폴더의 `Dockerfile`로 직접 만든다(약 5분).
 - 확인: `curl localhost:8000/ready` → `{"ready": true, ...}`, `curl localhost:8000/health` → 문서 22개, 불일치 0.
+- 관리 화면: 브라우저로 `http://localhost:8000/admin` → "회사 계정으로 로그인" → 데모 계정 han(중앙 관리자),
+  lee(개발팀 문서 담당), park(감사 담당), 비밀번호 `demo-<아이디>`. 로그인 화면 주소는 `keycloak.localhost:8080`이다
+  (브라우저가 이 PC로 보낸다. 안 열리면 hosts 파일에 `127.0.0.1 keycloak.localhost`를 넣는다).
 - 답변을 받으려면 Claude API 키가 필요하다: `cp .env.example .env`, `ANTHROPIC_API_KEY=` 채우고 `docker compose up -d`.
   키가 없으면 로그인과 검색까지는 되고 답변 단계에서 503("답변 LLM이 설정되지 않았습니다")이 난다.
 
@@ -98,6 +101,9 @@ docker compose start app
   lee(개발팀 문서 담당), park(감사 담당)에 들어 있다.
 - **관리 역할**: 회사 로그인 시스템에 그룹 세 개(기본 이름 `rag-admin`, `rag-doc-manager`, `rag-auditor`)를 만들고
   토큰에 그룹 값(`groups`)이 실리게 한다. 이름이 다르면 `.env`의 `ADMIN_GROUP` 등을 바꾼다 (README "관리 API").
+- **관리 화면 로그인 (운영)**: 회사 로그인 시스템에 이 앱을 "단일 페이지 앱(SPA, 공개 클라이언트 + PKCE)"으로 등록하고
+  리디렉션 주소 `https://<서버>/admin/callback`, 로그아웃 후 주소 `https://<서버>/admin/`, 웹 출처 `https://<서버>`를
+  넣는다. 클라이언트 id가 `OIDC_AUDIENCE`와 다르면 `.env`의 `ADMIN_UI_CLIENT_ID`에 적는다.
 - **회사 로그인 시스템 (운영)**: `compose.override.yaml`을 지우고(또는 `docker compose -f compose.yaml up -d`),
   그 시스템(Microsoft 365, Google Workspace, 사내 SSO)에 이 앱을 등록한 뒤 `.env`의 `OIDC_ISSUER`,
   `OIDC_AUDIENCE`, `OIDC_LOGIN_CLAIM`을 채운다. `users.login`(문서 폴더 `org.yaml`의 id)이 토큰의 그 값
@@ -108,7 +114,7 @@ docker compose start app
 ```bash
 # kim(개발팀 사원)으로 토큰 받기
 TOKEN=$(curl -s -d client_id=rag-service -d grant_type=password -d username=kim -d password=demo-kim \
-  http://localhost:8080/realms/hanbit/protocol/openid-connect/token | python -c "import sys,json; print(json.load(sys.stdin)['access_token'])")
+  http://keycloak.localhost:8080/realms/hanbit/protocol/openid-connect/token | python -c "import sys,json; print(json.load(sys.stdin)['access_token'])")
 curl -N -X POST localhost:8000/ask -H "Authorization: Bearer $TOKEN" -H "Content-Type: application/json" \
   --data-binary @question.json   # {"question": "출장비 정산은 언제까지 해야 해?"} (UTF-8 파일)
 ```
@@ -116,7 +122,7 @@ curl -N -X POST localhost:8000/ask -H "Authorization: Bearer $TOKEN" -H "Content
 - realm 파일: `deploy/keycloak/hanbit-realm.json`. Keycloak 관리 화면은 `http://localhost:8080/admin`
   (admin / 위 "비밀번호"의 명령으로 확인).
 - **데모 전용인 부분**: 비밀번호 `demo-<아이디>`, 아이디·비밀번호로 바로 토큰을 받는 방식(password grant),
-  http 통신(`OIDC_ALLOW_HTTP_HOSTS=keycloak`), `start-dev` 모드(내장 DB). 운영에서 Keycloak을 쓰려면 HTTPS
+  http 통신(`OIDC_ALLOW_HTTP_HOSTS=keycloak.localhost`), `start-dev` 모드(내장 DB). 운영에서 Keycloak을 쓰려면 HTTPS
   주소와 별도 DB로 띄우고(`start`), 웹 화면은 브라우저 로그인(authorization code + PKCE)을 쓴다.
 - Windows Git Bash에서는 `docker compose run ... /data/...` 같은 경로가 바뀌므로 `MSYS_NO_PATHCONV=1`을 앞에
   붙이거나 PowerShell에서 실행한다. `curl -d`로 한글을 보내면 깨지니 UTF-8 파일을 `--data-binary @파일`로 보낸다.

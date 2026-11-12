@@ -44,6 +44,11 @@ CLAUDE.md                      Claude가 매 세션 읽는 짧은 규칙
 `--fast` 검사 순서: 보호 경로 무결성 → 훅 설정 → venv 시작 코드 → lock 일치 → format → 타입체크 → lint → 억제 주석 → 관련 테스트
 `--full`: 위 정적 검사 + 전체 테스트와 커버리지 + eval + baseline 비교 (커버리지 -0.5%p, skip 개수, 억제 주석, Recall@5/MRR, 권한 유출 0)
 
+관리 화면(`web/admin`): `--fast`는 그 폴더가 바뀌었을 때만, `--full`은 항상 타입체크(tsc) → lint·format(biome ci) →
+억제 주석 0개(`@ts-ignore`, `@ts-expect-error`, `biome-ignore` 등) → API 타입이 명세 사본과 같은지 → 테스트(vitest).
+`node_modules`가 없으면 로컬은 건너뛰고(`npm ci` 안내), CI는 실패한다. 화면 테스트(`*.test.ts(x)`, `src/test/`)와
+검사 도구 설정(`biome.json`, `tsconfig.json`, `vitest.config.ts`)은 보호 경로다.
+
 ## 사용자 절차
 
 모든 명령은 Claude Code 입력창에서 `!`를 붙여 실행한다. (guard는 Claude의 도구 호출만 검사한다. 혹시 막히면 별도 터미널에서 실행)

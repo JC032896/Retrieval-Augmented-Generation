@@ -18,6 +18,7 @@ from typing import Annotated, Any, NoReturn
 from fastapi import APIRouter, Depends, File, Form, HTTPException, UploadFile
 from pydantic import BaseModel, Field, StringConstraints
 from sqlalchemy import func, select
+from sqlalchemy.dialects.postgresql import distinct_on
 from sqlalchemy.orm import Session
 
 from rag_service.api.admin import Admin, AdminServicesDep, DocumentsDep, UserOut
@@ -25,6 +26,7 @@ from rag_service.api.readiness import require_models
 from rag_service.api.roles import AdminRole
 from rag_service.api.services import Services, get_services
 from rag_service.corpus import DocumentStatus
+from rag_service.db.changes import DocumentChange
 from rag_service.db.models import MAX_SECURITY_LEVEL, MIN_SECURITY_LEVEL, Chunk, Document, User
 from rag_service.ingest.uploads import (
     Access,
@@ -51,6 +53,12 @@ Title = Annotated[str, StringConstraints(strip_whitespace=True, min_length=1, ma
 ModelsServicesDep = Annotated[Services, Depends(get_services)]
 
 
+class LastChangeOut(BaseModel):
+    action: str  # upload | replace | access | delete
+    actor_login: str
+    created_at: datetime
+
+
 class DocumentOut(BaseModel):
     id: int
     title: str
@@ -66,6 +74,7 @@ class DocumentOut(BaseModel):
     editable: bool  # 로그인한 사람이 바꿀 수 있는가
     created_at: datetime
     synced_at: datetime | None
+    last_change: LastChangeOut | None  # 관리 화면에서 한 마지막 변경 (폴더 문서는 보통 없음)
 
 
 class OrgOut(BaseModel):
@@ -153,9 +162,19 @@ def _out(
             .group_by(Chunk.document_id)
         ).all()
     )
+    latest = {
+        change.source_path: change
+        for change in session.scalars(
+            select(DocumentChange)
+            .where(DocumentChange.source_path.in_([d.source_path for d in documents]))
+            .ext(distinct_on(DocumentChange.source_path))
+            .order_by(DocumentChange.source_path, DocumentChange.id.desc())
+        )
+    }
     result = []
     for document in documents:
         access = access_of(session, document)
+        change = latest.get(document.source_path)
         viewers = sum(1 for user in users if can_view(user, access))
         result.append(
             DocumentOut(
@@ -173,6 +192,13 @@ def _out(
                 editable=_can_manage(admin, document),
                 created_at=document.created_at,
                 synced_at=document.synced_at,
+                last_change=None
+                if change is None
+                else LastChangeOut(
+                    action=change.action,
+                    actor_login=change.actor_login,
+                    created_at=change.created_at,
+                ),
             )
         )
     return result

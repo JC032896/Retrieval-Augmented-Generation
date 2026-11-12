@@ -12,10 +12,13 @@
       "standardFlowEnabled": true,
       "directAccessGrantsEnabled": true,
       "redirectUris": [
-        "http://localhost:*"
+        "http://localhost:*",
+        "http://127.0.0.1:*"
       ],
       "webOrigins": [
-        "+"
+        "http://localhost:8000",
+        "http://127.0.0.1:8000",
+        "http://localhost:5173"
       ],
       "protocolMappers": [
         {
@@ -40,7 +43,11 @@
             "userinfo.token.claim": "false"
           }
         }
-      ]
+      ],
+      "attributes": {
+        "pkce.code.challenge.method": "S256",
+        "post.logout.redirect.uris": "+"
+      }
     }
   ],
   "users": [

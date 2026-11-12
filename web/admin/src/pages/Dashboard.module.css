@@ -1,0 +1,262 @@
+.page {
+  display: grid;
+  gap: var(--space-6);
+  max-width: 1480px;
+}
+
+.header {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: var(--space-2) var(--space-5);
+}
+
+.header h1 {
+  font-size: var(--text-xl);
+  letter-spacing: -0.02em;
+}
+
+.header p {
+  color: var(--ink-2);
+  font-size: var(--text-sm);
+}
+
+/* 송장 라벨: 테두리는 이곳에만 쓴다 */
+.labels {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: var(--space-4);
+}
+
+.label {
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  gap: var(--space-2);
+  min-height: 136px;
+  padding: var(--space-4);
+  background: var(--sheet);
+  border: 2px solid var(--rule-strong);
+}
+
+.label[data-tone="blocked"] {
+  border-color: var(--blocked);
+}
+
+.labelHead {
+  display: flex;
+  justify-content: space-between;
+  font-size: var(--text-sm);
+  color: var(--ink-2);
+}
+
+.code {
+  font-family: var(--font-number);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+}
+
+.value {
+  align-self: end;
+  font-family: var(--font-number);
+  font-weight: 700;
+  font-size: var(--number-lg);
+  line-height: 1;
+}
+
+/* 숫자가 아닌 값(준비됨, 설정 안 됨)은 한글이라 숫자 글꼴 대신 본문 글꼴로 한 줄에 */
+.value[data-kind="text"] {
+  font-family: var(--font-body);
+  font-size: var(--text-xl);
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+}
+
+.label[data-tone="blocked"] .value {
+  color: var(--blocked);
+}
+
+.unit {
+  margin-left: var(--space-1);
+  font-family: var(--font-body);
+  font-size: var(--text-md);
+  font-weight: 500;
+}
+
+.note {
+  font-size: var(--text-sm);
+}
+
+.label[data-tone="ok"] .note {
+  color: var(--ok);
+}
+
+.columns {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) var(--side-width);
+  gap: var(--space-6);
+  align-items: start;
+}
+
+.sectionHead {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: var(--space-3);
+}
+
+h2 {
+  font-size: var(--text-lg);
+}
+
+.sectionHead a {
+  font-size: var(--text-sm);
+  font-weight: 500;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--sheet);
+}
+
+.table th {
+  padding: 10px var(--space-3);
+  border-bottom: 2px solid var(--rule-strong);
+  font-size: var(--text-xs);
+  font-weight: 500;
+  color: var(--ink-2);
+  text-align: left;
+}
+
+.table td {
+  padding: 13px var(--space-3);
+  border-bottom: 1px solid var(--rule);
+  font-size: var(--text-sm);
+  vertical-align: middle;
+}
+
+.number {
+  font-family: var(--font-number);
+  font-weight: 700;
+  font-size: var(--text-lg);
+  letter-spacing: 0.03em;
+  white-space: nowrap;
+}
+
+/* 보안 등급 색: 등급에만 쓴다 */
+.level {
+  display: inline-block;
+  padding: 2px var(--space-2);
+  border-radius: 3px;
+  color: var(--sheet);
+  font-size: var(--text-xs);
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.level[data-level="0"] {
+  background: var(--level-0);
+}
+
+.level[data-level="1"] {
+  background: var(--level-1);
+}
+
+.level[data-level="2"] {
+  background: var(--level-2);
+}
+
+.level[data-level="3"] {
+  background: var(--level-3);
+}
+
+.todo {
+  background: var(--sheet);
+  border-top: 4px solid var(--ok);
+}
+
+.todo[data-blocked="true"] {
+  border-top-color: var(--blocked);
+}
+
+.todo h2 {
+  padding: var(--space-4) var(--space-5) var(--space-2);
+}
+
+.todo li {
+  display: grid;
+  gap: var(--space-1);
+  padding: var(--space-3) var(--space-5) var(--space-4);
+  border-top: 1px solid var(--rule);
+  font-size: var(--text-sm);
+}
+
+.todo li strong {
+  font-size: var(--text-md);
+}
+
+.todo li span {
+  color: var(--ink-2);
+}
+
+.todo li a {
+  font-weight: 700;
+  justify-self: start;
+}
+
+.clear {
+  padding: 0 var(--space-5) var(--space-4);
+  color: var(--ok);
+  font-weight: 500;
+}
+
+.empty,
+.loading {
+  padding: var(--space-5);
+  background: var(--sheet);
+  color: var(--ink-2);
+  font-size: var(--text-sm);
+}
+
+.error {
+  padding: var(--space-4) var(--space-5);
+  background: var(--sheet);
+  border: 2px solid var(--blocked);
+  color: var(--blocked);
+  font-size: var(--text-sm);
+}
+
+@media (max-width: 1180px) {
+  .columns {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 720px) {
+  /* 머리글은 화면 낭독기를 위해 남기고 눈에만 숨긴다 */
+  .table thead {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+  }
+
+  .table tr {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: var(--space-1) var(--space-3);
+    padding: var(--space-3);
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .table td {
+    padding: 0;
+    border: 0;
+  }
+
+  .table td:nth-child(n + 3) {
+    grid-column: 1 / -1;
+  }
+}

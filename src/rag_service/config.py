@@ -54,6 +54,16 @@ class Settings(BaseSettings):
     oidc_login_claim: str = "email"  # users.login과 맞출 토큰 값
     # http를 허용할 내부 호스트 (쉼표로 구분). deploy/의 데모 Keycloak("keycloak") 전용, 운영은 비움
     oidc_allow_http_hosts: str = ""
+    # 관리 화면 (web/admin, React). 브라우저 로그인(authorization code + PKCE)의
+    # 클라이언트 id와 범위.
+    # 비우면 OIDC_AUDIENCE를 쓴다 (Keycloak은 보통 같다. Entra ID는 앱 등록의 클라이언트 id)
+    admin_ui_client_id: str | None = None
+    admin_ui_scopes: str = "openid profile email"
+    # 빌드한 관리 화면 폴더 (npm run build 결과). 이미지에서는 /app/web/admin
+    admin_ui_dir: Path = Path("web/admin/dist")
+    # 화이트라벨: 화면에 보이는 회사 이름과 로고 주소 (비우면 제품 이름만)
+    company_name: str = ""
+    company_logo_url: str = ""
     # 관리 화면 역할 (rag_service.api.roles). 토큰의 그룹 값 이름과, 역할마다 대응하는 그룹
     oidc_groups_claim: str = "groups"
     admin_group: str = "rag-admin"  # 중앙 관리자
@@ -89,6 +99,7 @@ class Settings(BaseSettings):
         "llm_api_key",
         "oidc_issuer",
         "oidc_audience",
+        "admin_ui_client_id",
         "audit_retention_days",
         "llm_daily_requests_per_user",
         "llm_daily_budget_usd",

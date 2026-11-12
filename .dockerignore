@@ -13,6 +13,8 @@ tests
 eval
 docs
 samples
+**/node_modules
+web/admin/dist
 deploy
 CODEREVIEW.md
 RESEARCH.md

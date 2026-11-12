@@ -1,0 +1,62 @@
+/* 관리 화면의 색, 글꼴, 간격. 화면 코드는 이 값만 쓴다. */
+:root {
+  /* 메뉴 띠와 작업면 */
+  --kraft: #7a5636;
+  --kraft-deep: #5e4128;
+  --kraft-ink: #fff8ee;
+  --kraft-tint: #ecdfcf;
+  --paper: #f6f6f2;
+  --sheet: #ffffff;
+  --ink: #1c1c1a;
+  --ink-2: #55534d;
+  --rule: #d9d6cc;
+  --rule-strong: #1c1c1a;
+
+  /* 상태: 막힘(적색)은 기밀 등급과 같은 색이라 막힌 상태와 기밀에만 쓴다 */
+  --ok: #2f6f4f;
+  --blocked: #c8102e;
+  --pending: #8a5a00;
+
+  /* 보안 등급 (등급에만 쓴다) */
+  --level-0: #2f6f4f;
+  --level-1: #2e5e8c;
+  --level-2: #8a5a00;
+  --level-3: #c8102e;
+
+  --focus: #2e5e8c;
+
+  --font-body: "Pretendard Variable", Pretendard, -apple-system, "Malgun Gothic", sans-serif;
+  --font-number: "Barlow Condensed", "Pretendard Variable", sans-serif;
+
+  --text-xs: 0.8125rem;
+  --text-sm: 0.875rem;
+  --text-md: 1rem;
+  --text-lg: 1.125rem;
+  --text-xl: 1.625rem;
+  --number-lg: 2.75rem;
+
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-7: 40px;
+
+  --rail-width: 232px;
+  --side-width: 380px;
+  --radius: 6px;
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --duration-fast: 160ms;
+  --duration-step: 360ms;
+  --step-delay: 90ms;
+}
+
+/* 움직임 줄이기: 모든 전이가 이 값을 쓰므로 여기서 한 번에 멈춘다 */
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --duration-fast: 0ms;
+    --duration-step: 0ms;
+    --step-delay: 0ms;
+  }
+}

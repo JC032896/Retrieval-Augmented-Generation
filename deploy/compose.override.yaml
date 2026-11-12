@@ -12,10 +12,13 @@ services:
   app:
     environment:
       AUTH_MODE: oidc
-      OIDC_ISSUER: http://keycloak:8080/realms/hanbit
+      # 브라우저(관리 화면 로그인)와 앱 컨테이너가 같은 주소로 Keycloak을 찾는다:
+      # 브라우저는 *.localhost를 이 PC로 보내고, 컨테이너는 아래 네트워크 별칭으로 찾는다
+      OIDC_ISSUER: http://keycloak.localhost:8080/realms/hanbit
       OIDC_AUDIENCE: rag-service
       OIDC_LOGIN_CLAIM: preferred_username
-      OIDC_ALLOW_HTTP_HOSTS: keycloak
+      OIDC_ALLOW_HTTP_HOSTS: keycloak.localhost
+      COMPANY_NAME: ${COMPANY_NAME:-한빛소프트 (데모)}
 
   keycloak:
     image: quay.io/keycloak/keycloak:26.0
@@ -30,13 +33,16 @@ services:
     environment:
       KC_BOOTSTRAP_ADMIN_USERNAME: admin
       # 토큰의 발급자(iss)를 앱이 접속하는 주소로 고정한다. 관리 화면은 이 서버의 localhost로 연다
-      KC_HOSTNAME: http://keycloak:8080
+      KC_HOSTNAME: http://keycloak.localhost:8080
       KC_HOSTNAME_ADMIN: http://localhost:8080
     volumes:
       - ./keycloak:/opt/keycloak/data/import:ro
       - keycloak-secrets:/run/rag/keycloak:ro
     ports:
       - "127.0.0.1:8080:8080"
+    networks:
+      default:
+        aliases: [keycloak.localhost]
     depends_on:
       setup:
         condition: service_completed_successfully
