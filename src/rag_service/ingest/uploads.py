@@ -19,7 +19,7 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
 
-from sqlalchemy import delete, or_, select
+from sqlalchemy import delete, func, or_, select
 from sqlalchemy.orm import Session
 
 from rag_service.corpus import DocumentEntry, DocumentStatus
@@ -330,10 +330,17 @@ def delete_upload(session: Session, document: Document, actor: str, upload_dir: 
 
 
 def history(session: Session, source_path: str) -> list[DocumentChange]:
-    """이 source_path의 변경 이력 (최근 것부터). 파일을 바꾸면 문서 id가 바뀌므로 경로로 찾는다."""
-    query = (
-        select(DocumentChange)
-        .where(DocumentChange.source_path == source_path)
-        .order_by(DocumentChange.id.desc())
+    """이 문서의 변경 이력 (최근 것부터). 파일을 바꾸면 문서 id가 바뀌므로 경로로 찾는다.
+
+    같은 경로에 지웠다가 다시 올린 문서는 다른 문서다. 마지막 '올림'부터만 돌려준다
+    (이전 문서의 삭제·권한 변경이 새 등기번호에 붙지 않게).
+    """
+    latest_upload = session.scalar(
+        select(func.max(DocumentChange.id)).where(
+            DocumentChange.source_path == source_path, DocumentChange.action == "upload"
+        )
     )
-    return list(session.scalars(query))
+    query = select(DocumentChange).where(DocumentChange.source_path == source_path)
+    if latest_upload is not None:
+        query = query.where(DocumentChange.id >= latest_upload)
+    return list(session.scalars(query.order_by(DocumentChange.id.desc())))

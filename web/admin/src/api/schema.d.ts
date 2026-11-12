@@ -637,6 +637,7 @@ export interface components {
             models: {
                 [key: string]: string;
             };
+            usage?: components["schemas"]["UsageOut"] | null;
             /** Version */
             version: string;
         };
@@ -652,6 +653,20 @@ export interface components {
             /** Company Name */
             company_name: string;
             oidc: components["schemas"]["OidcClientOut"] | null;
+        };
+        /** UsageOut */
+        UsageOut: {
+            /** Cost Usd */
+            cost_usd: number;
+            /** Requests */
+            requests: number;
+            /**
+             * Since
+             * Format: date-time
+             */
+            since: string;
+            /** Users */
+            users: number;
         };
         /** UserOut */
         UserOut: {

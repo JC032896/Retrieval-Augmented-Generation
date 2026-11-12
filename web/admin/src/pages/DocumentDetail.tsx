@@ -1,6 +1,6 @@
 // 문서 한 건: 작업 영역 전체를 이 문서가 차지한다 (방향 계약).
 // 권한 바꾸기(받는 사람 확인 후 저장), 배송조회 이력, 파일 교체, 삭제.
-import { type FormEvent, useCallback, useEffect, useState } from "react";
+import { type FormEvent, useCallback, useEffect, useMemo, useState } from "react";
 import { Link, useLocation, useNavigate, useParams } from "react-router";
 import type { DocumentRow } from "../api/types";
 import { errorText, useLoad } from "../api/useApi";
@@ -12,7 +12,7 @@ import c from "../ui/controls.module.css";
 import { Field } from "../ui/Field";
 import { audience, dateTime, levelName, registeredNumber } from "../ui/format";
 import { Level } from "../ui/Level";
-import { Recipients, usePreview } from "../ui/Recipients";
+import { diffRecipients, personName, Recipients, usePreview } from "../ui/Recipients";
 import { type Change, Timeline } from "../ui/Timeline";
 import styles from "./DocumentDetail.module.css";
 
@@ -21,12 +21,14 @@ type Org = { departments: string[]; roles: string[] };
 function AccessSection({ document, onSaved }: { document: DocumentRow; onSaved: () => void }) {
   const api = useApiClient();
   const org = useLoad(useCallback(() => api.get<Org>("/admin/api/org"), [api]));
-  const saved = draftOf(document);
+  const saved = useMemo(() => draftOf(document), [document]);
   const [draft, setDraft] = useState<AccessDraft>(saved);
   const [confirming, setConfirming] = useState(false);
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState<{ tone: "ok" | "blocked"; text: string } | null>(null);
   const preview = usePreview(api, draft);
+  const baseline = usePreview(api, saved);
+  const diff = diffRecipients(baseline, preview);
   const unchanged = sameDraft(saved, draft);
   const problem = draftProblem(draft);
 
@@ -82,7 +84,7 @@ function AccessSection({ document, onSaved }: { document: DocumentRow; onSaved: 
       <aside className={styles.side} aria-label="받는 사람">
         <section className={c.panel}>
           <h2>받는 사람</h2>
-          <Recipients preview={preview} />
+          <Recipients preview={preview} baseline={baseline} />
         </section>
         {message ? (
           <p
@@ -96,7 +98,15 @@ function AccessSection({ document, onSaved }: { document: DocumentRow; onSaved: 
         {confirming ? (
           <ConfirmRecipients
             preview={preview}
-            lines={changes(saved, draft, levelName)}
+            lines={[
+              ...changes(saved, draft, levelName),
+              ...(diff?.added.length
+                ? [`새로 보게 되는 사람: ${diff.added.map(personName).join(", ")}`]
+                : []),
+              ...(diff?.removed.length
+                ? [`더 이상 못 보는 사람: ${diff.removed.map(personName).join(", ")}`]
+                : []),
+            ]}
             busy={busy}
             confirmLabel="이 명단으로 저장"
             onConfirm={save}
@@ -263,10 +273,13 @@ export function DocumentDetail() {
   const history = useLoad(
     useCallback(() => api.get<Change[]>(`/admin/api/documents/${id}/changes`), [api, id]),
   );
-  const notice = (location.state as { created?: boolean; replaced?: boolean } | null) ?? {};
+  const [notice, setNotice] = useState(
+    () => (location.state as { created?: boolean; replaced?: boolean } | null) ?? {},
+  );
   const { reload: reloadDocument } = document;
   const { reload: reloadHistory } = history;
   const reload = useCallback(() => {
+    setNotice({});
     reloadDocument();
     reloadHistory();
   }, [reloadDocument, reloadHistory]);

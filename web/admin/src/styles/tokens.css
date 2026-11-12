@@ -16,6 +16,11 @@
   --ok: #2f6f4f;
   --blocked: #c8102e;
   --pending: #8a5a00;
+  /* 알림 바탕과 글자 (옅은 바탕 위 대비 4.5:1 이상) */
+  --ok-tint: #e6f0ea;
+  --ok-ink: #1f4d36;
+  --blocked-tint: #fbe8eb;
+  --blocked-ink: #8f0b21;
 
   /* 보안 등급 (등급에만 쓴다) */
   --level-0: #2f6f4f;

@@ -1,0 +1,196 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-11-12T00:00:00+09:00",
+  "title": "Design System: 문서 질의 관리 (web/admin)",
+  "extensions": {
+    "colorMeta": {
+      "kraft": { "role": "primary", "displayName": "크라프트 상자색", "canonical": "#7a5636", "tonalRamp": ["#120903", "#36210e", "#5c3d22", "#825d3d", "#a68160", "#c8a78a", "#e5ccb7", "#faece0"] },
+      "kraft-deep": { "role": "primary", "displayName": "짙은 크라프트", "canonical": "#5e4128", "tonalRamp": ["#120903", "#36210e", "#5c3d22", "#825d3d", "#a68160", "#c8a78a", "#e5ccb7", "#faece0"] },
+      "kraft-ink": { "role": "primary", "displayName": "크라프트 위 글자", "canonical": "#fff8ee" },
+      "kraft-tint": { "role": "primary", "displayName": "크라프트 옅은 바탕", "canonical": "#ecdfcf" },
+      "paper": { "role": "neutral", "displayName": "종이", "canonical": "#f6f6f2", "tonalRamp": ["#0b0b0a", "#272725", "#454542", "#666663", "#898986", "#aeaeab", "#d1d1cf", "#eeeeed"] },
+      "sheet": { "role": "neutral", "displayName": "감열지 흰 칸", "canonical": "#ffffff" },
+      "ink": { "role": "neutral", "displayName": "먹", "canonical": "#1c1c1a", "tonalRamp": ["#0b0b0b", "#262625", "#454543", "#666664", "#898987", "#aeaeac", "#d1d1cf", "#eeeeed"] },
+      "ink-2": { "role": "neutral", "displayName": "흐린 먹", "canonical": "#55534d" },
+      "rule": { "role": "neutral", "displayName": "연한 줄", "canonical": "#d9d6cc" },
+      "rule-strong": { "role": "neutral", "displayName": "먹선", "canonical": "#1c1c1a" },
+      "ok": { "role": "secondary", "displayName": "정상 녹색", "canonical": "#2f6f4f", "tonalRamp": ["#020f07", "#052f1c", "#185136", "#367555", "#5b9977", "#88bc9e", "#b6dcc5", "#e0f5e8"] },
+      "ok-tint": { "role": "secondary", "displayName": "정상 알림 바탕", "canonical": "#e6f0ea" },
+      "ok-ink": { "role": "secondary", "displayName": "정상 알림 글자", "canonical": "#1f4d36" },
+      "blocked": { "role": "secondary", "displayName": "막힘 적색", "canonical": "#c8102e", "tonalRamp": ["#210001", "#580001", "#8f000c", "#c00028", "#ea444d", "#ff7b7b", "#ffb0ac", "#ffddda"] },
+      "blocked-tint": { "role": "secondary", "displayName": "막힘 알림 바탕", "canonical": "#fbe8eb" },
+      "blocked-ink": { "role": "secondary", "displayName": "막힘 알림 글자", "canonical": "#8f0b21" },
+      "pending": { "role": "secondary", "displayName": "대기 황토", "canonical": "#8a5a00", "tonalRamp": ["#140800", "#3b1f00", "#633b00", "#8a5b03", "#af7e39", "#d1a56c", "#ebcba3", "#fdebd5"] },
+      "level-0": { "role": "tertiary", "displayName": "등급 0 공개 (녹색)", "canonical": "#2f6f4f" },
+      "level-1": { "role": "tertiary", "displayName": "등급 1 사내 (남청)", "canonical": "#2e5e8c", "tonalRamp": ["#030c17", "#0a2843", "#1e476f", "#3a6998", "#5e8dbd", "#89b2dd", "#b6d5f4", "#e0f1ff"] },
+      "level-2": { "role": "tertiary", "displayName": "등급 2 대외비 (황토)", "canonical": "#8a5a00" },
+      "level-3": { "role": "tertiary", "displayName": "등급 3 기밀 (적색)", "canonical": "#c8102e" },
+      "focus": { "role": "tertiary", "displayName": "초점 남청", "canonical": "#2e5e8c" }
+    },
+    "typographyMeta": {
+      "display": { "displayName": "Display (숫자)", "purpose": "송장 라벨 값, 문서 상세 머리의 등기번호, 받는 사람 수. 숫자 전용." },
+      "headline": { "displayName": "Headline", "purpose": "페이지 제목, 송장 라벨의 한글 값." },
+      "title": { "displayName": "Title", "purpose": "패널·구역 제목, 메뉴 띠의 회사 이름." },
+      "body": { "displayName": "Body", "purpose": "본문. 긴 설명은 65~72ch, keep-all 줄바꿈." },
+      "body-sm": { "displayName": "Body small", "purpose": "표 칸, 목록, 알림, 보조 설명." },
+      "label": { "displayName": "Label", "purpose": "입력 칸 이름, legend." },
+      "caption": { "displayName": "Caption", "purpose": "도움말, 사실 목록 이름, 표 머리, 범례, 등급 배지." },
+      "number": { "displayName": "Number (등기번호)", "purpose": "표 안의 등기번호. 아이디·환경 변수 이름에는 쓰지 않는다." }
+    },
+    "shadows": [],
+    "motion": [
+      { "name": "ease-out", "value": "cubic-bezier(0.16, 1, 0.3, 1)", "purpose": "모든 전이의 곡선." },
+      { "name": "duration-fast", "value": "160ms", "purpose": "버튼·메뉴 hover의 바탕색 전이." },
+      { "name": "duration-step", "value": "360ms", "purpose": "배송조회 단계 점과 선이 채워지는 전이." },
+      { "name": "step-delay", "value": "90ms", "purpose": "단계마다 차례로 채워지는 지연. prefers-reduced-motion에서 세 시간 토큰 모두 0ms." }
+    ],
+    "breakpoints": [
+      { "name": "table-cards", "value": "720px", "purpose": "표가 행별 2열 카드로 바뀐다." },
+      { "name": "rail-top", "value": "900px", "purpose": "메뉴 띠가 위쪽 가로 줄이 된다." },
+      { "name": "side-stack", "value": "1180px", "purpose": "옆단(380px)이 본문 아래로, 대시보드 '확인할 일'은 위로." }
+    ],
+    "layout": {
+      "railWidth": "232px",
+      "sideWidth": "380px",
+      "pageMaxWidth": "1480px",
+      "mainPadding": "32px 40px",
+      "focusRing": "outline: 2px solid #2e5e8c; outline-offset: 2px"
+    },
+    "openOpportunities": [
+      "송장 라벨 안쪽의 칸 나눔선",
+      "문서 상세 머리에 가로 배송조회 단계 표시",
+      "받는 사람 확인 단계를 영수증처럼"
+    ]
+  },
+  "components": [
+    {
+      "name": "기본 버튼",
+      "kind": "button",
+      "refersTo": "button-default",
+      "description": "대부분의 동작. 흰 칸에 1px 먹선.",
+      "html": "<button class=\"ds-btn\">다시 고치기</button>",
+      "css": ".ds-btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 40px; padding: 0 16px; border: 1px solid #1c1c1a; border-radius: 6px; background: #ffffff; color: #1c1c1a; font-family: 'Pretendard Variable', Pretendard, -apple-system, 'Malgun Gothic', sans-serif; font-size: 1rem; font-weight: 500; cursor: pointer; transition: background-color 160ms cubic-bezier(0.16, 1, 0.3, 1); } .ds-btn:hover { background: #f6f6f2; } .ds-btn:focus-visible { outline: 2px solid #2e5e8c; outline-offset: 2px; }"
+    },
+    {
+      "name": "주 버튼",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "구역마다 하나의 주 동작. 크라프트 바탕.",
+      "html": "<button class=\"ds-btn-primary\">이 명단으로 저장</button>",
+      "css": ".ds-btn-primary { display: inline-flex; align-items: center; justify-content: center; min-height: 40px; padding: 0 16px; border: 1px solid #7a5636; border-radius: 6px; background: #7a5636; color: #fff8ee; font-family: 'Pretendard Variable', Pretendard, -apple-system, 'Malgun Gothic', sans-serif; font-size: 1rem; font-weight: 700; cursor: pointer; transition: background-color 160ms cubic-bezier(0.16, 1, 0.3, 1); } .ds-btn-primary:hover { background: #5e4128; } .ds-btn-primary:focus-visible { outline: 2px solid #2e5e8c; outline-offset: 2px; }"
+    },
+    {
+      "name": "위험 버튼",
+      "kind": "button",
+      "refersTo": "button-danger",
+      "description": "삭제처럼 되돌릴 수 없는 동작. hover에서 적색으로 뒤집힌다.",
+      "html": "<button class=\"ds-btn-danger\">삭제</button>",
+      "css": ".ds-btn-danger { display: inline-flex; align-items: center; justify-content: center; min-height: 40px; padding: 0 16px; border: 1px solid #c8102e; border-radius: 6px; background: #ffffff; color: #c8102e; font-family: 'Pretendard Variable', Pretendard, -apple-system, 'Malgun Gothic', sans-serif; font-size: 1rem; font-weight: 500; cursor: pointer; transition: background-color 160ms cubic-bezier(0.16, 1, 0.3, 1); } .ds-btn-danger:hover { background: #c8102e; color: #ffffff; } .ds-btn-danger:focus-visible { outline: 2px solid #2e5e8c; outline-offset: 2px; }"
+    },
+    {
+      "name": "입력 칸 (이름 + 도움말)",
+      "kind": "input",
+      "refersTo": "input",
+      "description": "label은 이름만, 도움말은 아래에 aria-describedby로 연결.",
+      "html": "<div class=\"ds-field\"><label class=\"ds-label\" for=\"ds-t\">제목</label><input class=\"ds-input\" id=\"ds-t\" value=\"회의실 예약\" aria-describedby=\"ds-t-hint\"><p class=\"ds-hint\" id=\"ds-t-hint\">답변의 인용과 문서 목록에 이 제목이 보입니다.</p></div>",
+      "css": ".ds-field { display: grid; gap: 8px; font-family: 'Pretendard Variable', Pretendard, -apple-system, 'Malgun Gothic', sans-serif; color: #1c1c1a; } .ds-label { font-size: 0.875rem; font-weight: 700; } .ds-hint { margin: 0; font-size: 0.8125rem; color: #55534d; } .ds-input { width: 100%; min-height: 40px; padding: 0 12px; border: 1px solid #55534d; border-radius: 6px; background: #ffffff; font: inherit; color: inherit; } .ds-input:hover { border-color: #1c1c1a; } .ds-input:focus-visible { outline: 2px solid #2e5e8c; outline-offset: 2px; }"
+    },
+    {
+      "name": "선택 칸",
+      "kind": "chip",
+      "refersTo": "choice",
+      "description": "체크박스·라디오를 감싼 칸. 고르면 크라프트 선과 옅은 바탕.",
+      "html": "<div class=\"ds-choices\"><label class=\"ds-choice\"><input type=\"checkbox\" checked> 개발팀</label><label class=\"ds-choice\"><input type=\"checkbox\"> 경영진</label></div>",
+      "css": ".ds-choices { display: flex; flex-wrap: wrap; gap: 8px; font-family: 'Pretendard Variable', Pretendard, -apple-system, 'Malgun Gothic', sans-serif; } .ds-choice { display: inline-flex; align-items: center; gap: 8px; min-height: 36px; padding: 0 12px; border: 1px solid #d9d6cc; border-radius: 6px; background: #ffffff; color: #1c1c1a; font-size: 0.875rem; cursor: pointer; } .ds-choice input { accent-color: #7a5636; margin: 0; } .ds-choice:has(input:checked) { border-color: #7a5636; background: #ecdfcf; font-weight: 700; } .ds-choice:has(input:focus-visible) { outline: 2px solid #2e5e8c; outline-offset: 2px; }"
+    },
+    {
+      "name": "크라프트 메뉴 띠",
+      "kind": "nav",
+      "refersTo": "nav-link",
+      "description": "왼쪽 232px 메뉴. 현재 페이지는 종이색으로 빠져나온다.",
+      "html": "<nav class=\"ds-rail\"><div class=\"ds-org\">한빛소프트 (데모)<small>문서 질의 관리</small></div><a class=\"ds-link\" href=\"#\" aria-current=\"page\">대시보드</a><a class=\"ds-link\" href=\"#\">문서</a><a class=\"ds-link\" href=\"#\">사용자</a></nav>",
+      "css": ".ds-rail { display: grid; gap: 4px; width: 232px; padding: 24px 16px; background: #7a5636; color: #fff8ee; font-family: 'Pretendard Variable', Pretendard, -apple-system, 'Malgun Gothic', sans-serif; } .ds-org { display: grid; gap: 2px; padding: 0 8px 24px; font-size: 1.125rem; font-weight: 700; } .ds-org small { font-size: 0.8125rem; font-weight: 400; opacity: 0.85; } .ds-link { display: flex; align-items: center; padding: 10px 12px; border-radius: 6px; color: #fff8ee; text-decoration: none; transition: background-color 160ms cubic-bezier(0.16, 1, 0.3, 1); } .ds-link:hover { background: #5e4128; } .ds-link:focus-visible { outline: 2px solid #fff8ee; outline-offset: 2px; } .ds-link[aria-current=\"page\"] { background: #f6f6f2; color: #1c1c1a; font-weight: 700; }"
+    },
+    {
+      "name": "보안 등급 배지",
+      "kind": "chip",
+      "refersTo": "level-1",
+      "description": "등급 색은 여기에만. 숫자와 이름을 함께 쓴다.",
+      "html": "<span class=\"ds-level\" data-level=\"0\">0 공개</span> <span class=\"ds-level\" data-level=\"1\">1 사내</span> <span class=\"ds-level\" data-level=\"2\">2 대외비</span> <span class=\"ds-level\" data-level=\"3\">3 기밀</span>",
+      "css": ".ds-level { display: inline-block; padding: 2px 8px; border-radius: 3px; color: #ffffff; font-family: 'Pretendard Variable', Pretendard, -apple-system, 'Malgun Gothic', sans-serif; font-size: 0.8125rem; font-weight: 700; white-space: nowrap; } .ds-level[data-level=\"0\"] { background: #2f6f4f; } .ds-level[data-level=\"1\"] { background: #2e5e8c; } .ds-level[data-level=\"2\"] { background: #8a5a00; } .ds-level[data-level=\"3\"] { background: #c8102e; }"
+    },
+    {
+      "name": "송장 라벨",
+      "kind": "card",
+      "refersTo": "waybill-label",
+      "description": "대시보드 상태 칸. 2px 먹선 상자는 여기와 확인 상자에만. 막히면 적색.",
+      "html": "<div class=\"ds-labels\"><div class=\"ds-label-box\"><div class=\"ds-lh\"><span>문서 색인</span><b>INDEX</b></div><div class=\"ds-val\">23<span>건</span></div><p class=\"ds-note ds-ok\">원문과 일치</p></div><div class=\"ds-label-box ds-blocked\"><div class=\"ds-lh\"><span>답변 LLM</span><b>LLM</b></div><div class=\"ds-val ds-text\">설정 안 됨</div><p class=\"ds-note\">직원 질문이 답변 단계에서 멈춥니다</p></div></div>",
+      "css": ".ds-labels { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; font-family: 'Pretendard Variable', Pretendard, -apple-system, 'Malgun Gothic', sans-serif; color: #1c1c1a; } .ds-label-box { display: grid; grid-template-rows: auto 1fr auto; gap: 8px; min-height: 136px; padding: 16px; background: #ffffff; border: 2px solid #1c1c1a; } .ds-lh { display: flex; justify-content: space-between; font-size: 0.875rem; color: #55534d; } .ds-lh b { font-family: 'Barlow Condensed', sans-serif; font-weight: 700; letter-spacing: 0.06em; color: #1c1c1a; } .ds-val { align-self: end; font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 2.75rem; line-height: 1; } .ds-val span { margin-left: 4px; font-family: 'Pretendard Variable', sans-serif; font-size: 1rem; font-weight: 500; } .ds-val.ds-text { font-family: 'Pretendard Variable', sans-serif; font-size: 1.625rem; letter-spacing: -0.02em; line-height: 1.2; } .ds-note { margin: 0; font-size: 0.875rem; } .ds-ok { color: #2f6f4f; } .ds-blocked { border-color: #c8102e; } .ds-blocked .ds-val { color: #c8102e; }"
+    },
+    {
+      "name": "배송조회 단계 표시",
+      "kind": "custom",
+      "refersTo": "tracking",
+      "description": "시그니처. 점과 선이 차례로 크라프트로 채워진다. 범례 항목은 한 덩어리로 줄바꿈.",
+      "html": "<div class=\"ds-track\"><ol class=\"ds-steps\" aria-label=\"배송조회 2/3단계\"><li class=\"ds-done\"></li><li class=\"ds-done\"></li><li></li></ol><span class=\"ds-sum\">권한 지정</span></div><p class=\"ds-legend\">배송조회 <span class=\"ds-li\"><i class=\"ds-dot\"></i>접수</span><span class=\"ds-li\"><i class=\"ds-dot\"></i>권한 지정</span><span class=\"ds-li\"><i class=\"ds-dot\"></i>그 뒤 변경</span></p>",
+      "css": ".ds-track { display: flex; align-items: center; gap: 12px; white-space: nowrap; font-family: 'Pretendard Variable', Pretendard, sans-serif; } .ds-steps { display: flex; align-items: center; margin: 0; padding: 0; list-style: none; } .ds-steps li { position: relative; width: 10px; height: 10px; border-radius: 50%; background: #d9d6cc; transition: background-color 360ms cubic-bezier(0.16, 1, 0.3, 1); } .ds-steps li + li { margin-left: 30px; } .ds-steps li + li::before { content: ''; position: absolute; right: 10px; top: 4px; width: 30px; height: 2px; background: #d9d6cc; } .ds-steps li.ds-done, .ds-steps li.ds-done::before { background: #7a5636; } .ds-sum { font-size: 0.875rem; color: #1c1c1a; } .ds-legend { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 8px; font-family: 'Pretendard Variable', Pretendard, sans-serif; font-size: 0.8125rem; color: #55534d; } .ds-li { display: inline-flex; align-items: center; gap: 4px; margin-left: 8px; white-space: nowrap; } .ds-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #7a5636; } @media (prefers-reduced-motion: reduce) { .ds-steps li { transition: none; } }"
+    },
+    {
+      "name": "받는 사람 확인 상자",
+      "kind": "card",
+      "refersTo": "recipient-confirm",
+      "description": "권한 저장 전 두 번째 단계. 2px 먹선 상자. 새로 보게 되는 사람은 +, 잃는 사람은 −와 적색 글자.",
+      "html": "<section class=\"ds-confirm\"><h2>받는 사람 3명을 확인해 주세요</h2><ul class=\"ds-lines\"><li>부서 추가: 인사팀</li><li>새로 보게 되는 사람: <b>+ 박인사(사원)</b> <span class=\"ds-tag\">새로 봄</span></li><li class=\"ds-lost\">− 최영업(사원) 더 이상 못 봄</li></ul><div class=\"ds-actions\"><button class=\"ds-p\">이 명단으로 저장</button><button class=\"ds-s\">다시 고치기</button></div></section>",
+      "css": ".ds-confirm { display: grid; gap: 16px; padding: 24px; background: #ffffff; border: 2px solid #1c1c1a; font-family: 'Pretendard Variable', Pretendard, -apple-system, 'Malgun Gothic', sans-serif; color: #1c1c1a; } .ds-confirm h2 { margin: 0; font-size: 1.125rem; } .ds-lines { display: grid; gap: 4px; margin: 0; padding: 0; list-style: none; font-size: 0.875rem; } .ds-lines li::before { content: '· '; color: #7a5636; font-weight: 700; } .ds-tag { padding: 0 5px; border-radius: 3px; background: #ecdfcf; font-size: 0.8125rem; font-weight: 700; } .ds-lost { color: #8f0b21; } .ds-actions { display: flex; gap: 12px; flex-wrap: wrap; } .ds-actions button { min-height: 40px; padding: 0 16px; border-radius: 6px; font: inherit; cursor: pointer; } .ds-p { border: 1px solid #7a5636; background: #7a5636; color: #fff8ee; font-weight: 700; } .ds-p:hover { background: #5e4128; } .ds-s { border: 1px solid #1c1c1a; background: #ffffff; color: #1c1c1a; font-weight: 500; } .ds-s:hover { background: #f6f6f2; } .ds-actions button:focus-visible { outline: 2px solid #2e5e8c; outline-offset: 2px; }"
+    },
+    {
+      "name": "알림",
+      "kind": "custom",
+      "refersTo": "notice-ok",
+      "description": "테두리 없이 옅은 바탕과 짙은 글자.",
+      "html": "<p class=\"ds-msg\" data-tone=\"ok\">올렸습니다. 지금부터 볼 수 있는 사람이 질문하면 이 문서에서 답을 찾습니다.</p><p class=\"ds-msg\" data-tone=\"blocked\">권한을 저장하지 못했습니다. 다시 시도해 주세요.</p>",
+      "css": ".ds-msg { margin: 0 0 8px; padding: 12px 16px; background: #ffffff; font-family: 'Pretendard Variable', Pretendard, -apple-system, 'Malgun Gothic', sans-serif; font-size: 0.875rem; color: #1c1c1a; } .ds-msg[data-tone=\"ok\"] { background: #e6f0ea; color: #1f4d36; font-weight: 500; } .ds-msg[data-tone=\"blocked\"] { background: #fbe8eb; color: #8f0b21; font-weight: 500; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "등기 접수 창구",
+    "overview": "이 화면은 우체국 등기 창구다. 문서는 등기번호를 받고, 받는 사람이 정해진 뒤에야 나가며, 그 뒤의 모든 일은 배송조회처럼 점과 선으로 남는다. 왼쪽에는 크라프트 상자색 메뉴 띠가 끝까지 이어지고, 오른쪽 작업면은 감열지처럼 희고 담담하다. 먹색 글자와 여백이 대부분의 구획을 맡고, 굵은 먹선은 송장 라벨처럼 \"지금 꼭 읽어야 하는 칸\"에만 둘러진다.\n\n밀도는 낮게, 문장은 짧게 둔다. 사용자는 가끔 들어와 일을 처리하는 관리자라서, 화면은 설명 없이 읽혀야 하고 권한을 바꾸는 순간에는 불안 대신 확인을 준다: 저장 전에 받는 사람 명단과 숫자를 크게 보여 주는 단계가 반드시 끼어든다. 회색 사이드바·숫자 카드·파란 강조로 된 흔한 관리자 템플릿의 모양은 거부한다.\n\n색은 의미를 가진 곳에만 쓴다. 크라프트는 브랜드의 손길(메뉴 띠, 주 버튼, 진행된 단계), 등급 네 색은 보안 등급에만, 적색은 기밀과 막힌 상태에만. 나머지는 먹과 종이다.",
+    "keyCharacteristics": [
+      "크라프트 메뉴 띠(232px) + 종이색 바탕 + 흰 칸의 2단 구조",
+      "그림자 없는 평면. 구획은 여백, 흰 칸, 1px 연한 선으로",
+      "2px 먹선 상자는 송장 라벨(대시보드 상태 칸)과 받는 사람 확인 상자에만",
+      "등기번호와 숫자는 압축 숫자체(Barlow Condensed), 그 밖은 한글 고딕(Pretendard)",
+      "배송조회 점·선 단계 표시가 시그니처. 움직임은 점이 차례로 채워지는 짧은 전이 하나뿐"
+    ],
+    "rules": [
+      { "name": "The 적색 두 곳 Rule", "body": "적색은 3 기밀 등급과 막힌 상태(오류, 위험 동작, 권한을 잃는 사람)에만 쓴다. 강조나 장식으로 적색을 쓰면 막힘 신호가 죽는다.", "section": "colors" },
+      { "name": "The 등급색 전용 Rule", "body": "등급 네 색은 등급 배지에만 쓴다. 차트·꼬리표·버튼에 같은 색을 빌려 쓰지 않는다.", "section": "colors" },
+      { "name": "The 옅은 바탕 알림 Rule", "body": "알림(성공·막힘)은 테두리가 아니라 옅은 바탕(ok-tint, blocked-tint)과 짙은 글자(ok-ink, blocked-ink)로 표시한다. 옅은 바탕 위 대비는 4.5:1 이상을 지킨다.", "section": "colors" },
+      { "name": "The 숫자체는 숫자에만 Rule", "body": "압축 숫자체는 숫자와 등기번호(FD-0001, UP-0032)에만 쓴다. 아이디, 환경 변수 이름, 파일 경로, 한글 값은 본문 글꼴로 둔다.", "section": "typography" },
+      { "name": "The 머리 위 꼬리글 금지 Rule", "body": "제목 위에 작은 대문자 꼬리글(eyebrow/kicker)을 달지 않는다. 맥락은 빵부스러기 경로(문서 / UP-0032)나 제목 옆 기준 시각으로 준다.", "section": "typography" },
+      { "name": "The 도움말 분리 Rule", "body": "도움말은 label 안에 넣지 않고 label 아래 별도 문장으로 두며 aria-describedby로 입력 칸에 잇는다.", "section": "typography" },
+      { "name": "The 열 고정 Rule", "body": "표의 열 구성은 고정하고 상태만 행을 바꾼다. 상태 때문에 열을 숨기거나 순서를 바꾸지 않는다.", "section": "layout" },
+      { "name": "The 그림자 없음 Rule", "body": "box-shadow를 쓰지 않는다. 떠 보이게 하고 싶다면 흰 칸과 여백으로 해결한다.", "section": "elevation" },
+      { "name": "The 먹선 상자 두 곳 Rule", "body": "사방을 두른 2px 먹선 상자는 대시보드 송장 라벨과 받는 사람 확인 상자에만 쓴다. 막힌 송장 라벨은 같은 2px 선을 적색으로 바꾼다. 다른 칸은 테두리 없이 흰 면과 여백으로 나눈다.", "section": "shapes" }
+    ],
+    "dos": [
+      "Do 모든 문서를 등기번호로 부르고, 등기번호는 숫자체(Barlow Condensed 700, 0.03em)로 쓴다.",
+      "Do 권한을 바꾸는 저장 앞에는 받는 사람 수와 바뀌는 사람을 보여 주는 확인 상자를 둔다.",
+      "Do 알림은 옅은 바탕(ok-tint, blocked-tint)과 짙은 글자(ok-ink, blocked-ink)로 표시한다.",
+      "Do 칸은 테두리 대신 종이 위 흰 면과 24px 여백으로 나누고, 항목 사이는 1px 연한 줄로 나눈다.",
+      "Do 상태와 등급을 색과 함께 글자·기호로도 표시한다(\"1 사내\", \"+ 새로 봄\", \"− 더 이상 못 봄\").",
+      "Do 브라우저가 그리는 부분(파일 고르기 버튼, 검색 지우기, 날짜 아이콘)도 팔레트로 다시 칠한다.",
+      "Do 범례의 점과 이름은 한 덩어리로 줄바꿈되게 묶는다.",
+      "Do 움직임은 시간 토큰(160ms, 360ms, 90ms 지연)만 쓰고, 줄이기 설정에서 0ms가 되게 한다."
+    ],
+    "donts": [
+      "Don't 2px 먹선 상자를 송장 라벨과 받는 사람 확인 상자 밖에서 쓰지 않는다.",
+      "Don't 적색을 기밀 등급과 막힌 상태(권한을 잃는 사람 포함) 밖에서 쓰지 않는다.",
+      "Don't 등급 네 색을 등급 배지 밖에서 쓰지 않는다.",
+      "Don't 제목 위에 eyebrow/kicker 꼬리글을 달지 않는다.",
+      "Don't 아이디, 환경 변수 이름, 파일 경로에 숫자체를 쓰지 않는다.",
+      "Don't 도움말을 label 안에 넣지 않는다.",
+      "Don't box-shadow, 회색 사이드바, 숫자 카드 격자, 파란 강조색 같은 흔한 관리자 템플릿 모양을 쓰지 않는다."
+    ]
+  }
+}

@@ -5,9 +5,18 @@
   background: var(--paper);
 }
 
-.page::before {
-  content: "";
+.rail {
+  display: grid;
+  align-content: start;
+  gap: var(--space-2);
+  padding: var(--space-5) var(--space-5);
   background: var(--kraft);
+  color: var(--kraft-ink);
+}
+
+.logo {
+  max-width: 120px;
+  max-height: 40px;
 }
 
 .panel {
@@ -19,12 +28,11 @@
   margin-left: clamp(var(--space-5), 10vw, 160px);
   padding: var(--space-6);
   background: var(--sheet);
-  border: 2px solid var(--rule-strong);
 }
 
 .org {
+  font-size: var(--text-lg);
   font-weight: 700;
-  color: var(--kraft);
 }
 
 .panel h1 {
@@ -101,7 +109,7 @@
 @media (max-width: 720px) {
   .page {
     grid-template-columns: 1fr;
-    grid-template-rows: 12px 1fr;
+    grid-template-rows: auto 1fr;
   }
 
   .panel {

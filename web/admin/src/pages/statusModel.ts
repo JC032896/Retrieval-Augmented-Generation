@@ -32,7 +32,6 @@ export function statusLabels(status: Status): StatusLabel[] {
   const indexBroken = status.db !== "ok" || "error" in index;
   const model = MODEL_TEXT[status.models.status ?? ""] ?? MODEL_TEXT.error;
   const llm = status.llm;
-  const limits = status.limits;
   return [
     {
       key: "index",
@@ -65,24 +64,35 @@ export function statusLabels(status: Status): StatusLabel[] {
         : "직원 질문이 답변 단계에서 멈춥니다",
       tone: llm.configured ? "ok" : "blocked",
     },
-    {
-      key: "limits",
-      title: "사용 한도",
-      code: "LIMIT",
-      value:
-        limits.daily_requests_per_user === null ? "없음" : String(limits.daily_requests_per_user),
-      ...(limits.daily_requests_per_user === null ? {} : { unit: "회/일" }),
-      note: [
-        limits.daily_budget_usd === null
-          ? "회사 비용 한도 없음"
-          : `회사 하루 $${limits.daily_budget_usd}`,
-        limits.concurrent_per_user === null ? null : `동시 ${limits.concurrent_per_user}건`,
-      ]
-        .filter(Boolean)
-        .join(" · "),
-      tone: "ok",
-    },
+    todayLabel(status),
   ];
+}
+
+/** 오늘 질문: 회사 전체 질문 수와 비용을 하루 비용 한도와 함께 (한도에 가까우면 주의, 넘으면 막힘). */
+function todayLabel(status: Status): StatusLabel {
+  const usage = status.usage;
+  const budget = status.limits.daily_budget_usd;
+  if (!usage) {
+    return {
+      key: "today",
+      title: "오늘 질문",
+      code: "TODAY",
+      value: "읽지 못함",
+      note: "사용량을 집계하지 못했습니다",
+      tone: "pending",
+    };
+  }
+  const cost = `$${usage.cost_usd.toFixed(2)}`;
+  const ratio = budget ? usage.cost_usd / budget : 0;
+  return {
+    key: "today",
+    title: "오늘 질문",
+    code: "TODAY",
+    value: String(usage.requests),
+    unit: "건",
+    note: `${usage.users}명 · 비용 ${cost}${budget === null ? "" : ` / 하루 $${budget}`}`,
+    tone: ratio >= 1 ? "blocked" : ratio >= 0.8 ? "pending" : "ok",
+  };
 }
 
 export function todos(status: Status, roles: readonly AdminRole[]): Todo[] {
@@ -116,10 +126,16 @@ export function todos(status: Status, roles: readonly AdminRole[]): Todo[] {
       ...(isAdmin ? { link: { to: "/documents", label: "문서 보기" } } : {}),
     });
   }
-  if (isAdmin && status.audit_db) {
+  const usage = status.usage;
+  const budget = status.limits.daily_budget_usd;
+  if (usage && budget !== null && usage.cost_usd >= budget * 0.8) {
     items.push({
-      title: "관리 화면에서 감사 기록을 볼 수 있습니다",
-      detail: "앱이 감사 담당 DB 계정을 씁니다. 허용하지 않으면 ADMIN_AUDIT_VIEW=false로 끕니다.",
+      title:
+        usage.cost_usd >= budget
+          ? "오늘 비용 한도에 닿았습니다"
+          : `오늘 비용이 한도의 ${Math.floor((usage.cost_usd / budget) * 100)}%입니다`,
+      detail: "한도를 넘으면 직원 질문이 내일 0시까지 멈춥니다 (429).",
+      ...(isAdmin ? { link: { to: "/settings", label: "한도 확인" } } : {}),
     });
   }
   return items;

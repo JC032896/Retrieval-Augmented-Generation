@@ -5,6 +5,23 @@ import type { DocumentRow } from "../api/types";
 import { trackingSteps } from "./format";
 import styles from "./Tracking.module.css";
 
+/** 배송조회 점 셋의 뜻. 표 위에 한 번 둔다 (오랜만에 와도 읽을 수 있게). */
+const LEGEND = ["접수(폴더 수집·올림)", "권한 지정", "그 뒤 변경(권한·파일)"];
+
+export function TrackingLegend() {
+  return (
+    <p className={styles.legend}>
+      배송조회
+      {LEGEND.map((name) => (
+        <span key={name} className={styles.legendItem}>
+          <span className={styles.dot} aria-hidden="true" />
+          {name}
+        </span>
+      ))}
+    </p>
+  );
+}
+
 export function Tracking({ document }: { document: Pick<DocumentRow, "origin" | "last_change"> }) {
   const { steps, summary } = trackingSteps(document);
   const [filled, setFilled] = useState(false);
@@ -27,7 +44,7 @@ export function Tracking({ document }: { document: Pick<DocumentRow, "origin" | 
           </li>
         ))}
       </ol>
-      <span className={styles.summary}>{summary}</span>
+      {document.last_change ? <span className={styles.summary}>{summary}</span> : null}
     </div>
   );
 }

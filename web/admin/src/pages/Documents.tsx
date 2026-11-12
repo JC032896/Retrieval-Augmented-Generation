@@ -8,7 +8,7 @@ import { useApiClient } from "../auth/session";
 import c from "../ui/controls.module.css";
 import { audience, LEVELS, registeredNumber } from "../ui/format";
 import { Level } from "../ui/Level";
-import { Tracking } from "../ui/Tracking";
+import { Tracking, TrackingLegend } from "../ui/Tracking";
 import styles from "./Documents.module.css";
 import { type DocumentFilter, filterDocuments } from "./documentList";
 
@@ -131,44 +131,47 @@ export function Documents({ me }: { me: Me }) {
               조건에 맞는 문서가 없습니다. 찾는 말이나 거르기를 바꿔 보세요.
             </p>
           ) : (
-            <table className={styles.table}>
-              <caption className="visually-hidden">문서 목록</caption>
-              <thead>
-                <tr>
-                  <th scope="col">등기번호</th>
-                  <th scope="col">문서</th>
-                  <th scope="col">등급</th>
-                  <th scope="col">관리 부서</th>
-                  <th scope="col">볼 수 있는 사람</th>
-                  <th scope="col">배송조회</th>
-                </tr>
-              </thead>
-              <tbody>
-                {rows.map((document) => (
-                  <tr key={document.id} data-status={document.status}>
-                    <td className={c.number}>
-                      <Link to={`/documents/${document.id}`}>{registeredNumber(document)}</Link>
-                    </td>
-                    <td>
-                      <Link to={`/documents/${document.id}`} className={styles.title}>
-                        {document.title}
-                      </Link>
-                      {document.status === "superseded" ? (
-                        <span className={styles.superseded}>폐지</span>
-                      ) : null}
-                    </td>
-                    <td>
-                      <Level level={document.security_level} />
-                    </td>
-                    <td>{document.owner_department ?? "문서 폴더"}</td>
-                    <td>{audience(document)}</td>
-                    <td>
-                      <Tracking document={document} />
-                    </td>
+            <>
+              <TrackingLegend />
+              <table className={styles.table}>
+                <caption className="visually-hidden">문서 목록</caption>
+                <thead>
+                  <tr>
+                    <th scope="col">등기번호</th>
+                    <th scope="col">문서</th>
+                    <th scope="col">등급</th>
+                    <th scope="col">관리 부서</th>
+                    <th scope="col">볼 수 있는 사람</th>
+                    <th scope="col">배송조회</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody>
+                  {rows.map((document) => (
+                    <tr key={document.id} data-status={document.status}>
+                      <td className={c.number}>
+                        <Link to={`/documents/${document.id}`}>{registeredNumber(document)}</Link>
+                      </td>
+                      <td>
+                        <Link to={`/documents/${document.id}`} className={styles.title}>
+                          {document.title}
+                        </Link>
+                        {document.status === "superseded" ? (
+                          <span className={styles.superseded}>폐지</span>
+                        ) : null}
+                      </td>
+                      <td>
+                        <Level level={document.security_level} />
+                      </td>
+                      <td>{document.owner_department ?? "문서 폴더"}</td>
+                      <td>{audience(document)}</td>
+                      <td>
+                        <Tracking document={document} />
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </>
           )}
         </>
       )}

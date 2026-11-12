@@ -1009,6 +1009,16 @@
             "title": "Models",
             "type": "object"
           },
+          "usage": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/UsageOut"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
           "version": {
             "title": "Version",
             "type": "string"
@@ -1063,6 +1073,35 @@
           "company_logo_url"
         ],
         "title": "UiConfigOut",
+        "type": "object"
+      },
+      "UsageOut": {
+        "properties": {
+          "cost_usd": {
+            "title": "Cost Usd",
+            "type": "number"
+          },
+          "requests": {
+            "title": "Requests",
+            "type": "integer"
+          },
+          "since": {
+            "format": "date-time",
+            "title": "Since",
+            "type": "string"
+          },
+          "users": {
+            "title": "Users",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "since",
+          "requests",
+          "users",
+          "cost_usd"
+        ],
+        "title": "UsageOut",
         "type": "object"
       },
       "UserOut": {

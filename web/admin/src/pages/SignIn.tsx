@@ -67,8 +67,13 @@ export function SignIn({
 }) {
   return (
     <main className={styles.page}>
+      <div className={styles.rail}>
+        {config.company_logo_url ? (
+          <img src={config.company_logo_url} alt="" className={styles.logo} />
+        ) : null}
+        <span className={styles.org}>{config.company_name || "사내 문서 질의"}</span>
+      </div>
       <section className={styles.panel} aria-labelledby="sign-in">
-        <p className={styles.org}>{config.company_name || "사내 문서 질의"}</p>
         <h1 id="sign-in">문서 질의 관리</h1>
         <p className={styles.lead}>
           문서를 올리고 볼 수 있는 사람을 정하고, 서비스 상태와 감사 기록을 확인합니다.

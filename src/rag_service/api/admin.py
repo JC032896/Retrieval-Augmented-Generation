@@ -14,14 +14,14 @@
 import logging
 from collections.abc import Callable
 from dataclasses import dataclass
-from datetime import datetime
+from datetime import UTC, datetime
 from functools import lru_cache
 from pathlib import Path
 from typing import Annotated, Any
 
 from fastapi import APIRouter, Depends, HTTPException, Query, Request
 from pydantic import BaseModel
-from sqlalchemy import create_engine, select
+from sqlalchemy import create_engine, select, text
 from sqlalchemy.engine import URL
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import Session, sessionmaker
@@ -29,7 +29,7 @@ from sqlalchemy.orm import Session, sessionmaker
 from rag_service import __version__
 from rag_service.api.auth import Authenticator, CurrentUser, build_authenticator
 from rag_service.api.current import authenticate
-from rag_service.api.limits import UsageLimits
+from rag_service.api.limits import UsageLimits, day_start
 from rag_service.api.readiness import MODELS
 from rag_service.api.roles import AdminRole, RoleGroups
 from rag_service.audit.models import AuditLog
@@ -170,6 +170,16 @@ class LlmOut(BaseModel):
     configured: bool  # False면 질문 API가 503 (Claude인데 API 키가 없음)
 
 
+class UsageOut(BaseModel):
+    since: datetime  # 오늘 0시 (사용 한도와 같은 시간대, USAGE_UTC_OFFSET_HOURS)
+    requests: int  # 회사 전체 질문 수
+    users: int  # 질문한 사람 수
+    cost_usd: float  # 요금표에 있는 모델만 합산 (answer/llm.py)
+
+
+USAGE_SUMMARY = text("SELECT requests, users, total_cost_usd FROM llm_usage_summary_since(:since)")
+
+
 class StatusOut(BaseModel):
     version: str
     db: str  # ok | error
@@ -178,6 +188,7 @@ class StatusOut(BaseModel):
     llm: LlmOut
     audit_db: bool  # 감사 담당 계정으로 연결하도록 설정했는가
     limits: LimitsOut
+    usage: UsageOut | None = None  # 오늘 사용량. DB를 읽지 못하면 None
 
 
 @router.get("/status")
@@ -185,11 +196,17 @@ def status(_: AnyAdminDep, services: AdminServicesDep) -> StatusOut:
     try:
         with services.sessions() as session:
             index: dict[str, Any] = index_summary(session, model=DEFAULT_MODEL)
+            since = day_start(datetime.now(UTC), services.limits.utc_offset_hours)
+            requests, users, cost = session.execute(USAGE_SUMMARY, {"since": since}).one()
+            usage: UsageOut | None = UsageOut(
+                since=since, requests=requests, users=users, cost_usd=cost
+            )
         db = "ok"
     except SQLAlchemyError:
         logger.exception("관리 화면 상태: DB를 읽지 못함")
         index = {"error": "DB에 연결하거나 인덱스를 읽을 수 없습니다"}
         db = "error"
+        usage = None
     models: dict[str, str] = {"status": MODELS.status}
     if MODELS.error:
         models["error"] = MODELS.error
@@ -211,6 +228,7 @@ def status(_: AnyAdminDep, services: AdminServicesDep) -> StatusOut:
             concurrent_per_user=limits.concurrent_per_user,
             utc_offset_hours=limits.utc_offset_hours,
         ),
+        usage=usage,
     )
 
 

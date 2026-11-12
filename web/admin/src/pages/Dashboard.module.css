@@ -194,15 +194,20 @@ h2 {
 
 .error {
   padding: var(--space-4) var(--space-5);
-  background: var(--sheet);
-  border: 2px solid var(--blocked);
-  color: var(--blocked);
+  background: var(--blocked-tint);
+  color: var(--blocked-ink);
   font-size: var(--text-sm);
+  font-weight: 500;
 }
 
 @media (max-width: 1180px) {
   .columns {
     grid-template-columns: 1fr;
+  }
+
+  /* 막힌 것이 먼저 보이도록 확인할 일을 최근 문서보다 위로 */
+  .todo {
+    order: -1;
   }
 }
 

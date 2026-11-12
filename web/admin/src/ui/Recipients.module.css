@@ -28,7 +28,8 @@
   font-size: var(--text-sm);
 }
 
-.groups li {
+.groups li,
+.removed {
   display: grid;
   grid-template-columns: 7em 1fr;
   gap: var(--space-3);
@@ -49,4 +50,31 @@
   color: var(--blocked);
   font-size: var(--text-sm);
   font-weight: 500;
+}
+
+.people {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1) var(--space-3);
+}
+
+/* 새로 보게 되는 사람: 글자와 기호로 구분한다 (색만 쓰지 않는다) */
+.added {
+  font-weight: 700;
+}
+
+.tag {
+  margin-left: var(--space-1);
+  padding: 0 5px;
+  border-radius: 3px;
+  background: var(--kraft-tint);
+  font-size: var(--text-xs);
+  font-weight: 700;
+}
+
+.removed {
+  padding-top: var(--space-2);
+  border-top: 1px solid var(--rule);
+  font-size: var(--text-sm);
+  color: var(--blocked-ink);
 }

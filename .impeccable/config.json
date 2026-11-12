@@ -20,6 +20,42 @@
         ],
         "createdAt": "2026-11-12T11:58:28.691Z",
         "reason": "Claude: unchosen decision-round sketch (user picked assigned.html); not shipped, .impeccable/mocks is gitignored"
+      },
+      {
+        "rule": "design-system-font",
+        "value": "*",
+        "files": [
+          ".impeccable/mocks/decision/assigned.html"
+        ],
+        "createdAt": "2026-11-12T14:53:37.719Z",
+        "reason": "Claude: direction-round decision sketch written before DESIGN.md existed; not shipped, .impeccable/mocks is gitignored"
+      },
+      {
+        "rule": "design-system-font",
+        "value": "*",
+        "files": [
+          ".impeccable/mocks/decision/model-pick.html"
+        ],
+        "createdAt": "2026-11-12T14:53:37.798Z",
+        "reason": "Claude: direction-round decision sketch written before DESIGN.md existed; not shipped, .impeccable/mocks is gitignored"
+      },
+      {
+        "rule": "design-system-font",
+        "value": "*",
+        "files": [
+          ".impeccable/mocks/decision/challenger-airport.html"
+        ],
+        "createdAt": "2026-11-12T14:53:37.894Z",
+        "reason": "Claude: direction-round decision sketch written before DESIGN.md existed; not shipped, .impeccable/mocks is gitignored"
+      },
+      {
+        "rule": "design-system-font",
+        "value": "*",
+        "files": [
+          ".impeccable/mocks/decision/canon.html"
+        ],
+        "createdAt": "2026-11-12T14:53:37.998Z",
+        "reason": "Claude: direction-round decision sketch written before DESIGN.md existed; not shipped, .impeccable/mocks is gitignored"
       }
     ]
   }

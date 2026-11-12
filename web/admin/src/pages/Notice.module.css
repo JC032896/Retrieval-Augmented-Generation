@@ -4,11 +4,10 @@
   max-width: 640px;
   padding: var(--space-6);
   background: var(--sheet);
-  border: 2px solid var(--rule-strong);
 }
 
 .notice[data-tone="blocked"] {
-  border-color: var(--blocked);
+  border-top: 4px solid var(--blocked);
 }
 
 .notice h1 {

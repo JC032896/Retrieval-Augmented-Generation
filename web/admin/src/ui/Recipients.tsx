@@ -53,7 +53,24 @@ function byDepartment(users: readonly UserRow[]): [string, UserRow[]][] {
   return [...groups.entries()];
 }
 
-export function Recipients({ preview }: { preview: State }) {
+export type RecipientDiff = { added: UserRow[]; removed: UserRow[] };
+
+/** 저장된 권한(기준)과 비교해 새로 보게 되는 사람과 더 이상 못 보는 사람. 기준이 없으면 비교하지 않는다. */
+export function diffRecipients(baseline: State | undefined, current: State): RecipientDiff | null {
+  if (baseline?.state !== "ready" || current.state !== "ready") return null;
+  const before = new Set(baseline.preview.users.map((u) => u.login));
+  const after = new Set(current.preview.users.map((u) => u.login));
+  return {
+    added: current.preview.users.filter((u) => !before.has(u.login)),
+    removed: baseline.preview.users.filter((u) => !after.has(u.login)),
+  };
+}
+
+export function personName(user: UserRow): string {
+  return `${user.name}(${user.role})`;
+}
+
+export function Recipients({ preview, baseline }: { preview: State; baseline?: State }) {
   if (preview.state === "idle") {
     return (
       <p className={styles.empty}>부서나 역할을 고르면 볼 수 있게 되는 사람이 여기 보입니다.</p>
@@ -70,6 +87,8 @@ export function Recipients({ preview }: { preview: State }) {
     );
   }
   const { count, total_users, users } = preview.preview;
+  const diff = diffRecipients(baseline, preview);
+  const added = new Set(diff?.added.map((u) => u.login));
   return (
     <div className={styles.box} aria-live="polite">
       <p className={styles.count}>
@@ -85,11 +104,32 @@ export function Recipients({ preview }: { preview: State }) {
           {byDepartment(users).map(([department, members]) => (
             <li key={department}>
               <span className={styles.department}>{department}</span>
-              <span>{members.map((user) => `${user.name}(${user.role})`).join(", ")}</span>
+              <span className={styles.people}>
+                {members.map((user) => (
+                  <span
+                    key={user.login}
+                    className={added.has(user.login) ? styles.added : undefined}
+                  >
+                    {added.has(user.login) ? "+ " : ""}
+                    {personName(user)}
+                    {added.has(user.login) ? <span className={styles.tag}>새로 봄</span> : null}
+                  </span>
+                ))}
+              </span>
             </li>
           ))}
         </ul>
       )}
+      {diff && diff.removed.length > 0 ? (
+        <div className={styles.removed}>
+          <span className={styles.department}>더 이상 못 봄</span>
+          <span className={styles.people}>
+            {diff.removed.map((user) => (
+              <span key={user.login}>− {personName(user)}</span>
+            ))}
+          </span>
+        </div>
+      ) : null}
     </div>
   );
 }

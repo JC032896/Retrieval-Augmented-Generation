@@ -6,7 +6,7 @@ import { useLoad } from "../api/useApi";
 import { useApiClient } from "../auth/session";
 import { audience, dateTime, registeredNumber } from "../ui/format";
 import { Level } from "../ui/Level";
-import { Tracking } from "../ui/Tracking";
+import { Tracking, TrackingLegend } from "../ui/Tracking";
 import styles from "./Dashboard.module.css";
 import { recentDocuments, statusLabels, todos } from "./statusModel";
 
@@ -50,33 +50,36 @@ function DocumentTable({ documents }: { documents: DocumentRow[] }) {
     );
   }
   return (
-    <table className={styles.table}>
-      <caption className="visually-hidden">최근에 움직인 문서</caption>
-      <thead>
-        <tr>
-          <th scope="col">등기번호</th>
-          <th scope="col">문서</th>
-          <th scope="col">등급</th>
-          <th scope="col">볼 수 있는 사람</th>
-          <th scope="col">배송조회</th>
-        </tr>
-      </thead>
-      <tbody>
-        {documents.map((document) => (
-          <tr key={document.id}>
-            <td className={styles.number}>{registeredNumber(document)}</td>
-            <td>{document.title}</td>
-            <td>
-              <Level level={document.security_level} />
-            </td>
-            <td>{audience(document)}</td>
-            <td>
-              <Tracking document={document} />
-            </td>
+    <>
+      <TrackingLegend />
+      <table className={styles.table}>
+        <caption className="visually-hidden">최근에 움직인 문서</caption>
+        <thead>
+          <tr>
+            <th scope="col">등기번호</th>
+            <th scope="col">문서</th>
+            <th scope="col">등급</th>
+            <th scope="col">볼 수 있는 사람</th>
+            <th scope="col">배송조회</th>
           </tr>
-        ))}
-      </tbody>
-    </table>
+        </thead>
+        <tbody>
+          {documents.map((document) => (
+            <tr key={document.id}>
+              <td className={styles.number}>{registeredNumber(document)}</td>
+              <td>{document.title}</td>
+              <td>
+                <Level level={document.security_level} />
+              </td>
+              <td>{audience(document)}</td>
+              <td>
+                <Tracking document={document} />
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </>
   );
 }
 
