@@ -6,8 +6,8 @@
   "description": "사내 문서 질의(RAG) 관리 화면",
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build",
-    "typecheck": "tsc -b --noEmit",
+    "build": "tsc -p . && vite build",
+    "typecheck": "tsc -p .",
     "lint": "biome check .",
     "format": "biome format --write .",
     "test": "vitest run",
