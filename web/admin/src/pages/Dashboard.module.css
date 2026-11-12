@@ -144,33 +144,6 @@ h2 {
   white-space: nowrap;
 }
 
-/* 보안 등급 색: 등급에만 쓴다 */
-.level {
-  display: inline-block;
-  padding: 2px var(--space-2);
-  border-radius: 3px;
-  color: var(--sheet);
-  font-size: var(--text-xs);
-  font-weight: 700;
-  white-space: nowrap;
-}
-
-.level[data-level="0"] {
-  background: var(--level-0);
-}
-
-.level[data-level="1"] {
-  background: var(--level-1);
-}
-
-.level[data-level="2"] {
-  background: var(--level-2);
-}
-
-.level[data-level="3"] {
-  background: var(--level-3);
-}
-
 .todo {
   background: var(--sheet);
   border-top: 4px solid var(--ok);

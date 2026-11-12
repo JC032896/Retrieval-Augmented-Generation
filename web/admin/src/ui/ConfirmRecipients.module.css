@@ -1,0 +1,24 @@
+/* 확인 단계는 송장 라벨처럼 굵은 먹선 상자: 저장 전 마지막으로 읽는 곳이다 */
+.confirm {
+  display: grid;
+  gap: var(--space-4);
+  padding: var(--space-5);
+  background: var(--sheet);
+  border: 2px solid var(--rule-strong);
+}
+
+.confirm h2 {
+  font-size: var(--text-lg);
+}
+
+.lines {
+  display: grid;
+  gap: var(--space-1);
+  font-size: var(--text-sm);
+}
+
+.lines li::before {
+  content: "· ";
+  color: var(--kraft);
+  font-weight: 700;
+}

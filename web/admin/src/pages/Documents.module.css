@@ -1,0 +1,101 @@
+.page {
+  max-width: 1480px;
+}
+
+.filters {
+  display: grid;
+  grid-template-columns: minmax(220px, 2fr) repeat(3, minmax(150px, 1fr));
+  gap: var(--space-4);
+  align-items: end;
+  margin-bottom: var(--space-5);
+}
+
+.count {
+  margin-bottom: var(--space-2);
+  font-size: var(--text-sm);
+  color: var(--ink-2);
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--sheet);
+}
+
+.table th {
+  padding: 10px var(--space-3);
+  border-bottom: 2px solid var(--rule-strong);
+  font-size: var(--text-xs);
+  font-weight: 500;
+  color: var(--ink-2);
+  text-align: left;
+}
+
+.table td {
+  padding: 13px var(--space-3);
+  border-bottom: 1px solid var(--rule);
+  font-size: var(--text-sm);
+  vertical-align: middle;
+}
+
+.table tbody tr:hover {
+  background: var(--paper);
+}
+
+/* 폐지한 문서: 같은 격자 안에서 글자만 흐리게 (열은 움직이지 않는다) */
+.table tr[data-status="superseded"] td {
+  color: var(--ink-2);
+}
+
+.table a {
+  color: inherit;
+}
+
+.title {
+  font-weight: 500;
+}
+
+.superseded {
+  margin-left: var(--space-2);
+  padding: 1px 6px;
+  border: 1px solid var(--ink-2);
+  border-radius: 3px;
+  font-size: var(--text-xs);
+}
+
+@media (max-width: 960px) {
+  .filters {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 720px) {
+  .filters {
+    grid-template-columns: 1fr;
+  }
+
+  .table thead {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+  }
+
+  .table tr {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: var(--space-1) var(--space-3);
+    padding: var(--space-3);
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .table td {
+    padding: 0;
+    border: 0;
+  }
+
+  .table td:nth-child(n + 3) {
+    grid-column: 1 / -1;
+  }
+}

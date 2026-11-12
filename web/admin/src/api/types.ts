@@ -10,3 +10,6 @@ export type Status = Schemas["StatusOut"];
 export type DocumentRow = Schemas["DocumentOut"];
 export type LastChange = Schemas["LastChangeOut"];
 export type UserRow = Schemas["UserOut"];
+export type AuditSummary = Schemas["AuditSummaryOut"];
+export type AuditPage = Schemas["AuditPageOut"];
+export type AuditDetail = Schemas["AuditDetailOut"];

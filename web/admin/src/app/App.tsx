@@ -1,20 +1,20 @@
 // 화면 주소와 로그인 상태에 따른 갈림길.
+import { type ReactNode, useMemo } from "react";
 import { createBrowserRouter, Navigate, Outlet, RouterProvider } from "react-router";
 import type { Me } from "../api/types";
 import { useSession } from "../auth/session";
+import { Audit } from "../pages/Audit";
+import { AuditDetail } from "../pages/AuditDetail";
 import { Dashboard } from "../pages/Dashboard";
+import { DocumentDetail } from "../pages/DocumentDetail";
+import { DocumentNew } from "../pages/DocumentNew";
+import { Documents } from "../pages/Documents";
 import { Notice } from "../pages/Notice";
+import { Settings } from "../pages/Settings";
 import { SignIn } from "../pages/SignIn";
-import { NAV, visibleNav } from "./nav";
+import { Users } from "../pages/Users";
+import { visibleNav } from "./nav";
 import { Shell } from "./Shell";
-
-// 다음 단계(B-5)에서 만드는 화면. 메뉴는 미리 두고 무엇이 올지 알려 준다
-const UPCOMING: Record<string, string> = {
-  "/documents": "문서 목록, 올리기, 받는 사람을 확인하는 권한 지정, 배송조회 이력",
-  "/users": "부서·역할·등급별 사용자 목록 (문서 폴더의 org.yaml에서 수집)",
-  "/audit": "질문·답변 감사 기록 검색과 한 건의 근거 문서",
-  "/settings": "답변 LLM, 사용 한도, 로그인 설정 확인",
-};
 
 function NoRole({ me }: { me: Me }) {
   return (
@@ -38,8 +38,17 @@ function Signed({ me }: { me: Me }) {
   );
 }
 
+function Forbidden() {
+  return (
+    <Notice title="이 화면을 볼 권한이 없습니다" tone="blocked">
+      <p>역할에 맞는 메뉴만 왼쪽에 보입니다.</p>
+    </Notice>
+  );
+}
+
 function routes(me: Me) {
   const allowed = new Set(visibleNav(me.roles).map((item) => item.path));
+  const only = (path: string, element: ReactNode) => (allowed.has(path) ? element : <Forbidden />);
   return createBrowserRouter(
     [
       {
@@ -47,18 +56,13 @@ function routes(me: Me) {
         element: <Signed me={me} />,
         children: [
           { index: true, element: <Dashboard me={me} /> },
-          ...NAV.filter((item) => item.path !== "/").map((item) => ({
-            path: item.path.slice(1),
-            element: allowed.has(item.path) ? (
-              <Notice title={`${item.label}: 다음 단계에서 엽니다`}>
-                <p>{UPCOMING[item.path]}</p>
-              </Notice>
-            ) : (
-              <Notice title="이 화면을 볼 권한이 없습니다" tone="blocked">
-                <p>역할에 맞는 메뉴만 왼쪽에 보입니다.</p>
-              </Notice>
-            ),
-          })),
+          { path: "documents", element: only("/documents", <Documents me={me} />) },
+          { path: "documents/new", element: only("/documents", <DocumentNew me={me} />) },
+          { path: "documents/:id", element: only("/documents", <DocumentDetail />) },
+          { path: "users", element: only("/users", <Users />) },
+          { path: "audit", element: only("/audit", <Audit />) },
+          { path: "audit/:id", element: only("/audit", <AuditDetail />) },
+          { path: "settings", element: only("/settings", <Settings />) },
           { path: "callback", element: <Navigate to="/" replace /> },
           {
             path: "*",
@@ -73,6 +77,11 @@ function routes(me: Me) {
     ],
     { basename: "/admin" },
   );
+}
+
+function SignedRouter({ me }: { me: Me }) {
+  const router = useMemo(() => routes(me), [me]);
+  return <RouterProvider router={router} />;
 }
 
 export function App() {
@@ -94,6 +103,6 @@ export function App() {
     case "signed-out":
       return <SignIn config={session.config} onSignIn={session.signIn} />;
     case "signed-in":
-      return <RouterProvider router={routes(session.me)} />;
+      return <SignedRouter me={session.me} />;
   }
 }

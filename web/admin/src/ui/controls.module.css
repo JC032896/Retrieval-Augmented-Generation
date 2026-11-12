@@ -1,0 +1,208 @@
+/* 버튼, 입력 칸, 페이지 머리, 사실 목록. 모든 화면이 같은 모양을 쓴다 */
+
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  min-height: 40px;
+  padding: 0 var(--space-4);
+  border: 1px solid var(--ink);
+  border-radius: var(--radius);
+  background: var(--sheet);
+  color: var(--ink);
+  font-weight: 500;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background-color var(--duration-fast) var(--ease-out);
+}
+
+.button:hover:not(:disabled) {
+  background: var(--paper);
+}
+
+.button[data-kind="primary"] {
+  border-color: var(--kraft);
+  background: var(--kraft);
+  color: var(--kraft-ink);
+  font-weight: 700;
+}
+
+.button[data-kind="primary"]:hover:not(:disabled) {
+  background: var(--kraft-deep);
+}
+
+.button[data-kind="danger"] {
+  border-color: var(--blocked);
+  color: var(--blocked);
+}
+
+.button[data-kind="danger"]:hover:not(:disabled) {
+  background: var(--blocked);
+  color: var(--sheet);
+}
+
+.button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.field {
+  display: grid;
+  gap: var(--space-2);
+  margin: 0;
+  padding: 0;
+  border: 0;
+  min-width: 0;
+}
+
+.field > legend,
+.label {
+  padding: 0;
+  font-size: var(--text-sm);
+  font-weight: 700;
+}
+
+.hint {
+  font-size: var(--text-xs);
+  color: var(--ink-2);
+}
+
+.input,
+.select {
+  width: 100%;
+  min-height: 40px;
+  padding: 0 var(--space-3);
+  border: 1px solid var(--ink-2);
+  border-radius: var(--radius);
+  background: var(--sheet);
+}
+
+.input:hover,
+.select:hover {
+  border-color: var(--ink);
+}
+
+.choices {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+/* 체크박스·라디오를 고르는 칸: 고르면 크라프트색 테두리 */
+.choice {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: 36px;
+  padding: 0 var(--space-3);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  background: var(--sheet);
+  font-size: var(--text-sm);
+  cursor: pointer;
+}
+
+.choice:has(input:checked) {
+  border-color: var(--kraft);
+  background: var(--kraft-tint);
+  font-weight: 700;
+}
+
+.choice:has(input:focus-visible) {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+.choice input {
+  accent-color: var(--kraft);
+  margin: 0;
+}
+
+.pageHead {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: var(--space-3) var(--space-5);
+  margin-bottom: var(--space-5);
+}
+
+.pageHead h1 {
+  font-size: var(--text-xl);
+  letter-spacing: -0.02em;
+}
+
+.pageHead p {
+  margin-top: var(--space-1);
+  color: var(--ink-2);
+  font-size: var(--text-sm);
+}
+
+.facts {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: var(--space-4) var(--space-5);
+  padding: var(--space-5);
+  background: var(--sheet);
+}
+
+.facts dt {
+  font-size: var(--text-xs);
+  color: var(--ink-2);
+}
+
+.facts dd {
+  margin-top: 2px;
+  font-weight: 500;
+  overflow-wrap: anywhere;
+}
+
+.number {
+  font-family: var(--font-number);
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  white-space: nowrap;
+}
+
+.panel {
+  padding: var(--space-5);
+  background: var(--sheet);
+}
+
+.panel h2 {
+  font-size: var(--text-lg);
+  margin-bottom: var(--space-4);
+}
+
+.message {
+  padding: var(--space-3) var(--space-4);
+  background: var(--sheet);
+  font-size: var(--text-sm);
+}
+
+.message[data-tone="blocked"] {
+  border: 2px solid var(--blocked);
+  color: var(--blocked);
+}
+
+.message[data-tone="ok"] {
+  border: 2px solid var(--ok);
+  color: var(--ok);
+}
+
+.message[data-tone="muted"] {
+  color: var(--ink-2);
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  align-items: center;
+}
+
+.stack {
+  display: grid;
+  gap: var(--space-5);
+}

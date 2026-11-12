@@ -1,0 +1,120 @@
+.page {
+  max-width: 1480px;
+}
+
+.filters {
+  display: grid;
+  grid-template-columns: minmax(180px, 1.5fr) repeat(3, minmax(140px, 1fr)) auto;
+  gap: var(--space-4);
+  align-items: end;
+  margin-bottom: var(--space-5);
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--sheet);
+}
+
+.table th {
+  padding: 10px var(--space-3);
+  border-bottom: 2px solid var(--rule-strong);
+  font-size: var(--text-xs);
+  font-weight: 500;
+  color: var(--ink-2);
+  text-align: left;
+}
+
+.table td {
+  padding: 12px var(--space-3);
+  border-bottom: 1px solid var(--rule);
+  font-size: var(--text-sm);
+  vertical-align: top;
+}
+
+.table tbody tr:hover {
+  background: var(--paper);
+}
+
+.right {
+  text-align: right;
+  white-space: nowrap;
+}
+
+.table th.right {
+  text-align: right;
+}
+
+.when {
+  white-space: nowrap;
+}
+
+.question {
+  max-width: 48ch;
+}
+
+.sub {
+  display: block;
+  color: var(--ink-2);
+  font-size: var(--text-xs);
+}
+
+.outcome {
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.outcome[data-outcome="answered"] {
+  color: var(--ok);
+}
+
+.outcome[data-outcome="refused"] {
+  color: var(--pending);
+}
+
+.outcome[data-outcome="error"] {
+  color: var(--blocked);
+}
+
+.outcome[data-outcome="cancelled"] {
+  color: var(--ink-2);
+}
+
+.more {
+  display: flex;
+  justify-content: center;
+  padding: var(--space-5) 0;
+}
+
+@media (max-width: 1080px) {
+  .filters {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 720px) {
+  .filters {
+    grid-template-columns: 1fr;
+  }
+
+  .table thead {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+  }
+
+  .table tr {
+    display: grid;
+    gap: var(--space-1);
+    padding: var(--space-3);
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .table td {
+    padding: 0;
+    border: 0;
+    text-align: left;
+  }
+}

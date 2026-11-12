@@ -2,6 +2,12 @@
   display: grid;
   grid-template-columns: var(--rail-width) minmax(0, 1fr);
   min-height: 100vh;
+  /* 메뉴 띠는 화면에 붙어 있고, 그 아래로 길게 스크롤해도 띠의 색이 끝까지 이어진다 */
+  background: linear-gradient(
+    90deg,
+    var(--kraft) var(--rail-width),
+    var(--paper) var(--rail-width)
+  );
 }
 
 .rail {
@@ -117,6 +123,7 @@
 @media (max-width: 900px) {
   .frame {
     grid-template-columns: 1fr;
+    background: var(--paper);
   }
 
   .rail {

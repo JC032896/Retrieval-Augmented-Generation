@@ -379,6 +379,16 @@ def remove_document(document_id: int, admin: DocumentsDep, services: AdminServic
     log_event(logger, "document_deleted", actor=admin.user.login, source_path=source_path)
 
 
+@router.get("/documents/{document_id}")
+def get_document(document_id: int, admin: DocumentsDep, services: AdminServicesDep) -> DocumentOut:
+    """문서 한 건. 부서 문서 담당에게 다른 부서 문서는 없는 것처럼 404다."""
+    with services.sessions() as session:
+        document = session.get(Document, document_id)
+        if document is None or not _can_see(admin, document):
+            raise HTTPException(404, "문서가 없습니다")
+        return _document(session, admin, document_id)
+
+
 @router.get("/documents/{document_id}/changes")
 def document_changes(
     document_id: int, admin: DocumentsDep, services: AdminServicesDep

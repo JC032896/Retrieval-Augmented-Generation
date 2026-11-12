@@ -48,8 +48,22 @@ export function createApi(headers: HeaderSource, fetcher: typeof fetch = fetch) 
     return (response.status === 204 ? undefined : await response.json()) as T;
   }
 
+  /** JSON 본문 또는 파일(FormData)을 보낸다. FormData면 경계값이 붙은 Content-Type을 브라우저가 정한다. */
+  function send<T>(method: "POST" | "PUT" | "DELETE", path: string, body?: unknown): Promise<T> {
+    if (body === undefined) return request<T>(path, { method });
+    if (body instanceof FormData) return request<T>(path, { method, body });
+    return request<T>(path, {
+      method,
+      body: JSON.stringify(body),
+      headers: { "Content-Type": "application/json" },
+    });
+  }
+
   return {
     get: <T>(path: string) => request<T>(path),
+    post: <T>(path: string, body?: unknown) => send<T>("POST", path, body),
+    put: <T>(path: string, body?: unknown) => send<T>("PUT", path, body),
+    delete: (path: string) => send<undefined>("DELETE", path),
   };
 }
 

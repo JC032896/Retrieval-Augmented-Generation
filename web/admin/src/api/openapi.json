@@ -1483,6 +1483,47 @@
         "tags": [
           "admin-documents"
         ]
+      },
+      "get": {
+        "description": "문서 한 건. 부서 문서 담당에게 다른 부서 문서는 없는 것처럼 404다.",
+        "operationId": "get_document_admin_api_documents__document_id__get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "document_id",
+            "required": true,
+            "schema": {
+              "title": "Document Id",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DocumentOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Get Document",
+        "tags": [
+          "admin-documents"
+        ]
       }
     },
     "/admin/api/documents/{document_id}/access": {

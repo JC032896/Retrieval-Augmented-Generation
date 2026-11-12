@@ -4,7 +4,8 @@ import { Link } from "react-router";
 import type { DocumentRow, Me, Status } from "../api/types";
 import { useLoad } from "../api/useApi";
 import { useApiClient } from "../auth/session";
-import { audience, dateTime, levelName, registeredNumber } from "../ui/format";
+import { audience, dateTime, registeredNumber } from "../ui/format";
+import { Level } from "../ui/Level";
 import { Tracking } from "../ui/Tracking";
 import styles from "./Dashboard.module.css";
 import { recentDocuments, statusLabels, todos } from "./statusModel";
@@ -66,9 +67,7 @@ function DocumentTable({ documents }: { documents: DocumentRow[] }) {
             <td className={styles.number}>{registeredNumber(document)}</td>
             <td>{document.title}</td>
             <td>
-              <span className={styles.level} data-level={document.security_level}>
-                {document.security_level} {levelName(document.security_level)}
-              </span>
+              <Level level={document.security_level} />
             </td>
             <td>{audience(document)}</td>
             <td>

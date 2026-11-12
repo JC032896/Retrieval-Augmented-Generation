@@ -1,0 +1,57 @@
+/* 세로 배송조회: 점과 선. 가장 최근 단계만 크라프트색으로 채운다 */
+.timeline {
+  display: grid;
+}
+
+.timeline li {
+  position: relative;
+  padding: 0 0 var(--space-5) var(--space-6);
+}
+
+.timeline li::before {
+  content: "";
+  position: absolute;
+  left: 7px;
+  top: 6px;
+  width: 12px;
+  height: 12px;
+  border: 2px solid var(--kraft);
+  border-radius: 50%;
+  background: var(--sheet);
+}
+
+.timeline li[data-latest="true"]::before {
+  background: var(--kraft);
+}
+
+.timeline li:not(:last-child)::after {
+  content: "";
+  position: absolute;
+  left: 12px;
+  top: 22px;
+  bottom: 2px;
+  width: 2px;
+  background: var(--rule);
+}
+
+.head {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1) var(--space-3);
+  align-items: baseline;
+}
+
+.head span {
+  font-size: var(--text-sm);
+  color: var(--ink-2);
+}
+
+.line {
+  margin-top: 2px;
+  font-size: var(--text-sm);
+}
+
+.empty {
+  color: var(--ink-2);
+  font-size: var(--text-sm);
+}

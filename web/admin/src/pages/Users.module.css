@@ -1,0 +1,56 @@
+.page {
+  max-width: 1100px;
+}
+
+.groups {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(420px, 1fr));
+  gap: var(--space-5);
+}
+
+.group {
+  background: var(--sheet);
+  padding: var(--space-4) var(--space-5) var(--space-5);
+}
+
+.group h2 {
+  font-size: var(--text-lg);
+  margin-bottom: var(--space-3);
+}
+
+.count {
+  margin-left: var(--space-2);
+  font-family: var(--font-number);
+  font-weight: 700;
+  color: var(--kraft);
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--text-sm);
+}
+
+.table th {
+  padding: var(--space-2) 0;
+  border-bottom: 2px solid var(--rule-strong);
+  font-size: var(--text-xs);
+  font-weight: 500;
+  color: var(--ink-2);
+  text-align: left;
+}
+
+.table td {
+  padding: 10px 0;
+  border-bottom: 1px solid var(--rule);
+}
+
+.login {
+  color: var(--ink-2);
+}
+
+@media (max-width: 720px) {
+  .groups {
+    grid-template-columns: 1fr;
+  }
+}

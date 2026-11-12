@@ -1,0 +1,50 @@
+.page {
+  max-width: 1480px;
+}
+
+.columns {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) var(--side-width);
+  gap: var(--space-6);
+  align-items: start;
+}
+
+.main {
+  display: grid;
+  gap: var(--space-5);
+}
+
+/* 받는 사람은 편집하는 동안 계속 보인다 */
+.side {
+  position: sticky;
+  top: var(--space-5);
+  display: grid;
+  gap: var(--space-4);
+}
+
+.next {
+  display: grid;
+  gap: var(--space-2);
+  justify-items: start;
+}
+
+.plain {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  min-width: 0;
+}
+
+@media (max-width: 1180px) {
+  .columns {
+    grid-template-columns: 1fr;
+  }
+
+  .side {
+    position: static;
+  }
+}
+
+.spaced {
+  margin-top: var(--space-4);
+}
