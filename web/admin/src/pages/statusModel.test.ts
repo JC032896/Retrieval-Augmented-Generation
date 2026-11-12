@@ -1,22 +1,30 @@
 import { describe, expect, it } from "vitest";
+import type { Status } from "../api/types";
 import { documentRow, status } from "../test/fixtures";
 import { recentDocuments, statusLabels, todos } from "./statusModel";
 
+// 최종 검토(B-6): 4번째 송장 라벨은 고정 한도가 아니라 '오늘 질문'(질문 수, 사람 수, 비용 / 하루 한도)
+function used(cost: number, requests = 12, users = 4): Partial<Status> {
+  return { usage: { since: "2026-11-11T15:00:00Z", requests, users, cost_usd: cost } };
+}
+
 describe("상태 라벨", () => {
-  it("답변 LLM이 없으면 막힘으로 표시한다", () => {
-    const labels = statusLabels(status());
+  it("답변 LLM이 없으면 막힘으로 표시하고, 4번째는 오늘 질문이다", () => {
+    const labels = statusLabels(status(used(1.5)));
     expect(labels.map((l) => [l.key, l.value, l.tone])).toEqual([
       ["index", "23", "ok"],
       ["models", "준비됨", "ok"],
       ["llm", "설정 안 됨", "blocked"],
-      ["limits", "200", "ok"],
+      ["today", "12", "ok"],
     ]);
-    expect(labels[3]?.note).toBe("회사 하루 $20 · 동시 3건");
+    expect(labels[3]?.note).toBe("4명 · 비용 $1.50 / 하루 $20");
+    expect(labels[3]?.unit).toBe("건");
   });
 
-  it("DB 오류, 어긋난 색인, 모델 오류, 한도 없음", () => {
+  it("DB 오류, 어긋난 색인, 모델 오류, 사용량을 읽지 못함", () => {
     const broken = statusLabels(status({ db: "error", index: { error: "읽기 실패" } }));
     expect(broken[0]).toMatchObject({ value: "읽지 못함", tone: "blocked" });
+    expect(broken[3]).toMatchObject({ value: "읽지 못함", tone: "pending" });
 
     const drift = statusLabels(status({ index: { documents: 23, mismatches: 2 } }));
     expect(drift[0]).toMatchObject({ note: "원문과 2건 어긋남", tone: "blocked" });
@@ -31,9 +39,15 @@ describe("상태 라벨", () => {
       status({ llm: { provider: "openai_compatible", model: "gemma3:12b", configured: true } }),
     );
     expect(ready[2]).toMatchObject({ value: "준비됨", note: "openai_compatible · gemma3:12b" });
+  });
+
+  it("오늘 비용이 한도의 80%면 주의, 넘으면 막힘, 한도가 없으면 비용만", () => {
+    expect(statusLabels(status(used(16)))[3]?.tone).toBe("pending");
+    expect(statusLabels(status(used(20)))[3]?.tone).toBe("blocked");
 
     const free = statusLabels(
       status({
+        ...used(31.25),
         limits: {
           daily_requests_per_user: null,
           daily_budget_usd: null,
@@ -42,24 +56,37 @@ describe("상태 라벨", () => {
         },
       }),
     );
-    expect(free[3]).toMatchObject({ value: "없음", note: "회사 비용 한도 없음" });
-    expect(free[3]?.unit).toBeUndefined();
+    expect(free[3]).toMatchObject({ value: "12", note: "4명 · 비용 $31.25", tone: "ok" });
   });
 });
 
 describe("확인할 일", () => {
-  it("막힌 것을 먼저 알리고, 링크는 그 화면을 쓸 수 있는 역할에만 준다", () => {
+  it("막힌 것만 알리고, 링크는 그 화면을 쓸 수 있는 역할에만 준다", () => {
     const admin = todos(status({ index: { documents: 1, mismatches: 1 } }), ["admin"]);
+    // 감사 기록 보기 같은 서버 설명은 할 일이 아니므로 설정 화면에만 둔다
     expect(admin.map((t) => t.title)).toEqual([
       "답변 LLM 키가 없습니다",
       "원문과 색인이 1건 어긋납니다",
-      "관리 화면에서 감사 기록을 볼 수 있습니다",
     ]);
     expect(admin[0]?.link?.to).toBe("/settings");
 
     const manager = todos(status(), ["doc_manager"]);
     expect(manager.map((t) => t.title)).toEqual(["답변 LLM 키가 없습니다"]);
     expect(manager[0]?.link).toBeUndefined();
+  });
+
+  it("오늘 비용이 한도에 가까우면 알린다", () => {
+    const fine = { llm: { provider: "claude", model: "claude-sonnet-5-5", configured: true } };
+    const near = todos(status({ ...fine, ...used(18) }), ["admin"]);
+    const over = todos(status({ ...fine, ...used(20) }), ["doc_manager"]);
+
+    expect(near.map((t) => [t.title, t.link?.to])).toEqual([
+      ["오늘 비용이 한도의 90%입니다", "/settings"],
+    ]);
+    expect(over.map((t) => [t.title, t.link])).toEqual([
+      ["오늘 비용 한도에 닿았습니다", undefined],
+    ]);
+    expect(todos(status({ ...fine, ...used(10) }), ["admin"])).toEqual([]);
   });
 
   it("DB와 모델 오류, 그리고 아무 일도 없을 때", () => {
