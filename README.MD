@@ -513,11 +513,16 @@ LLM_API_KEY=                               # 서버가 키를 요구할 때만
 | 파일 | 내용 |
 |---|---|
 | `Dockerfile` | 앱 이미지(약 2.5GB, CPU용 PyTorch). 모델 파일은 넣지 않고 `/models` 볼륨에서 읽는다 |
+| `.github/workflows/release.yml` | 버전 태그(`v0.1.0`)를 올리면 품질 게이트 → 이미지 빌드 → 실행 점검 → `ghcr.io/jc032896/rag-service:0.1.0` 배포 |
 | `deploy/compose.yaml` | `setup`(비밀번호·모델) → `db`(포트 비공개) → `migrate`(스키마, 로그인 계정) → `sync`(문서 증분 수집), `app`(127.0.0.1만) |
 | `deploy/compose.override.yaml` | 데모 로그인(Keycloak)과 앱 연결. 자동으로 함께 읽히고, 운영에서는 지운다 |
 | `deploy/.env.example` | 선택 설정(API 키, 회사 로그인, 문서 폴더, 한도). 비밀번호는 비워 두면 자동 생성 |
 | `deploy/keycloak/hanbit-realm.json` | 데모 로그인: `samples/org.yaml`의 직원 6명과 이 앱(토큰 대상 `rag-service`) |
 
+- **미리 만든 이미지**: compose는 코드 버전(`pyproject.toml`)과 같은 태그의 이미지를 받고(`pull_policy: missing`),
+  받을 수 없을 때만 직접 빌드한다. 그래서 설치하는 서버는 빌드 도구와 5분의 빌드가 필요 없고, 받은 코드와 이미지의
+  버전이 어긋나지 않는다. release는 태그가 `pyproject.toml`의 버전과 다르면 멈추고, 품질 게이트를 통과한 커밋만
+  올린다. 이미지 안에서 비 root 사용자(10001)와 앱 import를 확인한 뒤에 올린다.
 - **첫 실행 자동 준비**: `setup`(`python -m rag_service.deploy prepare`)이 시작할 때마다 한 번 돈다. 비밀번호 파일이
   없으면 무작위로 만들고(출력하지 않음), 모델은 없는 파일만 받는다. 비밀번호는 비밀 볼륨 세 개(소유자, 앱·감사,
   Keycloak)에 나눠 담아 필요한 서비스에만 붙이고, 서비스는 `*_PASSWORD_FILE`로 읽는다. 앱 컨테이너는 소유자

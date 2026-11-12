@@ -31,8 +31,10 @@ docker compose up -d
 
 이것만으로 샘플 문서(가상 회사 "한빛소프트")와 데모 로그인까지 준비된다.
 
-- 처음에는 앱 이미지를 만들고 검색 모델(약 6GB)을 받느라 수 분에서 수십 분 걸린다. 진행 상황은 다른 창에서
+- 처음에는 앱 이미지(약 2.5GB)와 검색 모델(약 6GB)을 받느라 수 분에서 수십 분 걸린다. 진행 상황은 다른 창에서
   `docker compose logs -f setup`. 두 번째부터는 금방 뜬다.
+- 앱 이미지는 받은 코드의 버전과 같은 태그(`ghcr.io/jc032896/rag-service:<버전>`)를 GitHub 이미지 저장소에서 받는다.
+  받을 수 없으면(아직 올리지 않은 버전 등) 이 폴더의 `Dockerfile`로 직접 만든다(약 5분).
 - 확인: `curl localhost:8000/ready` → `{"ready": true, ...}`, `curl localhost:8000/health` → 문서 22개, 불일치 0.
 - 답변을 받으려면 Claude API 키가 필요하다: `cp .env.example .env`, `ANTHROPIC_API_KEY=` 채우고 `docker compose up -d`.
   키가 없으면 로그인과 검색까지는 되고 답변 단계에서 503("답변 LLM이 설정되지 않았습니다")이 난다.
@@ -72,8 +74,10 @@ DB 소유자·앱·감사 담당 계정과 데모 Keycloak 관리자 비밀번�
 # 백업 (매일 권장, 결과 파일은 다른 저장소로 옮긴다). 비밀 볼륨도 함께 보관한다
 docker compose exec db pg_dump -U rag_owner -Fc rag > rag-$(date +%F).dump
 
-# 업데이트: 백업 → 새 코드 받기 → 다시 시작 (setup·migrate·sync가 필요한 일을 한다)
-git pull && docker compose up -d --build
+# 업데이트: 백업 → 새 버전 코드 받기 → 다시 시작. 버전이 바뀌면 그 버전의 이미지를 받고,
+# setup·migrate·sync가 필요한 일을 한다
+git fetch --tags && git checkout v0.2.0 && docker compose up -d
+# 코드를 직접 고쳐서 쓰는 경우에만: docker compose up -d --build
 
 # 복구 (서비스를 멈추고)
 docker compose stop app
@@ -110,7 +114,8 @@ curl -N -X POST localhost:8000/ask -H "Authorization: Bearer $TOKEN" -H "Content
 
 ## 폐쇄망 (인터넷이 막힌 서버)
 1. 인터넷이 되는 PC에서 `docker compose up -d`로 한 번 설치해 이미지와 모델을 만든다.
-   `docker save rag-service:latest pgvector/pgvector:pg17 quay.io/keycloak/keycloak:26.0 -o images.tar`
+   `docker save ghcr.io/jc032896/rag-service:0.1.0 pgvector/pgvector:pg17 quay.io/keycloak/keycloak:26.0 -o images.tar`
+   (버전은 받은 코드의 것. 사내 레지스트리에 올려 두고 `.env`의 `APP_IMAGE`로 가리켜도 된다)
    모델 볼륨은 `docker run --rm -v rag-service_models:/m -v $PWD:/out alpine tar czf /out/models.tgz -C /m .`
 2. 서버에서 `docker load -i images.tar`, 모델 볼륨 `rag-service_models`를 만들고 `models.tgz`를 풀어 넣는다.
 3. `.env`에 `OFFLINE_INSTALL=1`을 넣고 `docker compose up -d`. `setup`은 모델을 받지 않고 있는지만 확인한다.
