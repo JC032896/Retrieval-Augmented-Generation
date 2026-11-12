@@ -1,0 +1,87 @@
+name: release
+
+# 버전 태그(v0.1.0)를 올리면 앱 이미지를 GitHub 이미지 저장소(GHCR)에 올린다.
+# 설치하는 서버는 deploy/compose.yaml이 가리키는 같은 버전의 이미지를 받기만 한다 (빌드하지 않음)
+on:
+  push:
+    tags: ["v*.*.*"]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+env:
+  # deploy/compose.yaml의 기본 이미지와 같아야 한다 (tests/test_release_image.py)
+  IMAGE: ghcr.io/jc032896/rag-service
+
+jobs:
+  # 품질 게이트를 통과한 커밋만 올린다
+  quality:
+    uses: ./.github/workflows/quality.yml
+
+  image:
+    needs: quality
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v4
+
+      # 태그와 코드 버전이 다르면 compose가 엉뚱한 이미지를 받게 되므로 멈춘다
+      - name: 태그와 pyproject.toml 버전 일치 확인
+        run: |
+          version=$(python3 -c "import tomllib; print(tomllib.load(open('pyproject.toml', 'rb'))['project']['version'])")
+          if [ "v$version" != "$GITHUB_REF_NAME" ]; then
+            echo "태그 $GITHUB_REF_NAME 와 pyproject.toml 버전 $version 이 다르다"
+            exit 1
+          fi
+
+      - uses: docker/setup-buildx-action@v3
+
+      - uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      # 0.1.0, 0.1 태그와 (정식 버전이면) latest. 저장소 주소 라벨을 붙여 이미지가 이 저장소에 연결된다
+      - id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.IMAGE }}
+          tags: |
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+
+      - name: 이미지 빌드 (점검용으로 로컬에만)
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          load: true
+          tags: rag-service:ci
+          cache-from: type=gha
+          cache-to: type=gha
+
+      # 올리기 전에 실제로 뜨는지 본다: 비 root 사용자, 앱과 배포 명령 import, 이미지 안에 .env 없음
+      - name: 이미지 실행 점검
+        run: |
+          docker run --rm --entrypoint sh rag-service:ci -c '
+            test "$(id -u)" = 10001 &&
+            python -c "import rag_service.main, rag_service.deploy.cli" &&
+            test -z "$(find / -xdev -name .env -print -quit 2>/dev/null)"'
+
+      - name: 이미지 올리기
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          provenance: true
+          sbom: true

@@ -5,6 +5,8 @@ on:
     branches: [main]
   pull_request:
     branches: [main]
+  # release.yml이 이미지를 올리기 전에 같은 게이트를 부른다
+  workflow_call:
 
 permissions:
   contents: read
