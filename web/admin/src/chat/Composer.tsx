@@ -54,7 +54,7 @@ export function Composer({ onAsk }: { onAsk: (question: string) => void }) {
             {question.length.toLocaleString()} / {MAX.toLocaleString()}자
           </span>
         ) : usage?.questions_left != null ? (
-          <span>
+          <span className={styles.left}>
             오늘 남은 질문 <strong className={styles.count}>{usage.questions_left}</strong>
           </span>
         ) : null}

@@ -1,5 +1,5 @@
 // 채팅 화면의 갈림길: 로그인 상태, 화면 주소(/, /history/:id), 좁은 화면의 목록 열기.
-import { type ReactNode, useEffect, useState } from "react";
+import { type ReactNode, useEffect, useLayoutEffect, useState } from "react";
 import { createBrowserRouter, Outlet, RouterProvider, useLocation } from "react-router";
 import styles from "./ChatApp.module.css";
 import { Rail } from "./Rail";
@@ -77,7 +77,8 @@ function Message({ title, children }: { title: string; children: ReactNode }) {
 
 export function ChatApp() {
   const session = useChatSession();
-  useEffect(() => {
+  // 탭 제목은 화면과 같은 순간에 바꾼다 (그린 뒤에 바꾸면 잠깐 이전 제목이 보인다)
+  useLayoutEffect(() => {
     const name =
       session.state === "signed-in" || session.state === "signed-out"
         ? session.config.company_name

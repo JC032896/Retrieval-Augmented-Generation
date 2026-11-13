@@ -91,8 +91,17 @@
   margin-left: calc(1.5rem + var(--space-2));
   font-size: var(--text-sm);
   line-height: 1.8;
-  white-space: pre-wrap;
   color: var(--ink);
+  max-width: 34rem;
+}
+
+/* 목록 줄만 줄을 지킨다 (passage.ts) */
+.content p {
+  white-space: pre-line;
+}
+
+.content p + p {
+  margin-top: var(--space-3);
 }
 
 .waiting,

@@ -38,8 +38,12 @@
 }
 
 .welcome {
-  max-width: 40rem;
-  padding-top: 12vh;
+  max-width: 46rem;
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding-bottom: 12vh;
 }
 
 .welcome h1 {
@@ -50,7 +54,7 @@
   margin-bottom: var(--space-3);
 }
 
-.welcome p {
+.welcome > p {
   color: var(--ink-2);
   line-height: 1.75;
 }
@@ -78,14 +82,14 @@
 
 .confirm {
   margin: 0;
-  border: 0;
+  border: 1px solid var(--error-ink);
   min-width: 0;
   display: inline-flex;
   flex-wrap: wrap;
   align-items: center;
   gap: var(--space-3);
   padding: var(--space-2) var(--space-3);
-  background: var(--error-tint);
+  background: var(--paper);
   color: var(--error-ink);
   font-size: var(--text-sm);
 }
@@ -119,9 +123,15 @@
     display: contents;
   }
 
+  /* 한 칸으로 쌓일 때는 답 높이만큼 자리를 잡는다 (넓은 화면의 min-height: 0을 풀어 근거 칸이 덮지 않게) */
   .scroll {
     overflow: visible;
     order: 1;
+    min-height: auto;
+  }
+
+  .sources {
+    min-height: auto;
   }
 
   .sources {
@@ -154,6 +164,6 @@
   }
 
   .welcome {
-    padding-top: var(--space-5);
+    padding-bottom: var(--space-5);
   }
 }

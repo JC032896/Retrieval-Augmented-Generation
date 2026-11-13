@@ -25,7 +25,22 @@
       "level-1": { "role": "tertiary", "displayName": "등급 1 사내 (남청)", "canonical": "#2e5e8c", "tonalRamp": ["#030c17", "#0a2843", "#1e476f", "#3a6998", "#5e8dbd", "#89b2dd", "#b6d5f4", "#e0f1ff"] },
       "level-2": { "role": "tertiary", "displayName": "등급 2 대외비 (황토)", "canonical": "#8a5a00" },
       "level-3": { "role": "tertiary", "displayName": "등급 3 기밀 (적색)", "canonical": "#c8102e" },
-      "focus": { "role": "tertiary", "displayName": "초점 남청", "canonical": "#2e5e8c" }
+      "focus": { "role": "tertiary", "displayName": "초점 남청", "canonical": "#2e5e8c" },
+      "chat-paper": { "role": "neutral", "displayName": "채팅 복사지", "canonical": "#ffffff" },
+      "chat-rail": { "role": "neutral", "displayName": "채팅 목록칸", "canonical": "#f5f5f2" },
+      "chat-ink": { "role": "neutral", "displayName": "채팅 먹", "canonical": "#1d1d1b" },
+      "chat-ink-2": { "role": "neutral", "displayName": "채팅 흐린 먹", "canonical": "#5a5a55" },
+      "chat-rule": { "role": "neutral", "displayName": "채팅 연한 줄", "canonical": "#e2e2dc" },
+      "chat-rule-strong": { "role": "neutral", "displayName": "채팅 진한 줄", "canonical": "#c9c9c2" },
+      "chat-marker-yellow": { "role": "primary", "displayName": "형광펜 노랑 (인용 1·4·7…)", "canonical": "#ffe14d" },
+      "chat-marker-mint": { "role": "primary", "displayName": "형광펜 민트 (인용 2·5…)", "canonical": "#9be3c3" },
+      "chat-marker-pink": { "role": "primary", "displayName": "형광펜 분홍 (인용 3·6…)", "canonical": "#ffb8cb" },
+      "chat-wash-yellow": { "role": "secondary", "displayName": "노랑 옅은 바탕", "canonical": "#fff6c7" },
+      "chat-wash-mint": { "role": "secondary", "displayName": "민트 옅은 바탕", "canonical": "#e2f6ec" },
+      "chat-wash-pink": { "role": "secondary", "displayName": "분홍 옅은 바탕", "canonical": "#ffe9ef" },
+      "chat-note": { "role": "neutral", "displayName": "채팅 안내 바탕", "canonical": "#f1f1ec" },
+      "chat-error-ink": { "role": "secondary", "displayName": "채팅 위험 먹", "canonical": "#8a1c14" },
+      "chat-unverified": { "role": "neutral", "displayName": "확인 안 된 문장 점선", "canonical": "#6b6b66" }
     },
     "typographyMeta": {
       "display": { "displayName": "Display (숫자)", "purpose": "송장 라벨 값, 문서 상세 머리의 등기번호, 받는 사람 수. 숫자 전용." },
@@ -35,19 +50,25 @@
       "body-sm": { "displayName": "Body small", "purpose": "표 칸, 목록, 알림, 보조 설명." },
       "label": { "displayName": "Label", "purpose": "입력 칸 이름, legend." },
       "caption": { "displayName": "Caption", "purpose": "도움말, 사실 목록 이름, 표 머리, 범례, 등급 배지." },
-      "number": { "displayName": "Number (등기번호)", "purpose": "표 안의 등기번호. 아이디·환경 변수 이름에는 쓰지 않는다." }
+      "number": { "displayName": "Number (등기번호)", "purpose": "표 안의 등기번호. 아이디·환경 변수 이름에는 쓰지 않는다." },
+      "chat-question": { "displayName": "채팅 질문", "purpose": "질문 제목과 첫 방문 인사." },
+      "chat-answer": { "displayName": "채팅 답", "purpose": "답 본문. 줄 간격 1.9로 형광펜 띠가 윗줄과 닿지 않게." },
+      "chat-passage": { "displayName": "채팅 근거 문단", "purpose": "근거 카드 본문. 한 줄 바꿈은 잇고 목록 줄만 지킨다." }
     },
     "shadows": [],
     "motion": [
       { "name": "ease-out", "value": "cubic-bezier(0.16, 1, 0.3, 1)", "purpose": "모든 전이의 곡선." },
       { "name": "duration-fast", "value": "160ms", "purpose": "버튼·메뉴 hover의 바탕색 전이." },
       { "name": "duration-step", "value": "360ms", "purpose": "배송조회 단계 점과 선이 채워지는 전이." },
-      { "name": "step-delay", "value": "90ms", "purpose": "단계마다 차례로 채워지는 지연. prefers-reduced-motion에서 세 시간 토큰 모두 0ms." }
+      { "name": "step-delay", "value": "90ms", "purpose": "단계마다 차례로 채워지는 지연. prefers-reduced-motion에서 세 시간 토큰 모두 0ms." },
+      { "name": "chat-sweep", "value": "200ms", "purpose": "답이 끝나 인용이 확인되면 문장의 형광펜이 왼쪽에서 오른쪽으로 한 번 그어진다. 문장마다 70ms씩 늦게, 움직임 줄이기면 없음." }
     ],
     "breakpoints": [
       { "name": "table-cards", "value": "720px", "purpose": "표가 행별 2열 카드로 바뀐다." },
       { "name": "rail-top", "value": "900px", "purpose": "메뉴 띠가 위쪽 가로 줄이 된다." },
-      { "name": "side-stack", "value": "1180px", "purpose": "옆단(380px)이 본문 아래로, 대시보드 '확인할 일'은 위로." }
+      { "name": "side-stack", "value": "1180px", "purpose": "옆단(380px)이 본문 아래로, 대시보드 '확인할 일'은 위로." },
+      { "name": "chat-stack", "value": "1180px", "purpose": "채팅 화면의 근거 칸이 답 아래로 내려간다." },
+      { "name": "chat-rail-hidden", "value": "900px", "purpose": "채팅 화면의 목록칸이 위 막대의 '지난 질문' 단추 뒤로 숨는다." }
     ],
     "layout": {
       "railWidth": "232px",
@@ -150,6 +171,22 @@
       "description": "테두리 없이 옅은 바탕과 짙은 글자.",
       "html": "<p class=\"ds-msg\" data-tone=\"ok\">올렸습니다. 지금부터 볼 수 있는 사람이 질문하면 이 문서에서 답을 찾습니다.</p><p class=\"ds-msg\" data-tone=\"blocked\">권한을 저장하지 못했습니다. 다시 시도해 주세요.</p>",
       "css": ".ds-msg { margin: 0 0 8px; padding: 12px 16px; background: #ffffff; font-family: 'Pretendard Variable', Pretendard, -apple-system, 'Malgun Gothic', sans-serif; font-size: 0.875rem; color: #1c1c1a; } .ds-msg[data-tone=\"ok\"] { background: #e6f0ea; color: #1f4d36; font-weight: 500; } .ds-msg[data-tone=\"blocked\"] { background: #fbe8eb; color: #8f0b21; font-weight: 500; }"
+    },
+    {
+      "name": "채팅 번호표",
+      "kind": "button",
+      "refersTo": "chat-citation-tag",
+      "description": "둥근 테 + 그 번호의 형광 바탕. 누르면 같은 번호의 근거 카드로 간다.",
+      "html": "<button class=\"ds-cite\">1</button>",
+      "css": ".ds-cite { display: inline; padding: 0.1em 0.5em; border: 1px solid #1d1d1b; border-radius: 999px; background: #ffe14d; color: #1d1d1b; font-family: 'Pretendard Variable', Pretendard, sans-serif; font-size: 0.8125rem; font-weight: 700; line-height: 1; cursor: pointer; }"
+    },
+    {
+      "name": "채팅 형광 문장",
+      "kind": "text",
+      "refersTo": "chat-answer",
+      "description": "근거 있는 답 문장. 글자 아래 절반만 칠한다.",
+      "html": "<span class=\"ds-mark\">7일 이내에 정산을 신청합니다.</span>",
+      "css": ".ds-mark { background-image: linear-gradient(transparent 52%, #ffe14d 52%, #ffe14d 92%, transparent 92%); box-decoration-break: clone; -webkit-box-decoration-break: clone; font-size: 1.125rem; line-height: 1.9; color: #1d1d1b; }"
     }
   ],
   "narrative": {
@@ -160,7 +197,8 @@
       "그림자 없는 평면. 구획은 여백, 흰 칸, 1px 연한 선으로",
       "2px 먹선 상자는 송장 라벨(대시보드 상태 칸)과 받는 사람 확인 상자에만",
       "등기번호와 숫자는 압축 숫자체(Barlow Condensed), 그 밖은 한글 고딕(Pretendard)",
-      "배송조회 점·선 단계 표시가 시그니처. 움직임은 점이 차례로 채워지는 짧은 전이 하나뿐"
+      "배송조회 점·선 단계 표시가 시그니처. 움직임은 점이 차례로 채워지는 짧은 전이 하나뿐",
+      "채팅 화면(별도 세계 '형광펜 밑줄'): 흰 복사지 + 먹 + 인용 번호별 형광펜 세 색, 한 화면에 질문 하나와 답 하나"
     ],
     "rules": [
       { "name": "The 적색 두 곳 Rule", "body": "적색은 3 기밀 등급과 막힌 상태(오류, 위험 동작, 권한을 잃는 사람)에만 쓴다. 강조나 장식으로 적색을 쓰면 막힘 신호가 죽는다.", "section": "colors" },
@@ -171,7 +209,10 @@
       { "name": "The 도움말 분리 Rule", "body": "도움말은 label 안에 넣지 않고 label 아래 별도 문장으로 두며 aria-describedby로 입력 칸에 잇는다.", "section": "typography" },
       { "name": "The 열 고정 Rule", "body": "표의 열 구성은 고정하고 상태만 행을 바꾼다. 상태 때문에 열을 숨기거나 순서를 바꾸지 않는다.", "section": "layout" },
       { "name": "The 그림자 없음 Rule", "body": "box-shadow를 쓰지 않는다. 떠 보이게 하고 싶다면 흰 칸과 여백으로 해결한다.", "section": "elevation" },
-      { "name": "The 먹선 상자 두 곳 Rule", "body": "사방을 두른 2px 먹선 상자는 대시보드 송장 라벨과 받는 사람 확인 상자에만 쓴다. 막힌 송장 라벨은 같은 2px 선을 적색으로 바꾼다. 다른 칸은 테두리 없이 흰 면과 여백으로 나눈다.", "section": "shapes" }
+      { "name": "The 먹선 상자 두 곳 Rule", "body": "사방을 두른 2px 먹선 상자는 대시보드 송장 라벨과 받는 사람 확인 상자에만 쓴다. 막힌 송장 라벨은 같은 2px 선을 적색으로 바꾼다. 다른 칸은 테두리 없이 흰 면과 여백으로 나눈다.", "section": "shapes" },
+      { "name": "The 형광펜은 인용 번호에만 Rule", "body": "채팅 화면의 형광 세 색은 '근거 n번'이라는 뜻이다. 목록 선택, 강조, 장식, 위험 표시에 빌려 쓰지 않는다. 예외는 로그인 화면 제목의 한 단어.", "section": "chat" },
+      { "name": "The 분홍과 위험 분리 Rule", "body": "위험·오류 바탕에 분홍 계열을 깔지 않는다. 분홍은 인용 3번이다. 위험은 흰 바탕에 위험 먹 선과 글자로.", "section": "chat" },
+      { "name": "The 문단까지만 칠한다 Rule", "body": "근거 칸은 문단 단위로 같은 색을 받는다. 서버는 문단까지만 알므로 원문 안의 특정 문장을 칠한 척하지 않는다.", "section": "chat" }
     ],
     "dos": [
       "Do 모든 문서를 등기번호로 부르고, 등기번호는 숫자체(Barlow Condensed 700, 0.03em)로 쓴다.",

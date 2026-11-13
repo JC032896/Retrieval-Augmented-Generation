@@ -42,6 +42,7 @@ function TurnLayout({
   render,
   citations,
   waiting,
+  centered = false,
 }: {
   render: (linking: {
     active: number | null;
@@ -50,6 +51,8 @@ function TurnLayout({
   }) => ReactNode;
   citations: Citation[];
   waiting: boolean;
+  /** 첫 방문: 입력창이 가운데 안내 아래에 있으므로 아래 고정 입력창을 두지 않는다 */
+  centered?: boolean;
 }) {
   const askHere = useAskHere();
   // 마우스·초점이 가리키는 번호가 먼저이고, 없으면 마지막으로 눌러 옮겨 간 번호를 진하게 둔다
@@ -63,9 +66,11 @@ function TurnLayout({
     <div className={styles.layout}>
       <div className={styles.conversation}>
         <div className={styles.scroll}>{render({ active, onHover: setHover, onJump })}</div>
-        <div className={styles.composer}>
-          <Composer onAsk={askHere} />
-        </div>
+        {centered ? null : (
+          <div className={styles.composer}>
+            <Composer onAsk={askHere} />
+          </div>
+        )}
       </div>
       <div className={styles.sources}>
         <Sources
@@ -80,15 +85,14 @@ function TurnLayout({
   );
 }
 
+/** 첫 방문: 가운데에 인사와 입력창, 그 아래 안내 한 줄 (입력창의 도움말). */
 function Welcome() {
   const { me } = useWorkspace();
+  const askHere = useAskHere();
   return (
     <section className={styles.welcome} aria-labelledby="welcome">
       <h1 id="welcome">{me.name} 님, 무엇이 궁금한가요?</h1>
-      <p>
-        규정, 절차, 양식처럼 사내 문서에 있는 내용을 물어보세요. 내가 볼 수 있는 문서에서만 찾고,
-        답의 문장마다 근거 문단을 같은 색으로 칠해 보여 줍니다. 근거가 없으면 모른다고 답합니다.
-      </p>
+      <Composer onAsk={askHere} />
     </section>
   );
 }
@@ -100,6 +104,7 @@ export function NewQuestion() {
     <TurnLayout
       citations={answer?.citations ?? []}
       waiting={live.status === "streaming" || live.status === "idle"}
+      centered={live.status === "idle"}
       render={(linking) => {
         if (live.status === "idle") return <Welcome />;
         let state: AnswerState;

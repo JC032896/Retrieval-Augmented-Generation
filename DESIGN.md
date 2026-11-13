@@ -1,6 +1,6 @@
 ---
 name: 문서 질의 관리 (web/admin)
-description: 권한을 지키는 사내 문서 질의 서비스의 관리 화면. 문서는 등기처럼 허가된 사람에게만 배달되고, 모든 전달은 배송조회처럼 추적된다.
+description: 권한을 지키는 사내 문서 질의 서비스의 관리 화면과 직원 채팅 화면. 관리 화면은 등기처럼 허가된 사람에게만 배달되고 배송조회처럼 추적되며, 채팅 화면은 답의 문장과 근거 문단을 같은 색 형광펜으로 잇는다 (chat- 토큰과 '채팅 화면' 절).
 colors:
   kraft: "#7a5636"
   kraft-deep: "#5e4128"
@@ -24,6 +24,21 @@ colors:
   level-2: "#8a5a00"
   level-3: "#c8102e"
   focus: "#2e5e8c"
+  chat-paper: "#ffffff"
+  chat-rail: "#f5f5f2"
+  chat-ink: "#1d1d1b"
+  chat-ink-2: "#5a5a55"
+  chat-rule: "#e2e2dc"
+  chat-rule-strong: "#c9c9c2"
+  chat-marker-yellow: "#ffe14d"
+  chat-marker-mint: "#9be3c3"
+  chat-marker-pink: "#ffb8cb"
+  chat-wash-yellow: "#fff6c7"
+  chat-wash-mint: "#e2f6ec"
+  chat-wash-pink: "#ffe9ef"
+  chat-note: "#f1f1ec"
+  chat-error-ink: "#8a1c14"
+  chat-unverified: "#6b6b66"
 typography:
   display:
     fontFamily: "Barlow Condensed, Pretendard Variable, sans-serif"
@@ -68,10 +83,28 @@ typography:
     fontWeight: 700
     lineHeight: 1.3
     letterSpacing: "0.03em"
+  chat-question:
+    fontFamily: "Pretendard Variable, Pretendard, -apple-system, Malgun Gothic, sans-serif"
+    fontSize: "1.625rem"
+    fontWeight: 700
+    lineHeight: 1.35
+    letterSpacing: "-0.02em"
+  chat-answer:
+    fontFamily: "Pretendard Variable, Pretendard, -apple-system, Malgun Gothic, sans-serif"
+    fontSize: "1.125rem"
+    fontWeight: 400
+    lineHeight: 1.9
+  chat-passage:
+    fontFamily: "Pretendard Variable, Pretendard, -apple-system, Malgun Gothic, sans-serif"
+    fontSize: "0.875rem"
+    fontWeight: 400
+    lineHeight: 1.8
 rounded:
   tag: "3px"
   control: "6px"
   dot: "50%"
+  chat-control: "10px"
+  chat-tag: "999px"
 spacing:
   "1": "4px"
   "2": "8px"
@@ -179,6 +212,39 @@ components:
     backgroundColor: "{colors.sheet}"
     textColor: "{colors.ink}"
     padding: "24px"
+  chat-citation-tag:
+    backgroundColor: "{colors.chat-marker-yellow}"
+    textColor: "{colors.chat-ink}"
+    typography: "{typography.caption}"
+    rounded: "{rounded.chat-tag}"
+    padding: "0.1em 0.5em"
+  chat-composer:
+    backgroundColor: "{colors.chat-paper}"
+    textColor: "{colors.chat-ink}"
+    rounded: "{rounded.chat-control}"
+    padding: "8px"
+  chat-send:
+    backgroundColor: "{colors.chat-ink}"
+    textColor: "{colors.chat-paper}"
+    rounded: "{rounded.chat-control}"
+    height: "44px"
+  chat-rail:
+    backgroundColor: "{colors.chat-rail}"
+    textColor: "{colors.chat-ink}"
+    width: "248px"
+  chat-source-card-active:
+    backgroundColor: "{colors.chat-wash-yellow}"
+    textColor: "{colors.chat-ink}"
+    padding: "16px"
+  chat-confirm-danger:
+    backgroundColor: "{colors.chat-paper}"
+    textColor: "{colors.chat-error-ink}"
+    padding: "8px 12px"
+  chat-note:
+    backgroundColor: "{colors.chat-note}"
+    textColor: "{colors.chat-ink}"
+    typography: "{typography.body-sm}"
+    padding: "12px 16px"
 ---
 
 # Design System: 문서 질의 관리 (web/admin)
@@ -358,9 +424,77 @@ components:
 - **Don't** 도움말을 label 안에 넣지 않는다.
 - **Don't** box-shadow, 회색 사이드바, 숫자 카드 격자, 파란 강조색 같은 흔한 관리자 템플릿 모양을 쓰지 않는다.
 
+## 채팅 화면 (web/admin/chat.html, `/`)
+
+직원이 업무 중 수시로 짧게 들어와 묻고 닫는 화면이다. 관리 화면의 등기 창구 세계를 쓰지 않고 따로 고른 세계를 쓴다(방향 계약 `.impeccable/surfaces/web-admin-chat-html.md`). 토큰은 위 머리의 `chat-` 값이고, 코드는 `web/admin/src/chat/styles/tokens.css`다. 관리 화면의 토큰과 섞어 쓰지 않는다.
+
+### Overview
+
+**Creative North Star: "형광펜 밑줄"**
+
+규정집을 받아 들고 형광펜으로 줄을 그어 가며 읽는 사람의 책상이다. 답의 문장마다 그 문장이 기댄 근거 문단과 같은 색의 형광펜이 그어져서, 누르지 않아도 어느 문장이 어디서 왔는지 보인다. 흰 복사지와 먹 글자가 거의 전부이고, 색은 형광펜 세 가지가 인용 번호의 뜻을 실어 나른다. 말풍선, 보라 강조, 둥근 카드가 늘어선 흔한 AI 채팅 화면과, 각주 번호만 달린 답을 거부한다.
+
+**Key Characteristics:**
+- 흰 작업면 + 옅은 회백 목록칸(248px)의 평면. 그림자 없음, 말풍선 없음
+- 한 화면에 질문 하나와 답 하나. 지난 질문은 왼쪽 목록으로 물러난다
+- 형광펜은 글자 아래 절반만 칠하는 띠. 인용 1·2·3번에 노랑·민트·분홍이 차례로 붙고 넷째부터 다시 돈다
+- 근거 칸은 문단 단위로 같은 색을 받는다. 원문 안의 정확한 문장을 칠한 척하지 않는다
+- 글꼴은 Pretendard 하나. 숫자체(Barlow Condensed)를 쓰지 않는다
+
+### Colors
+
+- **복사지** (chat-paper #FFFFFF): 작업면, 근거 칸, 입력창, 확인 상자의 바탕.
+- **목록칸** (chat-rail #F5F5F2): 왼쪽 목록과 로그인 화면 바탕.
+- **먹 / 흐린 먹** (chat-ink #1D1D1B, chat-ink-2 #5A5A55): 본문과 보조 글자. 주 버튼 '묻기'의 바탕도 먹이다.
+- **형광펜** (chat-marker-yellow #FFE14D, -mint #9BE3C3, -pink #FFB8CB): 인용 번호의 색. 답 문장의 칠, 번호표 바탕, 근거 카드 제목의 칠에만 쓴다. 먹 글자 대비 10.4~13:1.
+- **형광 옅은 바탕** (chat-wash-*): 마우스·초점이 가리키는 근거 카드 전체의 바탕. 대비 14.6~15.5:1.
+- **안내 바탕** (chat-note #F1F1EC): 거절 안내, 확인 안 된 문장 안내, 가려진 지난 답 안내.
+- **위험 먹** (chat-error-ink #8A1C14): 지우기 확인과 답 생성 실패. 흰 바탕에 1px 선과 글자로만 쓴다(9.3:1).
+- **확인 안 됨** (chat-unverified #6B6B66): 근거로 확인되지 않은 문장의 점선 밑줄.
+
+**The 형광펜은 인용 번호에만 Rule.** 형광 세 색은 "근거 n번"이라는 뜻이다. 목록 선택, 강조, 장식, 위험 표시에 빌려 쓰지 않는다(지금 열린 기록은 굵은 글자와 먹 밑줄, 답을 쓰는 중의 커서는 먹, 지우기 확인은 위험 먹 선). 예외는 하나: 로그인 화면 제목의 한 단어("물어보세요")에 노랑을 그어 이 화면의 세계를 소개한다.
+
+**The 분홍과 위험 분리 Rule.** 위험·오류 바탕에 분홍 계열을 깔지 않는다. 분홍은 인용 3번이다.
+
+### Typography
+
+- **Question** (700, 1.625rem, 1.35, -0.02em): 질문 제목, 첫 방문 인사. `text-wrap: balance`.
+- **Answer** (400, 1.125rem, 1.9): 답 본문. 줄 간격이 넓어야 형광펜 띠가 윗줄과 닿지 않는다. 46rem 안.
+- **Passage** (400, 0.875rem, 1.8): 근거 문단 본문. 한 줄 바꿈은 잇고 목록 줄만 지킨다(`passage.ts`).
+- **Meta / Caption** (0.8125rem, 흐린 먹): 시각 · 근거 n건 · 인용 확인, 입력창 도움말, 조항·쪽·현행.
+
+### Layout
+
+- **3단:** 왼쪽 목록 248px + 가운데(답 영역 위, 입력창 아래 고정) + 오른쪽 근거 칸 440px. 가운데와 오른쪽은 따로 스크롤한다.
+- **첫 방문:** 가운데에 인사와 입력창, 그 아래 안내 한 줄(입력창 도움말). 아래 고정 입력창은 없다.
+- **1180px 이하:** 근거 칸이 답 아래로 내려가 한 줄로 쌓이고 입력창은 화면 아래에 붙는다.
+- **900px 이하:** 목록칸이 위 막대의 '지난 질문' 단추 뒤로 숨는다(열면 작업 영역을 덮는다).
+- **720px 이하:** 좌우 여백 16px.
+
+### Components
+
+- **번호표:** 둥근 테(1px 먹) + 그 번호의 형광 바탕. 버튼이라 키보드로 닿고, 이름은 "근거 n: 문서 제목". 마지막 어절과 번호표는 줄바꿈 없는 묶음이라 번호표가 혼자 다음 줄로 떨어지지 않는다.
+- **형광펜 연결 (시그니처):** 답이 끝나 인용이 확인되면 문장의 칠이 왼쪽에서 오른쪽으로 한 번 그어진다(200ms, 문장마다 70ms씩 늦게, 움직임 줄이기면 없음). 번호표·문장에 마우스나 초점을 두면 같은 번호의 근거 카드가 옅은 바탕을 받고, 근거 카드에 마우스를 두면 그 번호를 인용한 문장의 칠이 글자 높이까지 진해진다. 번호표를 누르면 그 카드로 이동해 초점을 준다.
+- **확인 안 된 문장:** 형광펜 대신 점선 밑줄 + 답 아래 안내. 색을 못 봐도 구별된다.
+- **근거 카드:** 번호표 + 형광 칠한 제목, 조항·쪽·현행(폐지 문서는 위험 먹 굵은 글자), 본문. 볼 수 없게 된 문단은 이유를 쓴다.
+- **입력창:** 1px 진한 줄 테두리, 10px 모서리, 안에 먹 바탕 '묻기'. 초점이면 테두리가 먹 2px 한 겹이 된다(겹 링 없음). Enter로 묻고 Shift+Enter 줄바꿈, 한글 조합 중 Enter 무시. 도움말 오른쪽에 오늘 남은 질문 수(줄바꿈 없음).
+- **왼쪽 목록:** '새 질문'(먹 테두리, hover에서 먹 바탕에 흰 글자), 오늘/이전 묶음, 두 줄 말줄임, 지금 열린 기록은 굵은 글자 + 먹 밑줄 2px. 아래에 이름·부서, 보관 기간 안내, 관리 역할이 있으면 '관리 화면', 로그아웃, 기록 모두 지우기.
+- **확인 상자:** 지우기는 그 자리에서 펼쳐지는 흰 상자 + 위험 먹 1px 선(모달 없음). 모두 지우기는 "회사 감사 기록은 그대로 남습니다"를 말한다.
+
+### Do's and Don'ts
+
+- **Do** 답이 끝나 검증된 뒤에 형광펜을 긋는다. 받는 중에는 인용 표시를 뺀 글만 보인다.
+- **Do** 상태마다 이유와 다음 행동을 쓴다: 거절, 한도(서버 문장 그대로), 준비 중, 권한이 바뀌어 가려진 지난 답('다시 묻기').
+- **Don't** 말풍선, 보라 강조, 그림자 카드, 아바타 같은 흔한 AI 채팅 모양을 쓰지 않는다.
+- **Don't** 형광 색을 인용 번호 밖에서 쓰지 않는다.
+- **Don't** 근거 칸에서 원문 안의 특정 문장을 칠하지 않는다(서버가 아는 것은 문단까지다).
+- **Don't** 제목 위 꼬리글을 달지 않는다. 회사 이름·로고가 없으면 로그인 화면의 이름 줄을 숨긴다.
+
 ## 열린 기회 (규칙 아님)
 
 마감 검토에서 다음 단계로 미룬 항목이다. 아직 만들어지지 않았으므로 규칙이 아니라 방향으로만 남긴다.
 - 송장 라벨 안쪽의 칸 나눔선(실제 송장처럼 이름·값·설명 구획).
 - 문서 상세 머리에 가로 배송조회 단계 표시.
 - 받는 사람 확인 단계를 영수증처럼 보이게 하기.
+- (채팅) 세 번째 형광 색(분홍)이 실제 답에서 보이는 캡처로 다시 확인하기. 이번 검토의 답은 근거 2건이었다.
+- (채팅) 답을 받는 중 화면은 실제 캡처 없이 테스트로만 확인했다.

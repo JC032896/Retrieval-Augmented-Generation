@@ -19,7 +19,6 @@
 
   /* 상태 알림 (옅은 바탕 + 짙은 글자, 대비 4.5:1 이상) */
   --note-tint: #f1f1ec;
-  --error-tint: #fdeceb;
   --error-ink: #8a1c14;
   --unverified: #6b6b66;
 

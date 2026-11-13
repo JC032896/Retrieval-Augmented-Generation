@@ -67,7 +67,7 @@
   background-size: 100% 100%;
   -webkit-box-decoration-break: clone;
   box-decoration-break: clone;
-  animation: sweep 260ms var(--ease-out) both;
+  animation: sweep 200ms var(--ease-out) both;
   transition: background-image 120ms;
 }
 
@@ -133,7 +133,7 @@
   height: 1.1em;
   margin-left: 2px;
   vertical-align: -0.15em;
-  background: var(--mk-yellow);
+  background: var(--ink);
   animation: blink 1s steps(2) infinite;
 }
 
@@ -166,7 +166,8 @@
 }
 
 .problem {
-  background: var(--error-tint);
+  background: var(--paper);
+  border: 1px solid var(--error-ink);
   color: var(--error-ink);
 }
 

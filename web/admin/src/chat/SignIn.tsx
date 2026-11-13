@@ -18,12 +18,14 @@ export function ChatSignIn({
   return (
     <main className={styles.page}>
       <section className={styles.panel} aria-labelledby="sign-in">
-        <p className={styles.org}>
-          {config.company_logo_url ? (
-            <img src={config.company_logo_url} alt="" className={styles.logo} />
-          ) : null}
-          {config.company_name || "사내 문서 질의"}
-        </p>
+        {config.company_name || config.company_logo_url ? (
+          <p className={styles.org}>
+            {config.company_logo_url ? (
+              <img src={config.company_logo_url} alt="" className={styles.logo} />
+            ) : null}
+            {config.company_name}
+          </p>
+        ) : null}
         <h1 id="sign-in">
           사내 문서에 <span className={styles.mark}>물어보세요</span>
         </h1>

@@ -4,6 +4,7 @@
 import { useCallback, useEffect, useRef } from "react";
 import { useLoad } from "../api/useApi";
 import { markerOf } from "./answer";
+import { passageParagraphs } from "./passage";
 import styles from "./Sources.module.css";
 import type { Citation, Passage } from "./types";
 import { useWorkspace } from "./workspace";
@@ -66,7 +67,13 @@ function PassageCard({
             : passage.message}
         </p>
       ) : null}
-      {passage.state === "ready" ? <p className={styles.content}>{passage.data.content}</p> : null}
+      {passage.state === "ready" ? (
+        <div className={styles.content}>
+          {passageParagraphs(passage.data.content, citation.title).map((paragraph) => (
+            <p key={paragraph.order}>{paragraph.text}</p>
+          ))}
+        </div>
+      ) : null}
     </article>
   );
 }
