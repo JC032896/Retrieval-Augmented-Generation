@@ -17,7 +17,7 @@ name: rag-service
 # 서버에 없을 때만 받고, 받을 수 없으면(아직 올리지 않은 버전, 비공개 저장소) 이 저장소의 Dockerfile로 직접 만든다.
 # 코드를 고쳐서 쓰려면 docker compose up -d --build
 x-app-image: &app-image
-  image: ${APP_IMAGE:-ghcr.io/jc032896/rag-service:0.3.0}
+  image: ${APP_IMAGE:-ghcr.io/jc032896/rag-service:0.3.1}
   pull_policy: missing
   build:
     context: ..

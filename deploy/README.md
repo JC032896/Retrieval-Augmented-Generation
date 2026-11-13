@@ -85,7 +85,7 @@ docker compose exec app tar czf - -C /data/uploads docs > uploads-$(date +%F).tg
 
 # 업데이트: 백업 → 새 버전 코드 받기 → 다시 시작. 버전이 바뀌면 그 버전의 이미지를 받고,
 # setup·migrate·sync가 필요한 일을 한다
-git fetch --tags && git checkout v0.3.0 && docker compose up -d
+git fetch --tags && git checkout v0.3.1 && docker compose up -d
 # 코드를 직접 고쳐서 쓰는 경우에만: docker compose up -d --build
 
 # 복구 (서비스를 멈추고)
@@ -129,7 +129,7 @@ curl -N -X POST localhost:8000/ask -H "Authorization: Bearer $TOKEN" -H "Content
 
 ## 폐쇄망 (인터넷이 막힌 서버)
 1. 인터넷이 되는 PC에서 `docker compose up -d`로 한 번 설치해 이미지와 모델을 만든다.
-   `docker save ghcr.io/jc032896/rag-service:0.3.0 pgvector/pgvector:pg17 quay.io/keycloak/keycloak:26.0 -o images.tar`
+   `docker save ghcr.io/jc032896/rag-service:0.3.1 pgvector/pgvector:pg17 quay.io/keycloak/keycloak:26.0 -o images.tar`
    (버전은 받은 코드의 것. 사내 레지스트리에 올려 두고 `.env`의 `APP_IMAGE`로 가리켜도 된다)
    모델 볼륨은 `docker run --rm -v rag-service_models:/m -v $PWD:/out alpine tar czf /out/models.tgz -C /m .`
 2. 서버에서 `docker load -i images.tar`, 모델 볼륨 `rag-service_models`를 만들고 `models.tgz`를 풀어 넣는다.

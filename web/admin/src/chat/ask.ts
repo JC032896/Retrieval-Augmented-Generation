@@ -42,7 +42,14 @@ const BEFORE_STREAM: Record<number, string> = {
   503: "서비스가 아직 준비 중입니다. 잠시 뒤 다시 시도해 주세요.",
 };
 
+// 서버가 머리글로 알려 주는 오류 종류. 서버 문장은 운영자용(설정 이름 등)이라 직원에게는 이 문장을 보인다
+const BY_CODE: Record<string, string> = {
+  llm_not_configured: "답변 기능이 아직 설정되지 않았습니다. 관리자에게 알려 주세요.",
+};
+
 async function detail(response: Response): Promise<string> {
+  const code = response.headers.get("X-Error-Code");
+  if (code && BY_CODE[code]) return BY_CODE[code];
   try {
     const body: unknown = await response.json();
     if (body && typeof body === "object" && "detail" in body && typeof body.detail === "string") {

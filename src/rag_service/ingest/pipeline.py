@@ -109,6 +109,11 @@ def ingest_corpus(
         embedded += used
     for file in plan.updated:
         update_metadata(session, entries[file], root)
+    # 내용이 같아 다시 수집하지 않은 문서도 저장된 수정 시각을 지금 파일 것으로 맞춘다.
+    # /health는 수정 시각만 비교하므로, 복사·백업 되살리기·git checkout으로 시각만 바뀐 파일을
+    # 계속 '바뀜'으로 세지 않게 한다
+    for file in plan.updated + plan.skipped:
+        refresh_mtime(session, file, corpus.doc_path(entries[file]))
     embedded += _reembed_stored(session, plan.reembedded, embedder=embedder, model=model)
 
     session.execute(
@@ -311,6 +316,16 @@ def _acl_rows(document_id: int, entry: DocumentEntry) -> list[DocumentAcl]:
     return [
         DocumentAcl(document_id=document_id, kind="department", value=d) for d in entry.departments
     ] + [DocumentAcl(document_id=document_id, kind="role", value=r) for r in entry.roles]
+
+
+def refresh_mtime(session: Session, source_path: str, path: Path) -> None:
+    """원문 내용은 그대로인 문서의 수정 시각만 지금 파일 값으로 고친다 (재임베딩 없음)."""
+    mtime = datetime.fromtimestamp(path.stat().st_mtime, UTC)
+    session.execute(
+        update(Document)
+        .where(Document.source_path == source_path, Document.source_mtime.is_distinct_from(mtime))
+        .values(source_mtime=mtime)
+    )
 
 
 def update_metadata(session: Session, entry: DocumentEntry, root: str) -> None:

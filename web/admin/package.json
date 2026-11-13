@@ -1,7 +1,7 @@
 {
   "name": "rag-admin",
   "private": true,
-  "version": "0.3.0",
+  "version": "0.3.1",
   "type": "module",
   "description": "사내 문서 질의(RAG) 관리 화면",
   "scripts": {

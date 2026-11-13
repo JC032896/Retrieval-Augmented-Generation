@@ -48,6 +48,7 @@ logger = logging.getLogger(__name__)
 router = APIRouter()
 
 MAX_QUESTION_CHARS = 1000
+ERROR_CODE_HEADER = "X-Error-Code"  # 화면이 문장 대신 읽는 오류 종류
 
 ServicesDep = Annotated[Services, Depends(get_services)]
 
@@ -76,7 +77,13 @@ def ask(
     services: ServicesDep,
 ) -> EventSourceResponse:
     if services.llm is None:
-        raise HTTPException(503, "답변 LLM이 설정되지 않았습니다 (ANTHROPIC_API_KEY)")
+        # 문장은 운영자용(명령줄 도구가 그대로 보여 준다).
+        # 채팅 화면은 머리글의 코드를 보고 직원용 문장을 쓴다
+        raise HTTPException(
+            503,
+            "답변 LLM이 설정되지 않았습니다 (ANTHROPIC_API_KEY)",
+            headers={ERROR_CODE_HEADER: "llm_not_configured"},
+        )
     request_id = uuid.uuid4().hex
     started = time.perf_counter()
     with services.sessions() as session:
