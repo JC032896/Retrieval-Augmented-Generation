@@ -162,25 +162,6 @@ function ConversationLayout({ header }: { header?: ReactNode }) {
   );
 }
 
-export function NewConversation() {
-  const { conversation } = useWorkspace();
-  if (conversation.turns.length === 0) {
-    return (
-      <div className={styles.layout}>
-        <div className={styles.conversation}>
-          <div className={styles.scroll}>
-            <Welcome />
-          </div>
-        </div>
-        <div className={styles.sources}>
-          <EmptySources />
-        </div>
-      </div>
-    );
-  }
-  return <ConversationLayout />;
-}
-
 function ForgetConversation({ id }: { id: number }) {
   const { api, refreshHistory, reset } = useWorkspace();
   const navigate = useNavigate();
@@ -215,13 +196,17 @@ function ForgetConversation({ id }: { id: number }) {
   );
 }
 
-export function SavedConversation() {
+/**
+ * 첫 화면(/)과 대화 화면(/history/:id)을 함께 그린다. 같은 구성 요소라서, 새 대화의 첫 답이 끝나 주소가
+ * /history/:id로 바뀌어도 화면을 새로 만들지 않는다 (입력 중인 다음 질문과 초점이 그대로 남는다).
+ */
+export function ChatPage() {
   const { open, conversation } = useWorkspace();
-  const id = Number(useParams().id);
-  const [state, setState] = useState<"loading" | "ok" | "missing" | "failed">(
-    conversation.id === id ? "ok" : "loading",
-  );
+  const param = useParams().id;
+  const id = param === undefined ? null : Number(param);
+  const [state, setState] = useState<"loading" | "ok" | "missing" | "failed">("loading");
   useEffect(() => {
+    if (id === null) return;
     if (!Number.isInteger(id)) {
       setState("missing");
       return;
@@ -233,13 +218,16 @@ export function SavedConversation() {
     };
   }, [id, open]);
 
-  if (state === "ok" && conversation.id === id) {
+  const current = id === null || conversation.id === id;
+  if (current && conversation.turns.length > 0) {
     return (
       <ConversationLayout
         header={
-          <div className={styles.head}>
-            <ForgetConversation id={id} />
-          </div>
+          id !== null ? (
+            <div className={styles.head}>
+              <ForgetConversation id={id} />
+            </div>
+          ) : undefined
         }
       />
     );
@@ -248,8 +236,11 @@ export function SavedConversation() {
     <div className={styles.layout}>
       <div className={styles.conversation}>
         <div className={styles.scroll}>
-          {state === "loading" ? <p className={styles.loading}>대화를 불러오는 중…</p> : null}
-          {state === "missing" || state === "failed" ? (
+          {id === null ? <Welcome /> : null}
+          {id !== null && state === "loading" ? (
+            <p className={styles.loading}>대화를 불러오는 중…</p>
+          ) : null}
+          {id !== null && (state === "missing" || state === "failed") ? (
             <section className={styles.welcome}>
               <h1>대화를 열 수 없습니다</h1>
               <p>
@@ -267,3 +258,7 @@ export function SavedConversation() {
     </div>
   );
 }
+
+/** 첫 화면과 대화 화면은 같은 구성 요소다 (위 ChatPage 설명). */
+export const NewConversation = ChatPage;
+export const SavedConversation = ChatPage;
