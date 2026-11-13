@@ -76,25 +76,36 @@ function EmptySources() {
   return <Sources citations={[]} active={null} focus={null} onHover={() => {}} waiting />;
 }
 
-/** 한 대화: 질문과 답들을 쌓고, 고른 답(기본은 마지막)의 근거를 오른쪽에 보인다. */
+/**
+ * 한 대화: 질문과 답들을 쌓고, 고른 답의 근거를 오른쪽에 보인다.
+ * - 번호표를 누르면 그 답에 고정한다. 마우스를 올리거나 초점을 두는 동안에는 그 답을 미리 보인다.
+ * - 고르지 않은 답의 형광펜은 옅게 칠한다. 색이 지금 오른쪽에 보이는 문단으로만 이어지게 한다.
+ */
 function ConversationLayout({ header }: { header?: ReactNode }) {
   const { conversation } = useWorkspace();
   const ask = useAsk();
   const turns = conversation.turns;
-  // 근거 칸이 보여 주는 답. 새 질문이 붙으면 마지막 답으로 돌아간다
-  const [selected, setSelected] = useState<string | null>(null);
+  const [pinned, setPinned] = useState<string | null>(null);
+  const [preview, setPreview] = useState<string | null>(null);
   const [hover, setHover] = useState<number | null>(null);
-  const [focus, setFocus] = useState<{ number: number; round: number } | null>(null);
+  // 번호표를 눌러 옮겨 갈 근거 카드. 한 번 초점을 준 뒤에는 다시 끌어가지 않는다 (consumed)
+  const [focus, setFocus] = useState<{
+    turn: string;
+    number: number;
+    round: number;
+    consumed: boolean;
+  } | null>(null);
   const [seen, setSeen] = useState(turns.length);
   const thread = useRef<HTMLDivElement>(null);
   if (seen !== turns.length) {
+    // 새 질문이 붙으면 마지막 답으로 돌아간다
     setSeen(turns.length);
-    setSelected(null);
+    setPinned(null);
+    setPreview(null);
     setFocus(null);
   }
-  // 질문이 붙으면 그 질문이 가운데 칸 맨 위에 오게 한다. 답이 흘러 들어오는 동안에는 부드러운
-  // 스크롤이 끊기므로 바로 옮긴다
-  // 답이 끝나면 한 번 더 옮긴다 (붙인 순간에는 아래 내용이 짧아 맨 위까지 못 올라간다)
+  // 질문이 붙으면 그 질문이 가운데 칸 맨 위에 오게 한다 (마지막 질문 칸은 화면 높이만큼 자리를
+  // 잡는다). 답이 끝나면 한 번 더 옮긴다. 답이 흘러 들어오는 동안에는 부드러운 스크롤이 끊기므로 바로
   const lastStatus = turns[turns.length - 1]?.state.status;
   useEffect(() => {
     void lastStatus;
@@ -104,10 +115,17 @@ function ConversationLayout({ header }: { header?: ReactNode }) {
     }
   }, [seen, lastStatus]);
 
-  const shown = turns.find((turn) => turn.key === selected) ?? turns[turns.length - 1];
+  const find = (key: string | null) => turns.find((turn) => turn.key === key);
+  const shown = find(preview) ?? find(pinned) ?? turns[turns.length - 1];
+  const focusHere = focus && focus.turn === shown?.key ? focus : null;
   const citations = shown?.state.status === "done" ? shown.state.answer.citations : [];
-  const active = hover ?? focus?.number ?? null;
+  const active = hover ?? focusHere?.number ?? null;
   const position = shown ? turns.indexOf(shown) + 1 : 0;
+  const many = turns.length > 1;
+  const onFocused = useCallback(
+    () => setFocus((current) => current && { ...current, consumed: true }),
+    [],
+  );
 
   return (
     <div className={styles.layout}>
@@ -120,22 +138,29 @@ function ConversationLayout({ header }: { header?: ReactNode }) {
               const { state, meta } = stateOf(turn, () => ask(turn.question));
               const searchQuestion =
                 turn.state.status === "done" ? (turn.state.answer.search_question ?? null) : null;
+              const isShown = turn === shown;
               return (
                 <AnswerView
                   key={turn.key}
                   question={turn.question}
-                  meta={turns.length > 1 ? `${index + 1}번째 질문 · ${meta}` : meta}
+                  meta={many ? `${index + 1}번째 질문 · ${meta}` : meta}
                   searchQuestion={searchQuestion}
                   state={state}
+                  selection={many ? (isShown ? "shown" : "other") : undefined}
                   linking={{
-                    active: turn === shown ? active : null,
+                    active: isShown ? active : null,
                     onHover: (number) => {
-                      if (number !== null) setSelected(turn.key);
+                      setPreview(number === null ? null : turn.key);
                       setHover(number);
                     },
                     onJump: (number) => {
-                      setSelected(turn.key);
-                      setFocus((current) => ({ number, round: (current?.round ?? 0) + 1 }));
+                      setPinned(turn.key);
+                      setFocus((current) => ({
+                        turn: turn.key,
+                        number,
+                        round: (current?.round ?? 0) + 1,
+                        consumed: false,
+                      }));
                     },
                   }}
                 />
@@ -152,10 +177,15 @@ function ConversationLayout({ header }: { header?: ReactNode }) {
           key={shown?.key ?? "none"}
           citations={citations}
           active={active}
-          focus={focus}
+          focus={
+            focusHere && !focusHere.consumed
+              ? { number: focusHere.number, round: focusHere.round }
+              : null
+          }
+          onFocused={onFocused}
           onHover={setHover}
           waiting={shown?.state.status === "streaming"}
-          {...(turns.length > 1 && position > 0 ? { turnLabel: `${position}번째 질문` } : {})}
+          {...(many && position > 0 ? { turnLabel: `${position}번째 질문` } : {})}
         />
       </div>
     </div>

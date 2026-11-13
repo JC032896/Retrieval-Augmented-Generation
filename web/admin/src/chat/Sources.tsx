@@ -14,11 +14,13 @@ function PassageCard({
   active,
   focused,
   onHover,
+  onFocused,
 }: {
   citation: Citation;
   active: boolean;
   focused: number;
   onHover: (number: number | null) => void;
+  onFocused?: (() => void) | undefined;
 }) {
   const { api } = useWorkspace();
   const load = useCallback(
@@ -31,8 +33,9 @@ function PassageCard({
     if (focused > 0) {
       ref.current?.scrollIntoView({ block: "nearest", behavior: "smooth" });
       ref.current?.focus({ preventScroll: true });
+      onFocused?.();
     }
-  }, [focused]);
+  }, [focused, onFocused]);
 
   const where = [citation.section, citation.page ? `${citation.page}쪽` : null]
     .filter(Boolean)
@@ -85,6 +88,7 @@ export function Sources({
   onHover,
   waiting,
   turnLabel,
+  onFocused,
 }: {
   citations: Citation[];
   active: number | null;
@@ -93,6 +97,8 @@ export function Sources({
   waiting: boolean;
   /** 대화에 질문이 여럿이면 어느 질문의 근거인지 ("2번째 질문") */
   turnLabel?: string;
+  /** 번호표로 옮겨 온 카드에 초점을 준 뒤 부른다 (다시 끌어가지 않게) */
+  onFocused?: () => void;
 }) {
   const unique = [...new Map(citations.map((c) => [c.number, c])).values()].sort(
     (a, b) => a.number - b.number,
@@ -117,6 +123,7 @@ export function Sources({
             active={active === citation.number}
             focused={focus?.number === citation.number ? focus.round : 0}
             onHover={onHover}
+            onFocused={onFocused}
           />
         ))
       )}

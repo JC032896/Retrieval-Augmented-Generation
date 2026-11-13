@@ -83,6 +83,22 @@
   transition: background-image 120ms;
 }
 
+/* 대화에 질문이 여럿일 때: 근거 칸이 보여 주는 답의 메타 줄은 먹색 굵게, 다른 답의 칠은
+   옅게. 색이 지금 오른쪽에 보이는 문단으로만 이어지게 한다 (번호표는 그대로 눌러 옮긴다) */
+.shown .meta {
+  color: var(--ink);
+  font-weight: 700;
+}
+
+.other .marked {
+  background-image: linear-gradient(
+    transparent 52%,
+    var(--wash) 52%,
+    var(--wash) 92%,
+    transparent 92%
+  );
+}
+
 .lit {
   background-image: linear-gradient(transparent 8%, var(--mk) 8%, var(--mk) 96%, transparent 96%);
 }

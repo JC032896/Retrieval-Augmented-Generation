@@ -171,6 +171,7 @@ export function AnswerView({
   linking,
   actions,
   searchQuestion = null,
+  selection,
 }: {
   question: string;
   meta: ReactNode;
@@ -179,9 +180,19 @@ export function AnswerView({
   actions?: ReactNode;
   /** 이어 묻는 질문을 서버가 다시 쓴 질문 (검색과 답은 이 질문으로 했다) */
   searchQuestion?: string | null;
+  /** 대화에 질문이 여럿일 때: 근거 칸이 보여 주는 답(shown)인가, 다른 답(other)인가 */
+  selection?: "shown" | "other" | undefined;
 }) {
   return (
-    <article className={styles.turn} aria-busy={state.kind === "streaming"}>
+    <article
+      className={[
+        styles.turn,
+        selection === "shown" ? styles.shown : "",
+        selection === "other" ? styles.other : "",
+      ].join(" ")}
+      aria-busy={state.kind === "streaming"}
+      aria-current={selection === "shown" ? "true" : undefined}
+    >
       <header className={styles.head}>
         <p className={styles.meta}>{meta}</p>
         <h2 className={styles.question}>{question}</h2>

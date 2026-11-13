@@ -44,6 +44,11 @@
   border-top: 1px solid var(--rule);
 }
 
+/* 대화의 마지막 질문은 가운데 칸 높이만큼 자리를 잡아, 새 질문이 칸 맨 위에서 시작하게 한다 */
+.thread > :last-child:not(:first-child) {
+  min-height: calc(100dvh - 200px);
+}
+
 .head {
   display: flex;
   justify-content: flex-end;
@@ -141,6 +146,10 @@
   .scroll {
     overflow: visible;
     order: 1;
+    min-height: auto;
+  }
+
+  .thread > :last-child:not(:first-child) {
     min-height: auto;
   }
 
