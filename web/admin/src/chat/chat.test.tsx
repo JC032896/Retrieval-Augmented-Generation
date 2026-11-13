@@ -6,8 +6,8 @@ import type { UiConfig } from "../api/types";
 import { fakeServer } from "../test/server";
 import { Workspace } from "./ChatApp";
 import type { ChatSession } from "./session";
-import { NewQuestion, SavedTurn } from "./Turn";
-import type { Answer, ChatMe, Turn } from "./types";
+import { NewConversation, SavedConversation } from "./Turn";
+import type { Answer, ChatMe, Conversation } from "./types";
 import { WorkspaceProvider } from "./workspace";
 
 const config: UiConfig = {
@@ -54,12 +54,14 @@ const ANSWER: Answer = {
   verification: { verified: true, problems: [] },
 };
 
-function sse(answer: Answer): Response {
+function sse(answer: Answer, conversation?: number): Response {
   const body = [
     'event: delta\ndata: {"text":"재택은 주 2회까지입니다. [1] "}\n\n',
     `event: done\ndata: ${JSON.stringify(answer)}\n\n`,
   ].join("");
-  return new Response(body, { status: 200, headers: { "Content-Type": "text/event-stream" } });
+  const headers: Record<string, string> = { "Content-Type": "text/event-stream" };
+  if (conversation !== undefined) headers["X-Conversation-Id"] = String(conversation);
+  return new Response(body, { status: 200, headers });
 }
 
 const passage = (chunk: number, content: string, status = "current") => ({
@@ -74,7 +76,7 @@ const passage = (chunk: number, content: string, status = "current") => ({
 
 const BASE_ROUTES = {
   "GET /api/usage": { questions_left: 187, daily_questions: 200 },
-  "GET /api/history": { items: [], next_before: null },
+  "GET /api/conversations": { items: [], next_before: null },
   "GET /api/passages/11": passage(11, "재택근무는 주 2회를 한도로 하며 팀장의 승인을 받아야 한다."),
   "GET /api/passages/12": passage(12, "재택근무 전날 오후 6시까지 신청해야 한다.", "superseded"),
 };
@@ -94,8 +96,8 @@ function show(routes: Record<string, unknown>, options: { user?: ChatMe; path?: 
       <MemoryRouter initialEntries={[options.path ?? "/"]}>
         <Routes>
           <Route path="/" element={<Workspace session={session} />}>
-            <Route index element={<NewQuestion />} />
-            <Route path="history/:id" element={<SavedTurn />} />
+            <Route index element={<NewConversation />} />
+            <Route path="history/:id" element={<SavedConversation />} />
           </Route>
         </Routes>
       </MemoryRouter>
@@ -153,7 +155,7 @@ describe("묻고 답 받기", () => {
     });
     // 답이 끝나면 남은 질문 수와 기록 목록을 다시 읽는다
     await waitFor(() => expect(sent.filter((s) => s.path === "/api/usage")).toHaveLength(2));
-    expect(sent.filter((s) => s.path === "/api/history")).toHaveLength(2);
+    expect(sent.filter((s) => s.path === "/api/conversations")).toHaveLength(2);
   });
 
   it("번호표를 누르면 같은 번호의 근거 문단으로 가고, 마우스를 올리면 함께 진해진다", async () => {
@@ -254,63 +256,165 @@ describe("묻고 답 받기", () => {
   });
 });
 
-const SAVED: Turn = {
+const TODAY = new Date().toISOString();
+const SAVED: Conversation = {
   id: 5,
-  created_at: new Date().toISOString(),
-  question: "재택근무는 일주일에 몇 번까지 돼?",
-  outcome: "answered",
-  hidden: false,
-  answer: ANSWER,
+  title: "재택근무는 일주일에 몇 번까지 돼?",
+  turns: [
+    {
+      id: 41,
+      created_at: TODAY,
+      question: "재택근무는 일주일에 몇 번까지 돼?",
+      search_question: null,
+      outcome: "answered",
+      hidden: false,
+      answer: ANSWER,
+    },
+  ],
+};
+const FOLLOW_UP: Answer = {
+  ...ANSWER,
+  text: "계약직도 주 2회까지입니다. [1]",
+  citations: ANSWER.citations.slice(0, 1),
+  search_question: "계약직의 재택근무는 주 몇 회까지 가능한가?",
 };
 
+async function askAndWait(question: string, sentence: string) {
+  await ask(question);
+  await findSentence(sentence);
+}
+
+describe("한 대화에서 이어 묻기", () => {
+  it("첫 질문은 질문만 보내고, 이어 묻는 질문은 대화 id와 앞 질문을 함께 보낸다", async () => {
+    const answers = [sse(ANSWER, 9), sse(FOLLOW_UP, 9)];
+    const { sent } = show({ "POST /ask": () => answers.shift() });
+
+    await askAndWait("재택근무는 일주일에 몇 번까지 돼?", "재택은 주 2회까지입니다.");
+    await askAndWait("그럼 계약직은?", "계약직도 주 2회까지입니다.");
+
+    const bodies = sent.filter((s) => s.path === "/ask").map((s) => s.json);
+    expect(bodies).toEqual([
+      { question: "재택근무는 일주일에 몇 번까지 돼?" },
+      {
+        question: "그럼 계약직은?",
+        conversation_id: 9,
+        previous: ["재택근무는 일주일에 몇 번까지 돼?"],
+      },
+    ]);
+    // 두 질문이 한 대화에 쌓이고, 서버가 다시 쓴 질문을 보여 준다
+    const questions = document.querySelectorAll("article[aria-busy] h2");
+    expect([...questions].map((h) => h.textContent)).toEqual([
+      "재택근무는 일주일에 몇 번까지 돼?",
+      "그럼 계약직은?",
+    ]);
+    expect(screen.getByText(/2번째 질문 ·/)).toBeInTheDocument();
+    expect(
+      screen.getByText("계약직의 재택근무는 주 몇 회까지 가능한가?", { selector: "q" }),
+    ).toBeInTheDocument();
+  });
+
+  it("근거 칸은 마지막 답을 보여 주고, 앞 답의 번호표를 누르면 그 답의 근거로 바뀐다", async () => {
+    const answers = [sse(ANSWER, 9), sse(FOLLOW_UP, 9)];
+    show({ "POST /ask": () => answers.shift() });
+    await askAndWait("재택근무는 일주일에 몇 번까지 돼?", "재택은 주 2회까지입니다.");
+    await askAndWait("그럼 계약직은?", "계약직도 주 2회까지입니다.");
+
+    const sources = () => screen.getByRole("complementary", { name: /근거 문단/ });
+    expect(sources()).toHaveTextContent("근거 문단 1 · 2번째 질문");
+    await userEvent.click(screen.getByRole("button", { name: "근거 2: 재택근무 가이드" }));
+
+    expect(sources()).toHaveTextContent("근거 문단 2 · 1번째 질문");
+  });
+
+  it("기록을 두지 않는 설치에서도 앞 질문을 보내 이어 물을 수 있다", async () => {
+    const answers = [sse(ANSWER), sse(FOLLOW_UP)];
+    const { sent } = show(
+      { "POST /ask": () => answers.shift() },
+      { user: me({ history_days: 0 }) },
+    );
+    await askAndWait("재택근무는 일주일에 몇 번까지 돼?", "재택은 주 2회까지입니다.");
+    await askAndWait("그럼 계약직은?", "계약직도 주 2회까지입니다.");
+
+    expect(sent.filter((s) => s.path === "/ask").map((s) => s.json)).toEqual([
+      { question: "재택근무는 일주일에 몇 번까지 돼?" },
+      { question: "그럼 계약직은?", previous: ["재택근무는 일주일에 몇 번까지 돼?"] },
+    ]);
+  });
+});
+
 describe("대화 기록", () => {
-  it("목록을 오늘과 이전으로 나누고, 기록을 열면 저장된 답을 같은 방식으로 보여 준다", async () => {
+  it("목록은 대화 단위로 오늘과 이전으로 나누고, 대화를 열면 질문과 답들을 쌓아 보여 준다", async () => {
     const old = new Date();
     old.setDate(old.getDate() - 10);
+    const opened: Conversation = {
+      ...SAVED,
+      turns: [
+        ...SAVED.turns,
+        {
+          id: 42,
+          created_at: TODAY,
+          question: "그럼 계약직은?",
+          search_question: "계약직의 재택근무는 주 몇 회까지 가능한가?",
+          outcome: "answered",
+          hidden: false,
+          answer: FOLLOW_UP,
+        },
+      ],
+    };
     show(
       {
-        "GET /api/history": {
+        "GET /api/conversations": {
           items: [
-            { id: 5, created_at: SAVED.created_at, question: SAVED.question, outcome: "answered" },
-            {
-              id: 3,
-              created_at: old.toISOString(),
-              question: "해외 출장비는?",
-              outcome: "refused",
-            },
+            { id: 5, title: SAVED.title, updated_at: TODAY, turns: 2 },
+            { id: 3, title: "해외 출장비는?", updated_at: old.toISOString(), turns: 1 },
           ],
-          next_before: 3,
+          next_before: old.toISOString(),
         },
-        "GET /api/history?before=3": {
-          items: [
-            { id: 1, created_at: old.toISOString(), question: "첫 질문", outcome: "answered" },
-          ],
+        "GET /api/conversations?before=*": {
+          items: [{ id: 1, title: "첫 질문", updated_at: old.toISOString(), turns: 1 }],
           next_before: null,
         },
-        "GET /api/history/5": SAVED,
+        "GET /api/conversations/5": opened,
       },
       { path: "/history/5" },
     );
 
     const today = await screen.findByRole("region", { name: "오늘" });
-    expect(within(today).getByRole("link", { name: /재택근무는/ })).toHaveAttribute(
-      "aria-current",
-      "page",
-    );
-    expect(screen.getByRole("region", { name: "이전" })).toHaveTextContent("근거 없음");
+    const link = within(today).getByRole("link", { name: /재택근무는/ });
+    expect(link).toHaveAttribute("aria-current", "page");
+    expect(link).toHaveTextContent("질문 2개");
+    expect(screen.getByRole("region", { name: "이전" })).toHaveTextContent("해외 출장비는?");
     expect(await findSentence("재택은 주 2회까지입니다.")).toHaveAttribute("data-marker", "yellow");
+    expect(getSentence("계약직도 주 2회까지입니다.")).toBeInTheDocument();
+    expect(screen.getByText(/이렇게 이해하고 찾았습니다/)).toBeInTheDocument();
 
     await userEvent.click(screen.getByRole("button", { name: "더 보기" }));
     expect(await screen.findByRole("link", { name: /첫 질문/ })).toBeInTheDocument();
     expect(screen.queryByRole("button", { name: "더 보기" })).not.toBeInTheDocument();
   });
 
-  it("권한이 바뀌어 가려진 답은 이유를 말하고, 다시 물으면 지금 볼 수 있는 문서로 답한다", async () => {
+  it("저장된 대화에 이어 물으면 그 대화 id와 앞 질문들을 보낸다", async () => {
     const { sent } = show(
-      {
-        "GET /api/history/5": { ...SAVED, hidden: true, answer: null },
-        "POST /ask": () => sse(ANSWER),
-      },
+      { "GET /api/conversations/5": SAVED, "POST /ask": () => sse(FOLLOW_UP, 5) },
+      { path: "/history/5" },
+    );
+    await findSentence("재택은 주 2회까지입니다.");
+    await askAndWait("그럼 계약직은?", "계약직도 주 2회까지입니다.");
+
+    expect(sent.find((s) => s.path === "/ask")?.json).toEqual({
+      question: "그럼 계약직은?",
+      conversation_id: 5,
+      previous: ["재택근무는 일주일에 몇 번까지 돼?"],
+    });
+  });
+
+  it("권한이 바뀌어 가려진 답은 이유를 말하고, 다시 물으면 같은 대화에서 다시 답한다", async () => {
+    const hidden: Conversation = {
+      ...SAVED,
+      turns: SAVED.turns.map((turn) => ({ ...turn, hidden: true, answer: null })),
+    };
+    const { sent } = show(
+      { "GET /api/conversations/5": hidden, "POST /ask": () => sse(ANSWER, 5) },
       { path: "/history/5" },
     );
 
@@ -318,36 +422,31 @@ describe("대화 기록", () => {
     await userEvent.click(screen.getByRole("button", { name: "다시 묻기" }));
 
     expect(await findSentence("재택은 주 2회까지입니다.")).toBeInTheDocument();
-    expect(sent.find((s) => s.path === "/ask")?.json).toEqual({ question: SAVED.question });
+    expect(sent.find((s) => s.path === "/ask")?.json).toEqual({
+      question: SAVED.title,
+      conversation_id: 5,
+      previous: [SAVED.title],
+    });
   });
 
-  it("기록 하나를 확인한 뒤 지우고 첫 화면으로 돌아간다", async () => {
+  it("대화 하나를 확인한 뒤 지우고 첫 화면으로 돌아간다", async () => {
     const { sent } = show(
-      { "GET /api/history/5": SAVED, "DELETE /api/history/5": undefined },
+      { "GET /api/conversations/5": SAVED, "DELETE /api/conversations/5": undefined },
       { path: "/history/5" },
     );
 
-    await userEvent.click(await screen.findByRole("button", { name: "이 기록 지우기" }));
+    await userEvent.click(await screen.findByRole("button", { name: "이 대화 지우기" }));
     await userEvent.click(screen.getByRole("button", { name: "지우기" }));
 
     expect(await screen.findByRole("heading", { name: /무엇이 궁금한가요/ })).toBeInTheDocument();
-    expect(sent.some((s) => s.method === "DELETE" && s.path === "/api/history/5")).toBe(true);
+    expect(sent.some((s) => s.method === "DELETE" && s.path === "/api/conversations/5")).toBe(true);
   });
 
   it("기록 모두 지우기는 감사 기록이 남는다는 확인을 거친다", async () => {
     let deleted = false;
     const { sent } = show({
-      "GET /api/history": () => ({
-        items: deleted
-          ? []
-          : [
-              {
-                id: 5,
-                created_at: SAVED.created_at,
-                question: SAVED.question,
-                outcome: "answered",
-              },
-            ],
+      "GET /api/conversations": () => ({
+        items: deleted ? [] : [{ id: 5, title: SAVED.title, updated_at: TODAY, turns: 1 }],
         next_before: null,
       }),
       "DELETE /api/history": () => {
@@ -368,11 +467,11 @@ describe("대화 기록", () => {
     expect(await screen.findByText("아직 물어본 질문이 없습니다.")).toBeInTheDocument();
   });
 
-  it("없는 기록은 지웠거나 기간이 지났다고 말한다", async () => {
+  it("없는 대화는 지웠거나 기간이 지났다고 말한다", async () => {
     show({}, { path: "/history/77" });
 
     expect(
-      await screen.findByText("이미 지웠거나 보관 기간이 지난 기록입니다."),
+      await screen.findByText("이미 지웠거나 보관 기간이 지난 대화입니다."),
     ).toBeInTheDocument();
   });
 
@@ -380,7 +479,7 @@ describe("대화 기록", () => {
     const { sent } = show({}, { user: me({ history_days: 0 }) });
 
     expect(await screen.findByText(/대화 기록을 저장하지 않도록/)).toBeInTheDocument();
-    expect(sent.some((s) => s.path === "/api/history")).toBe(false);
+    expect(sent.some((s) => s.path.startsWith("/api/conversations"))).toBe(false);
     expect(screen.queryByText(/일 동안 나만 볼 수 있게/)).not.toBeInTheDocument();
   });
 });
