@@ -5,7 +5,10 @@
 - GET /admin, /admin/...  빌드한 화면 파일. 없는 경로는 index.html을 돌려준다 (화면 안의 주소는
   React가 처리한다). 관리 API(/admin/api)는 먼저 등록한 라우터가 받는다.
 
-해시가 붙은 파일(assets/)은 오래 캐시하고, index.html은 매번 새로 받게 한다
+- GET /, /callback, /history/...  직원 채팅 화면 (같은 빌드의 chat.html). 화면 파일(assets/)은
+  관리 화면과 함께 /admin/assets/에서 받는다. 채팅 API는 /api (api/chat.py).
+
+해시가 붙은 파일(assets/)은 오래 캐시하고, 화면의 html은 매번 새로 받게 한다
 (업데이트가 바로 보이게).
 """
 
@@ -21,6 +24,7 @@ from rag_service.config import get_settings
 router = APIRouter(tags=["admin-ui"])
 
 NOT_BUILT = "관리 화면이 빌드되지 않았습니다 (web/admin에서 npm run build, 또는 ADMIN_UI_DIR 확인)"
+CHAT_PAGE = "chat.html"
 
 
 class OidcClientOut(BaseModel):
@@ -74,3 +78,15 @@ def admin_ui(path: str = "") -> FileResponse:
     file = _file(root, path)
     cache = "public, max-age=31536000, immutable" if file.parent.name == "assets" else "no-cache"
     return FileResponse(file, headers={"Cache-Control": cache})
+
+
+@router.get("/", include_in_schema=False)
+@router.get("/callback", include_in_schema=False)
+@router.get("/history", include_in_schema=False)
+@router.get("/history/{path:path}", include_in_schema=False)
+def chat_ui(path: str = "") -> FileResponse:
+    """직원 채팅 화면. 화면 안의 주소(기록 하나 등)는 React가 처리한다."""
+    page = get_settings().admin_ui_dir / CHAT_PAGE
+    if not page.is_file():
+        raise HTTPException(404, NOT_BUILT)
+    return FileResponse(page, headers={"Cache-Control": "no-cache"})

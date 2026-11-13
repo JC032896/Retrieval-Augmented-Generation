@@ -41,6 +41,8 @@ class AskResult:
     total_ms: int
     # LLM 요청에 넣은 근거 조각 (순서 = 프롬프트 번호). 점수 관문에서 거절했으면 비어 있다
     request_context: tuple[SearchHit, ...] = ()
+    # 화면에 보낸 done 이벤트 내용. 채팅 화면의 대화 기록이 쓴다 (감사 기록에는 넣지 않는다)
+    payload: Mapping[str, Any] | None = None
 
 
 def build_entry(

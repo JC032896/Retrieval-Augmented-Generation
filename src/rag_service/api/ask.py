@@ -37,6 +37,8 @@ from rag_service.api.readiness import require_models
 from rag_service.api.services import Services, get_services
 from rag_service.audit.record import AskResult, Outcome, build_entry, write_entry
 from rag_service.audit.request import llm_params
+from rag_service.chat.history import save_turn
+from rag_service.chat.models import TURN_OUTCOMES
 from rag_service.ingest.tokenizer import KoreanTokenizer
 from rag_service.logs import log_event
 from rag_service.retrieval.hits import SearchHit
@@ -156,6 +158,7 @@ def answer_events(
     outcome: Outcome | None = None
     answer: Answer | None = None
     verified: bool | None = None
+    payload: dict[str, Any] | None = None
     try:
         try:
             answer = yield from _deltas(stream_answer(question, hits, llm=llm), clock)
@@ -190,6 +193,7 @@ def answer_events(
                 first_token_ms=clock.first_ms,
                 total_ms=clock.elapsed_ms(),
                 request_context=sent,
+                payload=payload,
             )
         )
 
@@ -245,6 +249,33 @@ def record_ask(
     except Exception:
         # 감사 기록 누락은 운영자가 반드시 알아야 한다. 로그 수집 시스템에서 경보를 건다
         logger.exception("audit_write_failed", extra={"fields": {"request_id": request_id}})
+    save_history(services, request_id=request_id, user=user, question=question, result=result)
+
+
+def save_history(
+    services: Services, *, request_id: str, user: CurrentUser, question: str, result: AskResult
+) -> None:
+    """채팅 화면의 대화 기록. 답했거나 거절한 질문만 남긴다 (사용량은 빼고).
+
+    실패해도 이미 보낸 답변과 감사 기록에는 영향을 주지 않는다.
+    """
+    if result.payload is None or result.outcome not in TURN_OUTCOMES:
+        return
+    shown = {key: value for key, value in result.payload.items() if key != "usage"}
+    try:
+        with services.sessions.begin() as session:
+            save_turn(
+                session,
+                request_id=request_id,
+                user_login=user.login,
+                question=question,
+                outcome=result.outcome,
+                result=shown,
+                context_files=result.context_files,
+                keep_days=services.history_days,
+            )
+    except Exception:
+        logger.exception("chat_history_write_failed", extra={"fields": {"request_id": request_id}})
 
 
 class _FirstEvent:

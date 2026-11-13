@@ -86,6 +86,9 @@ class Settings(BaseSettings):
     # purge 명령이 이보다 오래된 기록과, 남은 기록이 가리키지 않는 조각 스냅샷을 지운다.
     # 비우면(기본) 지우지 않는다. 보관 기간은 회사의 개인정보·감사 정책으로 정한다
     audit_retention_days: int | None = Field(default=None, ge=1)
+    # 채팅 화면의 대화 기록 보관 기간 (일). 직원이 자기 기록을 다시 보고 지운다. 0이면 저장 안 함.
+    # 감사 기록과 따로 보관하므로, 직원이 지워도 감사 기록은 그대로 남는다
+    chat_history_days: int = Field(default=90, ge=0, le=3650)
     log_level: Literal["DEBUG", "INFO", "WARNING", "ERROR"] = "INFO"
     # 서버 시작 때 임베딩·리랭커 모델을 미리 읽는다 (rag_service.api.readiness). 운영 compose는 true
     preload_models: bool = False

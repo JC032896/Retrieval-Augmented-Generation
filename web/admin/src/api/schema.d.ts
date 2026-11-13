@@ -247,6 +247,93 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/config": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Config */
+        get: operations["config_api_config_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/history": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** History */
+        get: operations["history_api_history_get"];
+        put?: never;
+        post?: never;
+        /** Forget All */
+        delete: operations["forget_all_api_history_delete"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/history/{turn_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** History Turn */
+        get: operations["history_turn_api_history__turn_id__get"];
+        put?: never;
+        post?: never;
+        /** Forget Turn */
+        delete: operations["forget_turn_api_history__turn_id__delete"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/me": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Me */
+        get: operations["me_api_me_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/passages/{chunk_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Passage */
+        get: operations["passage_api_passages__chunk_id__get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/ask": {
         parameters: {
             query?: never;
@@ -338,6 +425,20 @@ export interface components {
          * @enum {string}
          */
         AdminRole: "admin" | "doc_manager" | "auditor";
+        /** AnswerOut */
+        AnswerOut: {
+            /** Citations */
+            citations: components["schemas"]["CitationOut"][];
+            /** Invalid Citations */
+            invalid_citations: number[];
+            /** Reason */
+            reason: ("no_hits" | "low_score" | "not_in_documents") | null;
+            /** Refused */
+            refused: boolean;
+            /** Text */
+            text: string;
+            verification: components["schemas"]["VerificationOut"] | null;
+        };
         /** AskRequest */
         AskRequest: {
             /** Question */
@@ -494,6 +595,39 @@ export interface components {
             /** Id */
             id: number;
         };
+        /** ChatMeOut */
+        ChatMeOut: {
+            /** Admin Roles */
+            admin_roles: components["schemas"]["AdminRole"][];
+            /** Department */
+            department: string;
+            /** History Days */
+            history_days: number;
+            /** Login */
+            login: string;
+            /** Name */
+            name: string;
+        };
+        /** CitationOut */
+        CitationOut: {
+            /** Chunk Id */
+            chunk_id: number;
+            /** File */
+            file: string;
+            /** Number */
+            number: number;
+            /** Page */
+            page: number | null;
+            /** Section */
+            section: string | null;
+            /** Title */
+            title: string;
+        };
+        /** DeletedOut */
+        DeletedOut: {
+            /** Deleted */
+            deleted: number;
+        };
         /** DocumentOut */
         DocumentOut: {
             /** Chunks */
@@ -533,6 +667,13 @@ export interface components {
         HTTPValidationError: {
             /** Detail */
             detail?: components["schemas"]["ValidationError"][];
+        };
+        /** HistoryPageOut */
+        HistoryPageOut: {
+            /** Items */
+            items: components["schemas"]["TurnSummaryOut"][];
+            /** Next Before */
+            next_before: number | null;
         };
         /** LastChangeOut */
         LastChangeOut: {
@@ -597,6 +738,23 @@ export interface components {
             /** Roles */
             roles: string[];
         };
+        /** PassageOut */
+        PassageOut: {
+            /** Chunk Id */
+            chunk_id: number;
+            /** Content */
+            content: string;
+            /** File */
+            file: string;
+            /** Page */
+            page: number | null;
+            /** Section */
+            section: string | null;
+            /** Status */
+            status: string;
+            /** Title */
+            title: string;
+        };
         /** PreviewIn */
         PreviewIn: {
             /**
@@ -621,6 +779,18 @@ export interface components {
             /** Users */
             users: components["schemas"]["UserOut"][];
         };
+        /** ProblemOut */
+        ProblemOut: {
+            /**
+             * Status
+             * @enum {string}
+             */
+            status: "supported" | "implicit" | "note" | "invalid_citation" | "uncited" | "number_mismatch" | "low_overlap";
+            /** Text */
+            text: string;
+            /** Unsupported Numbers */
+            unsupported_numbers: string[];
+        };
         /** StatusOut */
         StatusOut: {
             /** Audit Db */
@@ -640,6 +810,37 @@ export interface components {
             usage?: components["schemas"]["UsageOut"] | null;
             /** Version */
             version: string;
+        };
+        /** TurnOut */
+        TurnOut: {
+            answer: components["schemas"]["AnswerOut"] | null;
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            /** Hidden */
+            hidden: boolean;
+            /** Id */
+            id: number;
+            /** Outcome */
+            outcome: string;
+            /** Question */
+            question: string;
+        };
+        /** TurnSummaryOut */
+        TurnSummaryOut: {
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            /** Id */
+            id: number;
+            /** Outcome */
+            outcome: string;
+            /** Question */
+            question: string;
         };
         /** UiConfigOut */
         UiConfigOut: {
@@ -693,6 +894,13 @@ export interface components {
             msg: string;
             /** Error Type */
             type: string;
+        };
+        /** VerificationOut */
+        VerificationOut: {
+            /** Problems */
+            problems: components["schemas"]["ProblemOut"][];
+            /** Verified */
+            verified: boolean;
         };
     };
     responses: never;
@@ -1113,6 +1321,210 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["UserOut"][];
+                };
+            };
+        };
+    };
+    config_api_config_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UiConfigOut"];
+                };
+            };
+        };
+    };
+    history_api_history_get: {
+        parameters: {
+            query?: {
+                before?: number | null;
+                limit?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HistoryPageOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    forget_all_api_history_delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DeletedOut"];
+                };
+            };
+        };
+    };
+    history_turn_api_history__turn_id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                turn_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TurnOut"];
+                };
+            };
+            /** @description 없는 대화 기록입니다 */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    forget_turn_api_history__turn_id__delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                turn_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description 없는 대화 기록입니다 */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    me_api_me_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ChatMeOut"];
+                };
+            };
+        };
+    };
+    passage_api_passages__chunk_id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                chunk_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PassageOut"];
+                };
+            };
+            /** @description 볼 수 있는 근거 문단이 없습니다 */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
                 };
             };
         };

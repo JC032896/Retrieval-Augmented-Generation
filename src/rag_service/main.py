@@ -1,4 +1,5 @@
-"""FastAPI 앱: 질문 API(/ask), 관리 API(/admin/api, api/admin.py), 상태 확인(/health, /ready).
+"""FastAPI 앱: 질문 API(/ask), 채팅 화면 API(/api, api/chat.py), 관리 API(/admin/api, api/admin.py),
+상태 확인(/health, /ready), 화면 파일(/, /admin, api/admin_ui.py).
 
 - /health: 살아 있는지와 상태 요약 (DB, 모델, 인덱스 신선도). 문제가 있어도 status는 ok (모니터링용)
 - /ready: 질문을 받을 수 있으면 200, 아니면 503 (컨테이너 상태 검사, 부하 분산기용)
@@ -20,6 +21,7 @@ from rag_service.api.admin import router as admin_router
 from rag_service.api.admin_documents import router as documents_router
 from rag_service.api.admin_ui import router as admin_ui_router
 from rag_service.api.ask import router as ask_router
+from rag_service.api.chat import router as chat_router
 from rag_service.api.readiness import MODELS, start_warm_up
 from rag_service.config import get_settings
 from rag_service.ingest.check import index_summary
@@ -38,6 +40,7 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
 
 app = FastAPI(title="rag-service", version=__version__, lifespan=lifespan)
 app.include_router(ask_router)
+app.include_router(chat_router)
 app.include_router(admin_router)
 app.include_router(documents_router)
 app.include_router(admin_ui_router)  # /admin/{path} 화면 파일이라 마지막에 둔다

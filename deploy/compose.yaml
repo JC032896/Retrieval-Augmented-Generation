@@ -151,8 +151,10 @@ services:
       AUDIT_DB_USER: ${AUDIT_DB_USER:-rag_audit_ops}
       AUDIT_DB_PASSWORD_FILE: /run/rag/app/audit_db_password
       AUDIT_STORE_TEXT: ${AUDIT_STORE_TEXT:-true}
+      # 채팅 화면(http://<서버>/)의 대화 기록 보관 기간(일). 0이면 저장하지 않는다 (감사 기록과 별개)
+      CHAT_HISTORY_DAYS: ${CHAT_HISTORY_DAYS:-90}
       UPLOAD_DIR: /data/uploads
-      # 관리 화면 (http://<서버>/admin): 화면에 보이는 회사 이름·로고, 브라우저 로그인 클라이언트 id
+      # 채팅 화면(http://<서버>/)과 관리 화면(/admin): 회사 이름·로고, 브라우저 로그인 클라이언트 id
       COMPANY_NAME: ${COMPANY_NAME:-}
       COMPANY_LOGO_URL: ${COMPANY_LOGO_URL:-}
       ADMIN_UI_CLIENT_ID: ${ADMIN_UI_CLIENT_ID:-}

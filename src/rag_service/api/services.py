@@ -32,6 +32,8 @@ class Services:
     audit: AuditPolicy = AuditPolicy()
     limits: UsageLimits = UsageLimits()  # 기본은 한도 없음. 서버는 get_services가 설정에서 채운다
     in_flight: InFlight = field(default_factory=InFlight)
+    # 채팅 화면 대화 기록 보관 기간 (일). 기본 0은 저장 안 함 (서버는 CHAT_HISTORY_DAYS에서 채운다)
+    history_days: int = 0
 
 
 @lru_cache
@@ -54,4 +56,5 @@ def get_services() -> Services:
             concurrent_per_user=settings.llm_concurrent_per_user,
             utc_offset_hours=settings.usage_utc_offset_hours,
         ),
+        history_days=settings.chat_history_days,
     )
