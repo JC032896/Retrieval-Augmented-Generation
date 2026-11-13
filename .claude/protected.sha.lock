@@ -142,6 +142,7 @@ c676c420867f5583c43b08f28984272f6b0ed581f02a71ac801096492195c0f6  tests/test_dep
 9a39c31a6acab92405c6eb426e68c775b4733466f4f4611a97c2b81c6046f08c  web/admin/src/chat/ask.test.ts
 9f29923fde0a0ac5ce794e08ad432128a4ab25185d59633dc151762246b1e2a9  web/admin/src/chat/chat.test.tsx
 3086e0e39836c69d87e67d73a270c074b3cdba24880157d123a12d68c33db5c7  web/admin/src/chat/chatApp.test.tsx
+fcc5796f04a4cd4d45718caeafb34161fc711c7837fb2d80c0237bc3b02aa4cc  web/admin/src/chat/passage.test.ts
 26af74b08ac15262285a50e3732f61516a8b2caaa36a1d078430e0a41552a54b  web/admin/src/pages/Dashboard.test.tsx
 7f5aa974dcc01fefae3b5e42b6ae2878e02cadac523a92d1dc59610c05718ff4  web/admin/src/pages/audit.test.tsx
 b8b45f137f96784f21da9adbda904c34ba5b7df5134f8dccbbf0c6b56869e3b3  web/admin/src/pages/documents.test.tsx
