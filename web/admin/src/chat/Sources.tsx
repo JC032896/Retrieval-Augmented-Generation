@@ -84,12 +84,15 @@ export function Sources({
   focus,
   onHover,
   waiting,
+  turnLabel,
 }: {
   citations: Citation[];
   active: number | null;
   focus: { number: number; round: number } | null;
   onHover: (number: number | null) => void;
   waiting: boolean;
+  /** 대화에 질문이 여럿이면 어느 질문의 근거인지 ("2번째 질문") */
+  turnLabel?: string;
 }) {
   const unique = [...new Map(citations.map((c) => [c.number, c])).values()].sort(
     (a, b) => a.number - b.number,
@@ -98,6 +101,7 @@ export function Sources({
     <aside className={styles.panel} aria-labelledby="sources-title">
       <h2 id="sources-title" className={styles.heading}>
         근거 문단{unique.length > 0 ? ` ${unique.length}` : ""}
+        {turnLabel ? <span className={styles.turn}> · {turnLabel}</span> : null}
       </h2>
       {unique.length === 0 ? (
         <p className={styles.empty}>

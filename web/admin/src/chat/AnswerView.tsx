@@ -170,18 +170,26 @@ export function AnswerView({
   state,
   linking,
   actions,
+  searchQuestion = null,
 }: {
   question: string;
   meta: ReactNode;
   state: AnswerState;
   linking: Linking;
   actions?: ReactNode;
+  /** 이어 묻는 질문을 서버가 다시 쓴 질문 (검색과 답은 이 질문으로 했다) */
+  searchQuestion?: string | null;
 }) {
   return (
     <article className={styles.turn} aria-busy={state.kind === "streaming"}>
       <header className={styles.head}>
         <p className={styles.meta}>{meta}</p>
-        <h1 className={styles.question}>{question}</h1>
+        <h2 className={styles.question}>{question}</h2>
+        {searchQuestion ? (
+          <p className={styles.understood}>
+            이렇게 이해하고 찾았습니다: <q>{searchQuestion}</q>
+          </p>
+        ) : null}
         {actions ? <div className={styles.actions}>{actions}</div> : null}
       </header>
       {state.kind === "streaming" ? (

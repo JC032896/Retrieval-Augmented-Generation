@@ -264,6 +264,41 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/conversations": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Conversations */
+        get: operations["conversations_api_conversations_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/conversations/{conversation_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Conversation */
+        get: operations["conversation_api_conversations__conversation_id__get"];
+        put?: never;
+        post?: never;
+        /** Forget Conversation */
+        delete: operations["forget_conversation_api_conversations__conversation_id__delete"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/history": {
         parameters: {
             query?: never;
@@ -452,12 +487,18 @@ export interface components {
             reason: ("no_hits" | "low_score" | "not_in_documents") | null;
             /** Refused */
             refused: boolean;
+            /** Search Question */
+            search_question?: string | null;
             /** Text */
             text: string;
             verification: components["schemas"]["VerificationOut"] | null;
         };
         /** AskRequest */
         AskRequest: {
+            /** Conversation Id */
+            conversation_id?: number | null;
+            /** Previous */
+            previous?: string[];
             /** Question */
             question: string;
         };
@@ -646,6 +687,55 @@ export interface components {
             section: string | null;
             /** Title */
             title: string;
+        };
+        /** ConversationOut */
+        ConversationOut: {
+            /** Id */
+            id: number;
+            /** Title */
+            title: string;
+            /** Turns */
+            turns: components["schemas"]["ConversationTurnOut"][];
+        };
+        /** ConversationPageOut */
+        ConversationPageOut: {
+            /** Items */
+            items: components["schemas"]["ConversationSummaryOut"][];
+            /** Next Before */
+            next_before: string | null;
+        };
+        /** ConversationSummaryOut */
+        ConversationSummaryOut: {
+            /** Id */
+            id: number;
+            /** Title */
+            title: string;
+            /** Turns */
+            turns: number;
+            /**
+             * Updated At
+             * Format: date-time
+             */
+            updated_at: string;
+        };
+        /** ConversationTurnOut */
+        ConversationTurnOut: {
+            answer: components["schemas"]["AnswerOut"] | null;
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            /** Hidden */
+            hidden: boolean;
+            /** Id */
+            id: number;
+            /** Outcome */
+            outcome: string;
+            /** Question */
+            question: string;
+            /** Search Question */
+            search_question: string | null;
         };
         /** DeletedOut */
         DeletedOut: {
@@ -1365,6 +1455,112 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["UiConfigOut"];
+                };
+            };
+        };
+    };
+    conversations_api_conversations_get: {
+        parameters: {
+            query?: {
+                before?: string | null;
+                limit?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ConversationPageOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    conversation_api_conversations__conversation_id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                conversation_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ConversationOut"];
+                };
+            };
+            /** @description 없는 대화입니다 */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    forget_conversation_api_conversations__conversation_id__delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                conversation_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description 없는 대화입니다 */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
                 };
             };
         };

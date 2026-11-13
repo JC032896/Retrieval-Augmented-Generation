@@ -11,3 +11,7 @@ export type HistoryPage = Schemas["HistoryPageOut"];
 export type TurnSummary = Schemas["TurnSummaryOut"];
 export type Turn = Schemas["TurnOut"];
 export type Usage = Schemas["ChatUsageOut"];
+export type ConversationSummary = Schemas["ConversationSummaryOut"];
+export type ConversationPage = Schemas["ConversationPageOut"];
+export type Conversation = Schemas["ConversationOut"];
+export type ConversationTurn = Schemas["ConversationTurnOut"];

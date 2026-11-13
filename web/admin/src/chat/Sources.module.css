@@ -10,6 +10,11 @@
   padding-bottom: var(--space-2);
 }
 
+.turn {
+  font-weight: 400;
+  color: var(--ink-2);
+}
+
 .empty {
   font-size: var(--text-sm);
   color: var(--ink-2);

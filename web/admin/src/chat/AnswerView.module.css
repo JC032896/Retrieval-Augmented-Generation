@@ -20,6 +20,18 @@
   text-wrap: balance;
 }
 
+/* 이어 묻는 질문을 어떻게 이해했는지: 오해했으면 바로 알아보게 */
+.understood {
+  margin-top: var(--space-2);
+  font-size: var(--text-sm);
+  color: var(--ink-2);
+}
+
+.understood q {
+  color: var(--ink);
+  quotes: "“" "”";
+}
+
 .actions {
   margin-top: var(--space-3);
   display: flex;

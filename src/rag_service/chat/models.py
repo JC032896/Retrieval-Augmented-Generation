@@ -7,7 +7,7 @@
 from datetime import datetime
 from typing import Any
 
-from sqlalchemy import BigInteger, CheckConstraint, DateTime, Index, Text, func
+from sqlalchemy import BigInteger, CheckConstraint, DateTime, ForeignKey, Index, Text, func
 from sqlalchemy.dialects.postgresql import ARRAY, JSONB
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 
@@ -16,6 +16,23 @@ TURN_OUTCOMES = ("answered", "refused")  # 오류나 끊긴 질문은 남기지 
 
 class ChatBase(DeclarativeBase):
     pass
+
+
+class ChatConversation(ChatBase):
+    """한 대화 (마이그레이션 0012). 채팅 화면의 왼쪽 목록은 대화 단위로 보인다."""
+
+    __tablename__ = "chat_conversations"
+    __table_args__ = (
+        Index("ix_chat_conversations_user", "user_login", "updated_at"),
+        Index("ix_chat_conversations_updated_at", "updated_at"),
+    )
+
+    id: Mapped[int] = mapped_column(BigInteger, primary_key=True)
+    user_login: Mapped[str] = mapped_column(Text)
+    title: Mapped[str] = mapped_column(Text)  # 첫 질문
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+    # 마지막 질문 시각. 목록 순서와 보관 기간은 이 값으로 정한다
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
 
 
 class ChatTurn(ChatBase):
@@ -27,6 +44,7 @@ class ChatTurn(ChatBase):
         ),
         Index("ix_chat_turns_user", "user_login", "id"),
         Index("ix_chat_turns_created_at", "created_at"),
+        Index("ix_chat_turns_conversation", "conversation_id", "id"),
     )
 
     id: Mapped[int] = mapped_column(BigInteger, primary_key=True)
@@ -39,3 +57,9 @@ class ChatTurn(ChatBase):
     result: Mapped[dict[str, Any]] = mapped_column(JSONB)
     # LLM에 보낸 근거 문서. 다시 열 때 이 문서들을 지금도 볼 수 있는지 확인한다
     context_files: Mapped[list[str]] = mapped_column(ARRAY(Text))
+    # 속한 대화 (0012). 대화를 지우면 함께 지워진다
+    conversation_id: Mapped[int | None] = mapped_column(
+        BigInteger, ForeignKey("chat_conversations.id", ondelete="CASCADE")
+    )
+    # 이어 묻는 질문을 앞 질문들로 다시 쓴 질문. 검색과 답변은 이 질문으로 했다 (첫 질문은 None)
+    search_question: Mapped[str | None] = mapped_column(Text)

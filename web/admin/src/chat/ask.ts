@@ -61,6 +61,21 @@ async function detail(response: Response): Promise<string> {
   return BEFORE_STREAM[response.status] ?? `질문을 보내지 못했습니다 (${response.status}).`;
 }
 
+/** 대화의 앞 질문은 최근 4개까지 보낸다 (서버 한도와 같다). 첫 질문이면 질문만 보낸다. */
+export const MAX_PREVIOUS = 4;
+
+function requestBody(
+  question: string,
+  conversation?: { id: number | null; previous: string[] },
+): Record<string, unknown> {
+  if (!conversation) return { question };
+  const body: Record<string, unknown> = { question };
+  if (conversation.id !== null) body.conversation_id = conversation.id;
+  const previous = conversation.previous.slice(-MAX_PREVIOUS);
+  if (previous.length > 0) body.previous = previous;
+  return body;
+}
+
 export async function askQuestion(
   question: string,
   options: {
@@ -68,6 +83,10 @@ export async function askQuestion(
     onDelta: (text: string) => void;
     fetcher?: typeof fetch;
     signal?: AbortSignal;
+    /** 이어 묻는 대화. 서버가 앞 질문들로 질문을 다시 써서 검색한다 */
+    conversation?: { id: number | null; previous: string[] };
+    /** 스트림이 열리면 서버가 정한 대화 id를 알려 준다 (기록을 두지 않는 설치면 null) */
+    onConversation?: (id: number | null) => void;
   },
 ): Promise<AskOutcome> {
   const fetcher = options.fetcher ?? fetch;
@@ -80,34 +99,42 @@ export async function askQuestion(
         "Content-Type": "application/json",
         ...(await options.headers()),
       },
-      body: JSON.stringify({ question }),
+      body: JSON.stringify(requestBody(question, options.conversation)),
       ...(options.signal ? { signal: options.signal } : {}),
     });
   } catch {
     throw new ApiError(0, "서버에 연결할 수 없습니다. 네트워크 상태를 확인해 주세요.");
   }
   if (!response.ok) throw new ApiError(response.status, await detail(response));
+  const conversationId = Number(response.headers.get("X-Conversation-Id"));
+  options.onConversation?.(
+    Number.isInteger(conversationId) && conversationId > 0 ? conversationId : null,
+  );
   if (!response.body) return { kind: "failed", message: "답을 받지 못했습니다." };
 
   const reader = response.body.getReader();
   const decoder = new TextDecoder();
   const parser = new SseParser();
+  // 마지막 이벤트(done, error)를 받아도 스트림이 닫힐 때까지 읽는다. 서버는 스트림을 닫기 전에
+  // 대화 기록과 감사 기록을 저장하므로, 닫힌 뒤에 목록을 다시 읽어야 방금 질문이 보인다
+  let outcome: AskOutcome | null = null;
   for (;;) {
     const { value, done } = await reader.read();
     const events = parser.push(
       done ? `${decoder.decode()}\n\n` : decoder.decode(value, { stream: true }),
     );
     for (const { event, data } of events) {
+      if (outcome) continue;
       const payload: unknown = JSON.parse(data);
       if (event === "delta") {
         options.onDelta((payload as { text: string }).text);
       } else if (event === "done") {
-        return { kind: "done", answer: payload as Answer };
+        outcome = { kind: "done", answer: payload as Answer };
       } else if (event === "error") {
         const message = (payload as { message?: string }).message;
-        return { kind: "failed", message: message ?? "답을 만들지 못했습니다." };
+        outcome = { kind: "failed", message: message ?? "답을 만들지 못했습니다." };
       }
     }
-    if (done) return { kind: "failed", message: "답이 끝나기 전에 연결이 끊겼습니다." };
+    if (done) return outcome ?? { kind: "failed", message: "답이 끝나기 전에 연결이 끊겼습니다." };
   }
 }

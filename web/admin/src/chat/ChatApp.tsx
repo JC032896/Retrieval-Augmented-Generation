@@ -5,7 +5,7 @@ import styles from "./ChatApp.module.css";
 import { Rail } from "./Rail";
 import { ChatSignIn } from "./SignIn";
 import { type ChatSession, useChatSession } from "./session";
-import { NewQuestion, SavedTurn } from "./Turn";
+import { NewConversation, SavedConversation } from "./Turn";
 import { WorkspaceProvider } from "./workspace";
 
 type SignedIn = Extract<ChatSession, { state: "signed-in" }>;
@@ -52,9 +52,9 @@ function SignedInApp({ session }: { session: SignedIn }) {
         path: "/",
         element: <Workspace session={session} />,
         children: [
-          { index: true, element: <NewQuestion /> },
-          { path: "history/:id", element: <SavedTurn /> },
-          { path: "*", element: <NewQuestion /> },
+          { index: true, element: <NewConversation /> },
+          { path: "history/:id", element: <SavedConversation /> },
+          { path: "*", element: <NewConversation /> },
         ],
       },
     ]),

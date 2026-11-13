@@ -62,6 +62,9 @@ class AuditLog(AuditBase):
     question: Mapped[str | None] = mapped_column(Text)
     question_sha256: Mapped[str] = mapped_column(Text)
     question_chars: Mapped[int] = mapped_column(Integer)
+    # 이어 묻는 질문을 앞 질문들로 다시 쓴 질문 (0012). 검색과 LLM 요청은 이 질문으로 했다.
+    # 원문 저장을 끄면(AUDIT_STORE_TEXT=false) 비운다
+    search_question: Mapped[str | None] = mapped_column(Text)
     answer: Mapped[str | None] = mapped_column(Text)
 
     outcome: Mapped[str] = mapped_column(Text)

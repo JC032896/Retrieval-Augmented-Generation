@@ -37,6 +37,20 @@
   background: var(--paper);
 }
 
+/* 한 대화의 질문과 답들: 질문마다 위에 가는 줄과 넉넉한 간격 */
+.thread > * + * {
+  margin-top: var(--space-7);
+  padding-top: var(--space-6);
+  border-top: 1px solid var(--rule);
+}
+
+.head {
+  display: flex;
+  justify-content: flex-end;
+  max-width: 46rem;
+  margin: calc(var(--space-5) * -1) 0 var(--space-3);
+}
+
 .welcome {
   max-width: 46rem;
   min-height: 100%;

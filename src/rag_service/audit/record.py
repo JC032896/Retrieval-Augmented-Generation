@@ -11,7 +11,7 @@ from sqlalchemy.dialects.postgresql import insert
 from sqlalchemy.orm import Session, sessionmaker
 
 from rag_service.answer.generate import Answer
-from rag_service.answer.llm import estimate_cost
+from rag_service.answer.llm import Completion, estimate_cost
 from rag_service.answer.prompt import PROMPT_TEMPLATE_VERSION, SYSTEM_PROMPT, build_prompt
 from rag_service.api.auth import CurrentUser
 from rag_service.audit.models import AuditLog, ChunkSnapshot
@@ -43,6 +43,9 @@ class AskResult:
     request_context: tuple[SearchHit, ...] = ()
     # 화면에 보낸 done 이벤트 내용. 채팅 화면의 대화 기록이 쓴다 (감사 기록에는 넣지 않는다)
     payload: Mapping[str, Any] | None = None
+    # 이어 묻는 질문을 다시 쓴 질문 (answer/followup.py). 검색과 LLM 요청은 이 질문으로 했다
+    search_question: str | None = None
+    rewrite_completion: Completion | None = None  # 다시 쓰기에 쓴 LLM 호출 (비용에 더한다)
 
 
 def build_entry(
@@ -59,6 +62,7 @@ def build_entry(
     answer = result.answer
     completion = answer.completion if answer else None
     sent = result.request_context
+    asked = result.search_question or question  # LLM 요청에 실제로 넣은 질문
     replayable = bool(sent) and llm_params is not None
     return AuditLog(
         request_id=request_id,
@@ -70,6 +74,7 @@ def build_entry(
         question=question if policy.store_text else None,
         question_sha256=hashlib.sha256(question.encode("utf-8")).hexdigest(),
         question_chars=len(question),
+        search_question=result.search_question if policy.store_text else None,
         answer=answer.text if answer and policy.store_text else None,
         outcome=result.outcome,
         refusal_reason=answer.reason if answer else None,
@@ -79,11 +84,7 @@ def build_entry(
         model=completion.model if completion else None,
         input_tokens=completion.input_tokens if completion else None,
         output_tokens=completion.output_tokens if completion else None,
-        cost_usd=(
-            estimate_cost(completion.model, completion.input_tokens, completion.output_tokens)
-            if completion
-            else None
-        ),
+        cost_usd=_cost(completion, result.rewrite_completion),
         retrieval_ms=result.retrieval_ms,
         first_token_ms=result.first_token_ms,
         total_ms=result.total_ms,
@@ -91,11 +92,25 @@ def build_entry(
         model_params=dict(llm_params) if replayable and llm_params is not None else None,
         context_chunks=[dict(chunk) for chunk in context_chunks(sent)] if replayable else None,
         request_sha256=(
-            request_sha256(llm_params, system=SYSTEM_PROMPT, prompt=build_prompt(question, sent))
+            request_sha256(llm_params, system=SYSTEM_PROMPT, prompt=build_prompt(asked, sent))
             if replayable and llm_params is not None
             else None
         ),
     )
+
+
+def _cost(*completions: Completion | None) -> float | None:
+    """답변과 질문 다시 쓰기의 비용 합. 요금표에 없는 모델은 0으로 본다.
+
+    LLM을 부르지 않았거나 모두 요금표에 없으면 None.
+    """
+    used = [c for c in completions if c is not None]
+    if not used:
+        return None
+    costs = [estimate_cost(c.model, c.input_tokens, c.output_tokens) for c in used]
+    if all(cost is None for cost in costs):
+        return None
+    return sum(cost or 0.0 for cost in costs)
 
 
 def write_entry(

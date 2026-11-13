@@ -6,9 +6,8 @@ import { useWorkspace } from "./workspace";
 const MAX = 1000;
 
 export function Composer({ onAsk }: { onAsk: (question: string) => void }) {
-  const { live, usage } = useWorkspace();
+  const { busy, usage } = useWorkspace();
   const [text, setText] = useState("");
-  const busy = live.status === "streaming";
   const exhausted = usage?.questions_left === 0;
   const question = text.trim();
   const canAsk = !busy && !exhausted && question.length > 0 && question.length <= MAX;

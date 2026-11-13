@@ -90,7 +90,10 @@ def main(
         prog="scripts/replay.py", description="감사 기록의 LLM 요청을 다시 만들어 해시를 비교한다."
     )
     parser.add_argument("audit_id", type=int, help="audit_log.id")
-    parser.add_argument("--question", help="질문 원문이 저장되지 않은 기록에 쓸 당시 질문")
+    parser.add_argument(
+        "--question",
+        help="질문 원문이 저장되지 않은 기록에 쓸 당시 질문 (이어 묻기였으면 다시 쓴 질문)",
+    )
     parser.add_argument("--call", action="store_true", help="같은 요청을 LLM에 다시 보낸다 (비용)")
     args = parser.parse_args(argv)
 
@@ -100,7 +103,9 @@ def main(
         if entry is None:
             print(f"감사 기록 #{args.audit_id}이 없습니다")
             return 2
-        question = args.question if args.question is not None else entry.question
+        # 이어 묻는 질문은 다시 쓴 질문(search_question)으로 LLM에 요청했다 (answer/followup.py)
+        stored = entry.search_question or entry.question
+        question = args.question if args.question is not None else stored
         if question is None:
             print(
                 f"감사 기록 #{entry.id}에는 질문 원문이 없습니다 (AUDIT_STORE_TEXT=false로 저장). "

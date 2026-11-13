@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import { Link, NavLink, useNavigate } from "react-router";
 import styles from "./Rail.module.css";
-import type { HistoryPage, TurnSummary } from "./types";
+import type { ConversationPage, ConversationSummary } from "./types";
 import { useWorkspace } from "./workspace";
 
 function sameDay(a: Date, b: Date): boolean {
@@ -21,15 +21,15 @@ export function whenText(iso: string, now = new Date()): string {
 
 function useHistory() {
   const { api, me, historyRound } = useWorkspace();
-  const [items, setItems] = useState<TurnSummary[]>([]);
-  const [next, setNext] = useState<number | null>(null);
+  const [items, setItems] = useState<ConversationSummary[]>([]);
+  const [next, setNext] = useState<string | null>(null);
   const [failed, setFailed] = useState<string | null>(null);
   useEffect(() => {
     if (me.history_days === 0) return;
     let alive = true;
     void historyRound;
     api
-      .get<HistoryPage>("/api/history")
+      .get<ConversationPage>("/api/conversations")
       .then((page) => {
         if (!alive) return;
         setItems(page.items);
@@ -43,7 +43,9 @@ function useHistory() {
   }, [api, me.history_days, historyRound]);
   const more = async () => {
     if (next === null) return;
-    const page = await api.get<HistoryPage>(`/api/history?before=${next}`);
+    const page = await api.get<ConversationPage>(
+      `/api/conversations?before=${encodeURIComponent(next)}`,
+    );
     setItems((current) => [...current, ...page.items]);
     setNext(page.next_before);
   };
@@ -98,9 +100,9 @@ export function Rail({
   const { me, reset, refreshHistory } = useWorkspace();
   const { items, next, failed, more, setItems } = useHistory();
   const now = new Date();
-  const today = items.filter((item) => sameDay(new Date(item.created_at), now));
-  const earlier = items.filter((item) => !sameDay(new Date(item.created_at), now));
-  const group = (title: string, list: TurnSummary[]) =>
+  const today = items.filter((item) => sameDay(new Date(item.updated_at), now));
+  const earlier = items.filter((item) => !sameDay(new Date(item.updated_at), now));
+  const group = (title: string, list: ConversationSummary[]) =>
     list.length === 0 ? null : (
       <section className={styles.group} aria-label={title}>
         <h2 className={styles.groupTitle}>{title}</h2>
@@ -111,10 +113,10 @@ export function Rail({
                 to={`/history/${item.id}`}
                 className={({ isActive }) => `${styles.item} ${isActive ? styles.current : ""}`}
               >
-                <span className={styles.itemText}>{item.question}</span>
+                <span className={styles.itemText}>{item.title}</span>
                 <span className={styles.itemWhen}>
-                  {whenText(item.created_at, now)}
-                  {item.outcome === "refused" ? " · 근거 없음" : ""}
+                  {whenText(item.updated_at, now)}
+                  {item.turns > 1 ? ` · 질문 ${item.turns}개` : ""}
                 </span>
               </NavLink>
             </li>
@@ -173,6 +175,7 @@ export function Rail({
             <ClearAll
               onCleared={() => {
                 setItems([]);
+                reset();
                 refreshHistory();
               }}
             />

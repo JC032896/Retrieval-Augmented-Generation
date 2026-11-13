@@ -18,14 +18,15 @@ import logging
 import time
 import uuid
 from collections.abc import Callable, Generator
-from dataclasses import asdict
+from dataclasses import asdict, replace
 from datetime import UTC, datetime
 from typing import Annotated, Any, NoReturn
 
 from fastapi import APIRouter, Depends, HTTPException, Request
 from fastapi.sse import EventSourceResponse, format_sse_event
-from pydantic import BaseModel, StringConstraints
+from pydantic import BaseModel, Field, StringConstraints
 
+from rag_service.answer.followup import MAX_PREVIOUS, Rewrite, rewrite_question
 from rag_service.answer.generate import DEFAULT_CONTEXT_SIZE, Answer, request_context, stream_answer
 from rag_service.answer.llm import LLMError, StreamingLLM, estimate_cost
 from rag_service.answer.prompt import SYSTEM_PROMPT, build_prompt
@@ -37,7 +38,7 @@ from rag_service.api.readiness import require_models
 from rag_service.api.services import Services, get_services
 from rag_service.audit.record import AskResult, Outcome, build_entry, write_entry
 from rag_service.audit.request import llm_params
-from rag_service.chat.history import save_turn
+from rag_service.chat.history import own_conversation, save_turn, start_conversation
 from rag_service.chat.models import TURN_OUTCOMES
 from rag_service.ingest.tokenizer import KoreanTokenizer
 from rag_service.logs import log_event
@@ -49,14 +50,23 @@ router = APIRouter()
 
 MAX_QUESTION_CHARS = 1000
 ERROR_CODE_HEADER = "X-Error-Code"  # 화면이 문장 대신 읽는 오류 종류
+CONVERSATION_HEADER = "X-Conversation-Id"  # 이 질문이 들어간 대화 (채팅 화면이 다음 질문에 보낸다)
 
 ServicesDep = Annotated[Services, Depends(get_services)]
 
 
+QuestionText = Annotated[
+    str, StringConstraints(strip_whitespace=True, min_length=1, max_length=MAX_QUESTION_CHARS)
+]
+
+
 class AskRequest(BaseModel):
-    question: Annotated[
-        str, StringConstraints(strip_whitespace=True, min_length=1, max_length=MAX_QUESTION_CHARS)
-    ]
+    question: QuestionText
+    # 채팅 화면의 한 대화. 비우면 새 대화를 만든다 (대화 기록을 저장하는 설치에서만)
+    conversation_id: int | None = Field(default=None, ge=1)
+    # 같은 대화의 앞 질문들 (오래된 것부터). 이어 묻는 질문을 다시 쓰는 데만 쓴다
+    # (answer/followup.py)
+    previous: list[QuestionText] = Field(default_factory=list, max_length=MAX_PREVIOUS)
 
 
 def current_user(request: Request, services: ServicesDep) -> CurrentUser:
@@ -96,11 +106,13 @@ def ask(
     if isinstance(slot, LimitExceeded):
         _reject(slot, user=user, client_ip=client_ip(request))
     try:
+        conversation_id = _conversation(services, user, body)
+        rewrite = rewrite_question(services.llm, body.previous, body.question)
         with services.sessions() as session:
             hits = search(
                 session,
-                query=body.question,
-                query_vector=services.embedder.embed([body.question])[0],
+                query=rewrite.question,
+                query_vector=services.embedder.embed([rewrite.question])[0],
                 viewer=user,
                 tokenizer=services.tokenizer,
                 retriever="vector_rerank",  # 평가 1위 (README 6절)
@@ -120,21 +132,47 @@ def ask(
             client_ip=client_ip(request),
             user=user,
             question=body.question,
-            result=result,
+            result=_with_rewrite(result, rewrite),
+            conversation_id=conversation_id,
         )
 
     events = answer_events(
-        body.question,
+        rewrite.question,
         hits,
         llm=services.llm,
         tokenizer=services.tokenizer,
         started=started,
         retrieval_ms=retrieval_ms,
         on_finish=finish,
+        search_question=rewrite.question if rewrite.rewritten else None,
     )
     # 프록시(nginx 등)가 응답을 모아 두지 않고 바로 흘려보내게 한다
     headers = {"Cache-Control": "no-cache", "X-Accel-Buffering": "no", "X-Request-ID": request_id}
+    if conversation_id is not None:
+        headers[CONVERSATION_HEADER] = str(conversation_id)
     return EventSourceResponse(events, headers=headers)
+
+
+def _conversation(services: Services, user: CurrentUser, body: AskRequest) -> int | None:
+    """이 질문이 들어갈 대화. 기록을 저장하지 않는 설치면 None, 남의 대화나 지난 대화면 404."""
+    if services.history_days < 1:
+        return None
+    with services.sessions.begin() as session:
+        if body.conversation_id is None:
+            return start_conversation(session, user.login, title=body.question)
+        if not own_conversation(
+            session, user.login, body.conversation_id, keep_days=services.history_days
+        ):
+            raise HTTPException(404, "없는 대화입니다")
+    return body.conversation_id
+
+
+def _with_rewrite(result: AskResult, rewrite: Rewrite) -> AskResult:
+    return replace(
+        result,
+        search_question=rewrite.question if rewrite.rewritten else None,
+        rewrite_completion=rewrite.completion,
+    )
 
 
 def _reject(exceeded: LimitExceeded, *, user: CurrentUser, client_ip: str | None) -> NoReturn:
@@ -159,8 +197,13 @@ def answer_events(
     on_finish: Callable[[AskResult], None],
     started: float | None = None,
     retrieval_ms: int = 0,
+    search_question: str | None = None,
 ) -> Generator[bytes, None, None]:
-    """SSE 이벤트를 만든다. 끝나면(오류, 연결 끊김 포함) on_finish에 결과를 넘긴다."""
+    """SSE 이벤트를 만든다. 끝나면(오류, 연결 끊김 포함) on_finish에 결과를 넘긴다.
+
+    question은 검색과 답변에 쓴 질문이다. 이어 묻는 질문을 다시 썼으면 search_question에도 같은 값을
+    주어 done 이벤트에 싣는다 (화면이 "이렇게 이해하고 찾았습니다"로 보인다).
+    """
     clock = _FirstEvent(time.perf_counter() if started is None else started)
     outcome: Outcome | None = None
     answer: Answer | None = None
@@ -178,6 +221,7 @@ def answer_events(
             )
             return
         payload = answer_payload(answer, question=question, tokenizer=tokenizer)
+        payload["search_question"] = search_question
         if payload["verification"] is not None:
             verified = payload["verification"]["verified"]
         outcome = "refused" if answer.refused else "answered"
@@ -213,6 +257,7 @@ def record_ask(
     user: CurrentUser,
     question: str,
     result: AskResult,
+    conversation_id: int | None = None,
 ) -> None:
     """감사 기록(DB)과 운영 로그를 남긴다. 실패해도 이미 보낸 답변에는 영향을 주지 않는다."""
     entry = build_entry(
@@ -232,7 +277,7 @@ def record_ask(
             level=logging.DEBUG,
             request_id=request_id,
             system=SYSTEM_PROMPT,
-            prompt=build_prompt(question, result.request_context),
+            prompt=build_prompt(result.search_question or question, result.request_context),
         )
     log_event(
         logger,
@@ -256,11 +301,24 @@ def record_ask(
     except Exception:
         # 감사 기록 누락은 운영자가 반드시 알아야 한다. 로그 수집 시스템에서 경보를 건다
         logger.exception("audit_write_failed", extra={"fields": {"request_id": request_id}})
-    save_history(services, request_id=request_id, user=user, question=question, result=result)
+    save_history(
+        services,
+        request_id=request_id,
+        user=user,
+        question=question,
+        result=result,
+        conversation_id=conversation_id,
+    )
 
 
 def save_history(
-    services: Services, *, request_id: str, user: CurrentUser, question: str, result: AskResult
+    services: Services,
+    *,
+    request_id: str,
+    user: CurrentUser,
+    question: str,
+    result: AskResult,
+    conversation_id: int | None = None,
 ) -> None:
     """채팅 화면의 대화 기록. 답했거나 거절한 질문만 남긴다 (사용량은 빼고).
 
@@ -280,6 +338,8 @@ def save_history(
                 result=shown,
                 context_files=result.context_files,
                 keep_days=services.history_days,
+                conversation_id=conversation_id,
+                search_question=result.search_question,
             )
     except Exception:
         logger.exception("chat_history_write_failed", extra={"fields": {"request_id": request_id}})

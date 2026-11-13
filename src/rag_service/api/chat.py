@@ -8,6 +8,11 @@
 - DELETE /api/history/{id}      기록 하나 지우기
 - DELETE /api/history           본인 기록 모두 지우기
 - GET    /api/passages/{id}     근거 문단 (검색과 같은 권한 필터. 볼 수 없으면 없는 것과 같은 404)
+- GET    /api/conversations       본인 대화 목록 (마지막 질문이 최근인 것부터, before로 더 보기)
+- GET    /api/conversations/{id}  대화 하나: 질문과 답들
+                                  (질문마다 근거 문서를 지금 볼 수 없으면 답을 가린다)
+- DELETE /api/conversations/{id}  대화 하나와 그 질문들 지우기
+  (/api/history는 질문 하나 단위의 이전 API다. 채팅 화면은 대화 API를 쓴다)
 
 모델을 읽지 않는다 (질문 API의 Services와 달리 가벼운 묶음을 쓴다).
 기록을 지워도 감사 기록(audit_log)은 남는다.
@@ -33,9 +38,12 @@ from rag_service.api.limits import UsageLimits, requests_left
 from rag_service.api.roles import AdminRole, RoleGroups
 from rag_service.chat.history import (
     delete_all,
+    delete_conversation,
     delete_turn,
+    get_conversation,
     get_passage,
     get_turn,
+    list_conversations,
     list_turns,
 )
 from rag_service.config import get_settings
@@ -158,6 +166,9 @@ class AnswerOut(BaseModel):
     citations: list[CitationOut]
     invalid_citations: list[int]
     verification: VerificationOut | None
+    # 이어 묻는 질문을 앞 질문들로 다시 쓴 질문. 검색과 답은 이 질문으로 했다
+    # (다시 쓰지 않았으면 None)
+    search_question: str | None = None
 
 
 # ---------- 대화 기록 ----------
@@ -263,3 +274,103 @@ def passage(chunk_id: int, who: SignedInDep, services: ChatServicesDep) -> Passa
         # 권한이 없는 경우와 없는 문단을 구별하지 않는다 (그런 문서가 있다는 사실도 알리지 않는다)
         raise HTTPException(404, NOT_FOUND_PASSAGE)
     return PassageOut(**vars(found))
+
+
+# ---------- 대화 (여러 질문을 묶는 단위, 마이그레이션 0012) ----------
+
+NOT_FOUND_CONVERSATION = "없는 대화입니다"
+
+
+class ConversationSummaryOut(BaseModel):
+    id: int
+    title: str  # 첫 질문
+    updated_at: datetime  # 마지막 질문 시각
+    turns: int  # 질문 수
+
+
+class ConversationPageOut(BaseModel):
+    items: list[ConversationSummaryOut]
+    next_before: datetime | None  # 더 오래된 대화가 있을 수 있으면 다음 요청의 before 값
+
+
+class ConversationTurnOut(BaseModel):
+    id: int
+    created_at: datetime
+    question: str
+    search_question: str | None  # 이어 묻는 질문을 다시 쓴 질문 (검색과 답은 이 질문으로 했다)
+    outcome: str
+    hidden: bool  # 이 질문의 근거 문서를 지금 볼 수 없어 답을 가렸다
+    answer: AnswerOut | None
+
+
+class ConversationOut(BaseModel):
+    id: int
+    title: str
+    turns: list[ConversationTurnOut]  # 오래된 것부터
+
+
+@router.get("/conversations")
+def conversations(
+    who: SignedInDep,
+    services: ChatServicesDep,
+    before: datetime | None = None,
+    limit: Annotated[int, Query(ge=1, le=100)] = HISTORY_PAGE,
+) -> ConversationPageOut:
+    with services.sessions() as session:
+        found = list_conversations(
+            session, who.user.login, keep_days=services.history_days, before=before, limit=limit
+        )
+    items = [ConversationSummaryOut(**vars(conversation)) for conversation in found]
+    return ConversationPageOut(
+        items=items, next_before=items[-1].updated_at if len(items) == limit else None
+    )
+
+
+@router.get(
+    "/conversations/{conversation_id}", responses={404: {"description": NOT_FOUND_CONVERSATION}}
+)
+def conversation(
+    conversation_id: int, who: SignedInDep, services: ChatServicesDep
+) -> ConversationOut:
+    with services.sessions() as session:
+        found = get_conversation(
+            session,
+            who.user.login,
+            conversation_id,
+            viewer=who.user,
+            keep_days=services.history_days,
+        )
+    if found is None:
+        raise HTTPException(404, NOT_FOUND_CONVERSATION)
+    title, turns = found
+    return ConversationOut(
+        id=conversation_id,
+        title=title,
+        turns=[
+            ConversationTurnOut(
+                id=turn.id,
+                created_at=turn.created_at,
+                question=turn.question,
+                search_question=turn.search_question,
+                outcome=turn.outcome,
+                hidden=turn.hidden,
+                answer=AnswerOut.model_validate(turn.result) if turn.result is not None else None,
+            )
+            for turn in turns
+        ],
+    )
+
+
+@router.delete(
+    "/conversations/{conversation_id}",
+    status_code=204,
+    responses={404: {"description": NOT_FOUND_CONVERSATION}},
+)
+def forget_conversation(
+    conversation_id: int, who: SignedInDep, services: ChatServicesDep
+) -> Response:
+    with services.sessions.begin() as session:
+        found = delete_conversation(session, who.user.login, conversation_id)
+    if not found:
+        raise HTTPException(404, NOT_FOUND_CONVERSATION)
+    return Response(status_code=204)
