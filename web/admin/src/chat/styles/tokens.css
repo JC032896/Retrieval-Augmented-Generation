@@ -1,0 +1,49 @@
+/* 직원 채팅 화면의 색, 글꼴, 간격 (방향: 형광펜 밑줄). 관리 화면 토큰과 따로 둔다. */
+:root {
+  /* 흰 복사지 작업면, 옅은 회백 목록칸, 먹 */
+  --paper: #ffffff;
+  --rail: #f5f5f2;
+  --ink: #1d1d1b;
+  --ink-2: #5a5a55;
+  --rule: #e2e2dc;
+  --rule-strong: #c9c9c2;
+
+  /* 형광펜: 인용 1·2·3번에 차례로. 글자 위가 아니라 글자 아래 절반에만 칠한다 */
+  --mk-yellow: #ffe14d;
+  --mk-mint: #9be3c3;
+  --mk-pink: #ffb8cb;
+  /* 근거 칸이 활성일 때의 옅은 바탕 (글자 대비 유지) */
+  --mk-yellow-wash: #fff6c7;
+  --mk-mint-wash: #e2f6ec;
+  --mk-pink-wash: #ffe9ef;
+
+  /* 상태 알림 (옅은 바탕 + 짙은 글자, 대비 4.5:1 이상) */
+  --note-tint: #f1f1ec;
+  --error-tint: #fdeceb;
+  --error-ink: #8a1c14;
+  --unverified: #6b6b66;
+
+  --focus: #1d1d1b;
+
+  --font-body: "Pretendard Variable", Pretendard, -apple-system, "Malgun Gothic", sans-serif;
+
+  --text-xs: 0.8125rem;
+  --text-sm: 0.875rem;
+  --text-md: 1rem;
+  --text-answer: 1.125rem;
+  --text-lg: 1.25rem;
+  --text-question: 1.625rem;
+
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-7: 48px;
+
+  --radius-control: 10px;
+  --radius-tag: 999px;
+
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+}

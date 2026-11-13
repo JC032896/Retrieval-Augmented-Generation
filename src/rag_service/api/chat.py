@@ -2,6 +2,7 @@
 
 - GET    /api/config            로그인 전에 읽는 공개 설정 (관리 화면과 같은 값)
 - GET    /api/me                로그인한 사람, 관리 화면 역할(링크 표시용), 대화 기록 보관 기간
+- GET    /api/usage             오늘 남은 질문 수 (사용자별 하루 한도, 질문할 때마다 다시 읽는다)
 - GET    /api/history           본인 대화 기록 목록 (최근 것부터, before로 더 보기)
 - GET    /api/history/{id}      기록 하나. 근거 문서를 지금 볼 수 없으면 답을 가린다
 - DELETE /api/history/{id}      기록 하나 지우기
@@ -14,7 +15,7 @@
 
 import logging
 from dataclasses import dataclass
-from datetime import datetime
+from datetime import UTC, datetime
 from functools import lru_cache
 from typing import Annotated
 
@@ -28,6 +29,7 @@ from rag_service.answer.verify import SentenceStatus
 from rag_service.api.admin_ui import UiConfigOut, ui_config
 from rag_service.api.auth import Authenticator, build_authenticator
 from rag_service.api.current import SignedIn, authenticate
+from rag_service.api.limits import UsageLimits, requests_left
 from rag_service.api.roles import AdminRole, RoleGroups
 from rag_service.chat.history import (
     delete_all,
@@ -51,6 +53,7 @@ class ChatServices:
     authenticator: Authenticator | None
     role_groups: RoleGroups = RoleGroups()
     history_days: int = 0  # 0이면 대화 기록을 저장하지도 보여 주지도 않는다
+    limits: UsageLimits = UsageLimits()  # 기본은 한도 없음. 서버는 설정에서 채운다
 
 
 @lru_cache
@@ -64,6 +67,12 @@ def get_chat_services() -> ChatServices:
         authenticator=build_authenticator(settings.auth_mode, settings.oidc),
         role_groups=settings.role_groups,
         history_days=settings.chat_history_days,
+        limits=UsageLimits(
+            daily_requests_per_user=settings.llm_daily_requests_per_user,
+            daily_budget_usd=settings.llm_daily_budget_usd,
+            concurrent_per_user=settings.llm_concurrent_per_user,
+            utc_offset_hours=settings.usage_utc_offset_hours,
+        ),
     )
 
 
@@ -102,6 +111,20 @@ def me(who: SignedInDep, services: ChatServicesDep) -> ChatMeOut:
         department=who.user.department,
         admin_roles=[role for role in AdminRole if role in roles],  # 순서를 고정한다
         history_days=services.history_days,
+    )
+
+
+class ChatUsageOut(BaseModel):
+    questions_left: int | None  # 오늘 더 할 수 있는 질문 수. 사용자별 하루 한도가 없으면 None
+    daily_questions: int | None  # 사용자별 하루 한도
+
+
+@router.get("/usage")
+def usage(who: SignedInDep, services: ChatServicesDep) -> ChatUsageOut:
+    with services.sessions() as session:
+        left = requests_left(session, who.user.login, services.limits, datetime.now(UTC))
+    return ChatUsageOut(
+        questions_left=left, daily_questions=services.limits.daily_requests_per_user
     )
 
 

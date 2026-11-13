@@ -1,0 +1,70 @@
+/* 채팅 화면의 바탕: 흰 종이, 한글 어절 단위 줄바꿈, 브라우저가 그리는 부분(선택, 초점, 스크롤바)까지. */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: var(--text-md);
+  line-height: 1.6;
+  word-break: keep-all;
+  overflow-wrap: anywhere;
+  -webkit-font-smoothing: antialiased;
+  caret-color: var(--ink);
+}
+
+h1,
+h2,
+h3,
+p,
+ul,
+ol {
+  margin: 0;
+}
+
+button,
+input,
+textarea {
+  font: inherit;
+  color: inherit;
+}
+
+a {
+  color: inherit;
+  text-underline-offset: 3px;
+}
+
+::selection {
+  background: var(--mk-yellow);
+  color: var(--ink);
+}
+
+:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--rule-strong) transparent;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}

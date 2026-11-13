@@ -5,7 +5,8 @@
 - 명령: `uv run pytest -q`, `uv run ruff format .`, `uv run ruff check .`, `uv run mypy`
 - 관리 화면 `web/admin/` (React + TypeScript): `npm ci`, `npm run check`(타입·lint·테스트), `npm run build`.
   API를 바꾸면 `uv run python scripts/export_openapi.py` 후 `npm run gen:api`. 화면 작업은 impeccable 스킬과
-  `.impeccable/surfaces/web-admin.md`의 방향 계약을 따른다
+  방향 계약을 따른다: 관리 화면은 `.impeccable/surfaces/web-admin.md`, 직원 채팅 화면(`/`, chat.html)은
+  `.impeccable/surfaces/web-admin-chat-html.md`
 - 품질 게이트: 작업 중 `bash .claude/scripts/quality_gate.sh --fast`, 마무리 `--full` (커버리지, eval, baseline 비교)
 - 응답을 마칠 때 Stop 훅이 `--fast`를 자동으로 돌린다. 실패하면 원인을 고친 뒤 다시 마친다 (최대 3번)
 

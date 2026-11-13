@@ -73,6 +73,15 @@ def check_daily(
     return None
 
 
+def requests_left(session: Session, login: str, limits: UsageLimits, now: datetime) -> int | None:
+    """오늘 이 사용자가 더 할 수 있는 질문 수. 사용자별 하루 한도가 없으면 None."""
+    if limits.daily_requests_per_user is None:
+        return None
+    since = day_start(now, limits.utc_offset_hours)
+    requests, _ = session.execute(USAGE_QUERY, {"login": login, "since": since}).one()
+    return max(0, limits.daily_requests_per_user - int(requests))
+
+
 CONCURRENT_RETRY_AFTER = 5
 
 

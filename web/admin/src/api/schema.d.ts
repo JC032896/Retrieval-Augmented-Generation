@@ -334,6 +334,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/usage": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Usage */
+        get: operations["usage_api_usage_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/ask": {
         parameters: {
             query?: never;
@@ -607,6 +624,13 @@ export interface components {
             login: string;
             /** Name */
             name: string;
+        };
+        /** ChatUsageOut */
+        ChatUsageOut: {
+            /** Daily Questions */
+            daily_questions: number | null;
+            /** Questions Left */
+            questions_left: number | null;
         };
         /** CitationOut */
         CitationOut: {
@@ -1525,6 +1549,26 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    usage_api_usage_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ChatUsageOut"];
                 };
             };
         };

@@ -1,0 +1,198 @@
+.turn {
+  max-width: 46rem;
+}
+
+.head {
+  margin-bottom: var(--space-5);
+}
+
+.meta {
+  font-size: var(--text-xs);
+  color: var(--ink-2);
+  margin-bottom: var(--space-2);
+}
+
+.question {
+  font-size: var(--text-question);
+  font-weight: 700;
+  line-height: 1.35;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+}
+
+.actions {
+  margin-top: var(--space-3);
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  align-items: center;
+}
+
+.body {
+  font-size: var(--text-answer);
+  line-height: 1.9;
+}
+
+.list {
+  padding-left: 1.25em;
+}
+
+.body p + p,
+.body p + .list,
+.body .list + p {
+  margin-top: var(--space-4);
+}
+
+.list li + li {
+  margin-top: var(--space-2);
+}
+
+/* 형광펜: 글자 아래 절반만 칠한다. 답이 끝나면 왼쪽에서 오른쪽으로 한 번 그어진다 */
+[data-marker="yellow"] {
+  --mk: var(--mk-yellow);
+  --wash: var(--mk-yellow-wash);
+}
+[data-marker="mint"] {
+  --mk: var(--mk-mint);
+  --wash: var(--mk-mint-wash);
+}
+[data-marker="pink"] {
+  --mk: var(--mk-pink);
+  --wash: var(--mk-pink-wash);
+}
+
+.marked {
+  background-image: linear-gradient(transparent 52%, var(--mk) 52%, var(--mk) 92%, transparent 92%);
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+  animation: sweep 260ms var(--ease-out) both;
+  transition: background-image 120ms;
+}
+
+.lit {
+  background-image: linear-gradient(transparent 8%, var(--mk) 8%, var(--mk) 96%, transparent 96%);
+}
+
+@keyframes sweep {
+  from {
+    background-size: 0% 100%;
+  }
+  to {
+    background-size: 100% 100%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .marked {
+    animation: none;
+  }
+}
+
+/* 근거 문단에서 확인되지 않은 문장: 형광펜 대신 회색 점선 밑줄 (색을 못 봐도 구별된다) */
+.unverified,
+.unverifiedSample {
+  text-decoration: underline dotted var(--unverified) 2px;
+  text-underline-offset: 5px;
+}
+
+.keep {
+  white-space: nowrap;
+}
+
+.tag {
+  display: inline;
+  margin-left: 3px;
+  padding: 0.1em 0.5em;
+  border: 1px solid var(--ink);
+  border-radius: var(--radius-tag);
+  background: var(--mk);
+  font-size: var(--text-xs);
+  font-weight: 700;
+  line-height: 1;
+  vertical-align: 0.15em;
+  font-variant-numeric: tabular-nums;
+  cursor: pointer;
+}
+
+.tag:hover {
+  background: var(--ink);
+  color: var(--paper);
+}
+
+.streaming {
+  color: var(--ink);
+  white-space: pre-wrap;
+}
+
+.streaming::after {
+  content: "";
+  display: inline-block;
+  width: 0.5em;
+  height: 1.1em;
+  margin-left: 2px;
+  vertical-align: -0.15em;
+  background: var(--mk-yellow);
+  animation: blink 1s steps(2) infinite;
+}
+
+@keyframes blink {
+  50% {
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .streaming::after {
+    animation: none;
+  }
+}
+
+.note {
+  margin-top: var(--space-5);
+  padding: var(--space-3) var(--space-4);
+  background: var(--note-tint);
+  font-size: var(--text-sm);
+  color: var(--ink);
+  max-width: 40rem;
+}
+
+.problem,
+.hidden {
+  padding: var(--space-4) var(--space-5);
+  font-size: var(--text-md);
+  max-width: 40rem;
+}
+
+.problem {
+  background: var(--error-tint);
+  color: var(--error-ink);
+}
+
+.hidden {
+  background: var(--note-tint);
+}
+
+.partial {
+  color: var(--ink-2);
+  margin-bottom: var(--space-3);
+  white-space: pre-wrap;
+}
+
+.retry {
+  margin-top: var(--space-3);
+  min-height: 40px;
+  padding: 0 var(--space-4);
+  border: 1px solid currentColor;
+  border-radius: var(--radius-control);
+  background: var(--paper);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.retry:hover {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: var(--paper);
+}

@@ -1,0 +1,103 @@
+.panel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.heading {
+  font-size: var(--text-sm);
+  font-weight: 700;
+  padding-bottom: var(--space-2);
+}
+
+.empty {
+  font-size: var(--text-sm);
+  color: var(--ink-2);
+  padding: var(--space-4) 0;
+  border-top: 1px solid var(--rule);
+}
+
+[data-marker="yellow"] {
+  --mk: var(--mk-yellow);
+  --wash: var(--mk-yellow-wash);
+}
+[data-marker="mint"] {
+  --mk: var(--mk-mint);
+  --wash: var(--mk-mint-wash);
+}
+[data-marker="pink"] {
+  --mk: var(--mk-pink);
+  --wash: var(--mk-pink-wash);
+}
+
+.card {
+  padding: var(--space-4) var(--space-4) var(--space-5);
+  margin: 0 calc(var(--space-4) * -1);
+  border-top: 1px solid var(--rule);
+  transition: background-color 160ms var(--ease-out);
+  scroll-margin: var(--space-5);
+}
+
+.active {
+  background: var(--wash);
+}
+
+.card:focus-visible {
+  outline-offset: -2px;
+}
+
+.title {
+  display: flex;
+  gap: var(--space-2);
+  align-items: baseline;
+  font-size: var(--text-md);
+  font-weight: 700;
+  line-height: 1.45;
+}
+
+/* 제목에 번호표와 같은 형광펜 */
+.titleText {
+  background-image: linear-gradient(transparent 55%, var(--mk) 55%, var(--mk) 92%, transparent 92%);
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+}
+
+.tag {
+  flex: none;
+  display: inline-grid;
+  place-items: center;
+  min-width: 1.5rem;
+  height: 1.5rem;
+  padding: 0 6px;
+  border: 1px solid var(--ink);
+  border-radius: var(--radius-tag);
+  background: var(--mk);
+  font-size: var(--text-xs);
+  line-height: 1;
+}
+
+.where {
+  margin: var(--space-1) 0 var(--space-3) calc(1.5rem + var(--space-2));
+  font-size: var(--text-xs);
+  color: var(--ink-2);
+}
+
+.old {
+  font-weight: 700;
+  color: var(--error-ink);
+}
+
+.content {
+  margin-left: calc(1.5rem + var(--space-2));
+  font-size: var(--text-sm);
+  line-height: 1.8;
+  white-space: pre-wrap;
+  color: var(--ink);
+}
+
+.waiting,
+.gone {
+  margin-left: calc(1.5rem + var(--space-2));
+  font-size: var(--text-sm);
+  color: var(--ink-2);
+}

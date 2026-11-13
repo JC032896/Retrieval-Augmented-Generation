@@ -30,7 +30,7 @@ export function useSession(): Session {
   return useContext(SessionContext);
 }
 
-function readDevIdentity(): DevIdentity | null {
+export function readDevIdentity(): DevIdentity | null {
   try {
     const raw = sessionStorage.getItem(DEV_STORAGE_KEY);
     return raw ? (JSON.parse(raw) as DevIdentity) : null;
@@ -39,15 +39,16 @@ function readDevIdentity(): DevIdentity | null {
   }
 }
 
-function oidcManager(config: UiConfig): UserManager | null {
+/** 회사 로그인(OIDC) 관리자. base는 화면의 시작 주소 (관리 화면 /admin/, 채팅 화면 /). */
+export function oidcManager(config: UiConfig, base: string = BASE): UserManager | null {
   if (config.auth_mode !== "oidc" || !config.oidc) return null;
   const origin = window.location.origin;
   return new UserManager({
     authority: config.oidc.authority,
     client_id: config.oidc.client_id,
     scope: config.oidc.scopes,
-    redirect_uri: `${origin}${BASE}callback`,
-    post_logout_redirect_uri: `${origin}${BASE}`,
+    redirect_uri: `${origin}${base}callback`,
+    post_logout_redirect_uri: `${origin}${base}`,
     userStore: new WebStorageStateStore({ store: window.sessionStorage }),
   });
 }

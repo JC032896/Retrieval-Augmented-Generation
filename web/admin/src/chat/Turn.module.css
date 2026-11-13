@@ -1,0 +1,159 @@
+/* 가운데 칸(답 + 아래 고정 입력창)과 오른쪽 근거 칸. 넓은 화면에서는 두 칸이 따로 스크롤한다 */
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 440px;
+  height: 100%;
+  min-height: 0;
+}
+
+.conversation {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  min-width: 0;
+}
+
+.scroll {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: var(--space-7) clamp(var(--space-5), 5vw, 72px) var(--space-6);
+}
+
+.composer {
+  padding: 0 clamp(var(--space-5), 5vw, 72px);
+  border-top: 1px solid var(--rule);
+}
+
+.composer > * {
+  max-width: 46rem;
+}
+
+.sources {
+  min-height: 0;
+  overflow-y: auto;
+  padding: var(--space-7) var(--space-6) var(--space-6);
+  border-left: 1px solid var(--rule);
+  background: var(--paper);
+}
+
+.welcome {
+  max-width: 40rem;
+  padding-top: 12vh;
+}
+
+.welcome h1 {
+  font-size: var(--text-question);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.35;
+  margin-bottom: var(--space-3);
+}
+
+.welcome p {
+  color: var(--ink-2);
+  line-height: 1.75;
+}
+
+.loading {
+  color: var(--ink-2);
+}
+
+.quiet {
+  padding: var(--space-1) 0;
+  border: 0;
+  background: none;
+  font-size: var(--text-sm);
+  color: var(--ink-2);
+  text-decoration: underline;
+  text-decoration-color: var(--rule-strong);
+  text-underline-offset: 4px;
+  cursor: pointer;
+}
+
+.quiet:hover {
+  color: var(--ink);
+  text-decoration-color: var(--ink);
+}
+
+.confirm {
+  margin: 0;
+  border: 0;
+  min-width: 0;
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-2) var(--space-3);
+  background: var(--error-tint);
+  color: var(--error-ink);
+  font-size: var(--text-sm);
+}
+
+.danger {
+  min-height: 34px;
+  padding: 0 var(--space-3);
+  border: 1px solid var(--error-ink);
+  border-radius: var(--radius-control);
+  background: var(--paper);
+  color: var(--error-ink);
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.danger:hover {
+  background: var(--error-ink);
+  color: var(--paper);
+}
+
+/* 근거 칸이 답 아래로 내려간다 */
+@media (max-width: 1180px) {
+  .layout {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto;
+    overflow-y: auto;
+    height: 100%;
+  }
+
+  .conversation {
+    display: contents;
+  }
+
+  .scroll {
+    overflow: visible;
+    order: 1;
+  }
+
+  .sources {
+    order: 2;
+    overflow: visible;
+    border-left: 0;
+    border-top: 1px solid var(--rule);
+    padding: var(--space-5) clamp(var(--space-5), 5vw, 72px) var(--space-6);
+  }
+
+  .composer {
+    order: 3;
+    position: sticky;
+    bottom: 0;
+    background: var(--paper);
+  }
+}
+
+@media (max-width: 720px) {
+  .scroll {
+    padding: var(--space-5) var(--space-4) var(--space-5);
+  }
+
+  .sources {
+    padding: var(--space-5) var(--space-4);
+  }
+
+  .composer {
+    padding: 0 var(--space-4);
+  }
+
+  .welcome {
+    padding-top: var(--space-5);
+  }
+}

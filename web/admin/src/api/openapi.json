@@ -714,6 +714,38 @@
         "title": "ChatMeOut",
         "type": "object"
       },
+      "ChatUsageOut": {
+        "properties": {
+          "daily_questions": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Daily Questions"
+          },
+          "questions_left": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Questions Left"
+          }
+        },
+        "required": [
+          "questions_left",
+          "daily_questions"
+        ],
+        "title": "ChatUsageOut",
+        "type": "object"
+      },
       "CitationOut": {
         "properties": {
           "chunk_id": {
@@ -2427,6 +2459,27 @@
           }
         },
         "summary": "Passage",
+        "tags": [
+          "chat"
+        ]
+      }
+    },
+    "/api/usage": {
+      "get": {
+        "operationId": "usage_api_usage_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ChatUsageOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Usage",
         "tags": [
           "chat"
         ]
