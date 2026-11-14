@@ -53,6 +53,16 @@ def tidy(text: str) -> str:
     return _SPACED.sub(lambda match: re.sub(r"\s+", "", match.group(0)), text)
 
 
+def starts_structure(line: str) -> bool:
+    """줄이 장·절·조·별표로 시작하는가 (OCR 글처럼 문단 경계가 불확실할 때 새 문단을 연다)."""
+    line = tidy(line.strip())
+    short = len(line) <= _HEADING_MAX
+    return bool(
+        (short and (_CHAPTER.match(line) or _SECTION.match(line) or _ANNEX.match(line)))
+        or _ARTICLE.match(line)
+    )
+
+
 def regulation_blocks(text: str, page: int | None = None) -> list[Block]:
     """한 문단을 조문 구조에 맞춰 제목과 본문 블록으로 나눈다. 별표·별지도 수준 1 제목이다."""
     text = tidy(text.strip())

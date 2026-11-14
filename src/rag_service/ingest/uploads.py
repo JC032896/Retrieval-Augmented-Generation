@@ -27,6 +27,7 @@ from rag_service.db.changes import DocumentChange
 from rag_service.db.models import Chunk, Document, DocumentAcl, User
 from rag_service.ingest.chunker import chunk_document
 from rag_service.ingest.embedder import Embedder
+from rag_service.ingest.ocr import OcrError
 from rag_service.ingest.parsers import SUPPORTED_SUFFIXES
 from rag_service.ingest.pipeline import (
     acl_by_document,
@@ -184,12 +185,15 @@ def _receive(upload_dir: Path, filename: str, data: bytes) -> tuple[Path, Path]:
     path.write_bytes(data)
     try:
         pieces = chunk_document(path)
+    except OcrError as error:  # 스캔 쪽을 읽지 못함: 원인(OCR 꺼짐, 엔진 없음 등)을 그대로 알린다
+        shutil.rmtree(temp_dir, ignore_errors=True)
+        raise UploadError(str(error)) from error
     except Exception as error:  # 파서마다 예외가 다르다 (깨진 PDF, 암호 걸린 DOCX 등)
         shutil.rmtree(temp_dir, ignore_errors=True)
         raise UploadError(f"문서를 읽을 수 없습니다: {filename}") from error
     if not pieces:
         shutil.rmtree(temp_dir, ignore_errors=True)
-        raise UploadError(f"본문 글자가 없습니다 (스캔한 PDF는 아직 지원하지 않습니다): {filename}")
+        raise UploadError(f"본문 글자가 없습니다: {filename}")
     return temp_dir, path
 
 

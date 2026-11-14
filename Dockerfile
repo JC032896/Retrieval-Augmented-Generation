@@ -21,6 +21,10 @@ RUN uv sync --frozen --no-dev --no-editable
 
 # 2단계: 실행 이미지 (빌드 도구 없이 가상 환경만 복사)
 FROM python:3.12-slim
+# 스캔 PDF 쪽의 글자 인식(OCR_ENGINE=tesseract, ingest/ocr.py): Tesseract와 한국어 모델
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends tesseract-ocr tesseract-ocr-kor \
+    && rm -rf /var/lib/apt/lists/*
 # /data/uploads: 관리 화면에서 올린 문서. 새 볼륨은 이 폴더의 소유자(rag)를 물려받는다
 RUN useradd --create-home --uid 10001 rag && mkdir -p /models /data/uploads \
     && chown rag /models /data/uploads

@@ -160,6 +160,9 @@ services:
       ADMIN_UI_CLIENT_ID: ${ADMIN_UI_CLIENT_ID:-}
       # 리버스 프록시의 요청 크기 제한(nginx client_max_body_size)도 이보다 크게 둔다
       UPLOAD_MAX_MB: ${UPLOAD_MAX_MB:-30}
+      # 스캔 PDF의 글자 인식. none이면 스캔 쪽이 있는 문서는 이유와 함께 받지 않는다
+      # (이미지에 Tesseract 한국어 모델이 들어 있어 경로 설정은 필요 없다)
+      OCR_ENGINE: ${OCR_ENGINE:-tesseract}
       # 값을 비우면(KEY=) 그 한도를 두지 않는다. 변수가 아예 없으면 기본값
       LLM_DAILY_REQUESTS_PER_USER: ${LLM_DAILY_REQUESTS_PER_USER-200}
       LLM_DAILY_BUDGET_USD: ${LLM_DAILY_BUDGET_USD-20}

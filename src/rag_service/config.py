@@ -77,6 +77,11 @@ class Settings(BaseSettings):
     # 관리 화면에서 올린 문서의 원문을 두는 폴더 (deploy/compose.yaml의 uploads 볼륨). 백업 대상이다
     upload_dir: Path = Path("data/uploads")
     upload_max_mb: int = Field(default=30, ge=1, le=500)  # 파일 하나의 최대 크기
+    # 스캔 PDF 쪽의 글자 인식 (ingest/ocr.py).
+    # none이면 스캔 쪽이 있는 문서는 이유와 함께 수집하지 않는다
+    ocr_engine: Literal["tesseract", "none"] = "tesseract"
+    ocr_tesseract_cmd: str = "tesseract"  # 실행 파일 (PATH에 없으면 전체 경로)
+    ocr_tessdata_dir: Path | None = None  # 언어 데이터 폴더 (비우면 Tesseract 기본 위치)
     audit_db_user: str | None = None
     audit_db_password: SecretStr | None = None
     audit_db_password_file: Path | None = None  # 있으면 audit_db_password보다 우선
@@ -110,6 +115,7 @@ class Settings(BaseSettings):
         "audit_db_user",
         "audit_db_password",
         "audit_db_password_file",
+        "ocr_tessdata_dir",
         mode="before",
     )
     @classmethod

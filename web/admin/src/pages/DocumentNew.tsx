@@ -93,7 +93,7 @@ export function DocumentNew({ me }: { me: Me }) {
             <h2 id="file-title">파일</h2>
             <Field
               label="올릴 파일"
-              hint='같은 이름의 문서가 이미 있으면 그 문서 화면에서 "파일 교체"를 쓰세요. 스캔한 PDF(글자 없는 그림)는 아직 읽지 못합니다.'
+              hint='같은 이름의 문서가 이미 있으면 그 문서 화면에서 "파일 교체"를 쓰세요. 스캔한 PDF(글자 없는 그림)는 글자 인식(OCR)으로 읽어서 한 쪽에 몇 초씩 더 걸립니다.'
             >
               <input
                 className={c.input}

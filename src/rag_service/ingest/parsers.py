@@ -8,6 +8,8 @@
 - PDF: 제목 구조 정보가 없으므로 글자 크기로 추정한다. 가장 많이 쓰인 크기를 본문으로 보고,
   그보다 큰 크기를 큰 순서대로 제목 수준 1, 2, 3...으로 정한다. 표는 표 영역의 글자를 본문 줄에서
   빼고 행 단위로 따로 만든다. 블록마다 페이지 번호(1부터)를 남겨 출처 표시에 쓴다.
+- 스캔 PDF 쪽(글자가 거의 없고 그림이 있는 쪽)은 300dpi 그림으로 바꿔 OCR한다 (ingest/ocr.py).
+  글자 크기 정보가 없으므로 HWP처럼 조문 구조로 제목을 정한다. 글자가 있는 쪽은 그대로 읽는다.
 - HWP(5.x 바이너리), HWPX: ingest/hwp.py. 조문 구조(제N장, 제N절, 제N조(제목))로 제목을 정한다.
 """
 
@@ -24,6 +26,7 @@ from pdfplumber.page import Page
 
 from rag_service.ingest.blocks import Block
 from rag_service.ingest.hwp import parse_hwp, parse_hwpx
+from rag_service.ingest.ocr import OcrEngine, OcrError, OcrUnavailable, configured_ocr, ocr_blocks
 
 __all__ = ["SUPPORTED_SUFFIXES", "Block", "parse_document"]
 
@@ -35,6 +38,9 @@ _DOCX_HEADING = re.compile(r"^Heading (\d)$")
 # 줄 사이가 줄 높이의 몇 배보다 벌어지면 새 문단으로 본다. 문단 안의 줄 간격은 보통 줄 높이의
 # 0.3~0.5배, 문단 사이는 1배 이상이다 (샘플 PDF 기준: 0.43배와 1.19배)
 _PDF_PARAGRAPH_GAP = 0.8
+# 글자(공백 제외)가 이보다 적고 그림이 있는 쪽은 스캔 쪽으로 보고 OCR한다
+_SCANNED_MAX_CHARS = 20
+_OCR_DPI = 300
 
 # PDF 페이지의 줄 또는 표: (위쪽 y, 아래쪽 y, 텍스트, 글자 크기, "line" 또는 "table")
 _PdfItem = tuple[float, float, str, float, str]
@@ -102,9 +108,28 @@ def _docx_heading_level(style: str | None) -> int | None:
     return int(match.group(1)) if match else None
 
 
-def parse_pdf(path: Path) -> list[Block]:
+def parse_pdf(path: Path, ocr: OcrEngine | None = None) -> list[Block]:
+    """ocr를 주지 않으면 설정의 엔진(configured_ocr)을 쓴다. 엔진은 스캔 쪽이 있을 때만 부른다."""
+    pages: list[list[_PdfItem]] = []
+    scanned: dict[int, list[Block]] = {}
     with pdfplumber.open(path) as pdf:
-        pages = [_pdf_page_items(page) for page in pdf.pages]
+        for number, page in enumerate(pdf.pages, start=1):
+            items = _pdf_page_items(page)
+            if _is_scanned(page, items):
+                engine = ocr or configured_ocr()
+                if engine is None:
+                    raise OcrUnavailable(
+                        f"{path.name}: {number}쪽은 글자가 없는 스캔 쪽이라 글자 인식(OCR)이 "
+                        "필요합니다. 서버 설정 OCR_ENGINE을 확인해 주세요"
+                    )
+                image = page.to_image(resolution=_OCR_DPI).original
+                try:
+                    text = engine.read(image)
+                except OcrError as error:
+                    raise OcrError(f"{path.name}: {number}쪽 {error}") from error
+                scanned[number] = ocr_blocks(text, number)
+                items = []
+            pages.append(items)
 
     sizes = Counter(size for items in pages for _, _, _, size, kind in items if kind == "line")
     body_size = sizes.most_common(1)[0][0] if sizes else 0.0
@@ -113,8 +138,16 @@ def parse_pdf(path: Path) -> list[Block]:
 
     blocks: list[Block] = []
     for page_number, items in enumerate(pages, start=1):
-        blocks += _pdf_page_blocks(items, page_number, levels)
+        if page_number in scanned:
+            blocks += scanned[page_number]
+        else:
+            blocks += _pdf_page_blocks(items, page_number, levels)
     return blocks
+
+
+def _is_scanned(page: Page, items: Sequence[_PdfItem]) -> bool:
+    chars = sum(len(text.replace(" ", "")) for _, _, text, _, _ in items)
+    return chars < _SCANNED_MAX_CHARS and bool(page.images)
 
 
 def _pdf_page_blocks(items: Sequence[_PdfItem], page: int, levels: dict[float, int]) -> list[Block]:
