@@ -54,7 +54,7 @@ DB 소유자·앱·감사 담당 계정과 데모 Keycloak 관리자 비밀번�
 
 ### 회사 문서 넣기
 `.env`의 `CORPUS_DIR`을 회사 문서 폴더로 바꾸고 `docker compose up -d`. 폴더 형식은 샘플(`samples/`)과 같다:
-`org.yaml`(부서·역할·직원), `acl.yaml`(문서별 제목, 보안 등급, 볼 수 있는 부서·역할), `docs/`(PDF, DOCX, MD).
+`org.yaml`(부서·역할·직원), `acl.yaml`(문서별 제목, 보안 등급, 볼 수 있는 부서·역할), `docs/`(PDF, DOCX, HWP·HWPX, MD).
 시작할 때마다 `sync`가 바뀐 문서만 다시 수집한다.
 
 관리 화면(API는 `/admin/api/documents`)에서 올린 문서는 `uploads` 볼륨에 두고 권한은 DB에 저장한다.

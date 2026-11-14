@@ -1,4 +1,4 @@
-"""문서 파일(MD, PDF, DOCX)을 제목과 본문 블록 목록으로 바꾼다.
+"""문서 파일(MD, PDF, DOCX, HWP, HWPX)을 제목과 본문 블록 목록으로 바꾼다.
 
 청커는 파일 형식과 상관없이 이 블록만 본다.
 
@@ -8,12 +8,12 @@
 - PDF: 제목 구조 정보가 없으므로 글자 크기로 추정한다. 가장 많이 쓰인 크기를 본문으로 보고,
   그보다 큰 크기를 큰 순서대로 제목 수준 1, 2, 3...으로 정한다. 표는 표 영역의 글자를 본문 줄에서
   빼고 행 단위로 따로 만든다. 블록마다 페이지 번호(1부터)를 남겨 출처 표시에 쓴다.
+- HWP(5.x 바이너리), HWPX: ingest/hwp.py. 조문 구조(제N장, 제N절, 제N조(제목))로 제목을 정한다.
 """
 
 import re
 from collections import Counter
 from collections.abc import Iterable, Sequence
-from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
@@ -22,7 +22,12 @@ from docx import Document as open_docx
 from docx.text.paragraph import Paragraph
 from pdfplumber.page import Page
 
-SUPPORTED_SUFFIXES = (".md", ".pdf", ".docx")
+from rag_service.ingest.blocks import Block
+from rag_service.ingest.hwp import parse_hwp, parse_hwpx
+
+__all__ = ["SUPPORTED_SUFFIXES", "Block", "parse_document"]
+
+SUPPORTED_SUFFIXES = (".md", ".pdf", ".docx", ".hwp", ".hwpx")
 
 _HEADING = re.compile(r"^(#{1,6})\s+(.+?)\s*#*\s*$")
 _FENCE = re.compile(r"^\s*(```|~~~)")
@@ -35,13 +40,6 @@ _PDF_PARAGRAPH_GAP = 0.8
 _PdfItem = tuple[float, float, str, float, str]
 
 
-@dataclass(frozen=True)
-class Block:
-    text: str
-    heading_level: int | None = None  # None이면 본문
-    page: int | None = None
-
-
 def parse_document(path: Path) -> list[Block]:
     suffix = path.suffix.lower()
     if suffix == ".md":
@@ -50,6 +48,10 @@ def parse_document(path: Path) -> list[Block]:
         return parse_pdf(path)
     if suffix == ".docx":
         return parse_docx(path)
+    if suffix == ".hwp":
+        return parse_hwp(path)
+    if suffix == ".hwpx":
+        return parse_hwpx(path)
     raise ValueError(f"지원하지 않는 문서 형식입니다: {path.name}")
 
 

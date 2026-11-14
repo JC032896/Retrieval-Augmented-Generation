@@ -703,6 +703,15 @@ wheels = [
 ]
 
 [[package]]
+name = "olefile"
+version = "0.47"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/69/1b/077b508e3e500e1629d366249c3ccb32f95e50258b231705c09e3c7a4366/olefile-0.47.zip", hash = "sha256:599383381a0bf3dfbd932ca0ca6515acd174ed48870cbf7fee123d698c192c1c", size = 112240, upload-time = "2023-12-01T16:22:53.025Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/17/d3/b64c356a907242d719fc668b71befd73324e47ab46c8ebbbede252c154b2/olefile-0.47-py2.py3-none-any.whl", hash = "sha256:543c7da2a7adadf21214938bb79c83ea12b473a4b6ee4ad4bf854e7715e13d1f", size = 114565, upload-time = "2023-12-01T16:22:51.518Z" },
+]
+
+[[package]]
 name = "opentelemetry-api"
 version = "1.45.2"
 source = { registry = "https://pypi.org/simple" }
@@ -1046,6 +1055,7 @@ dependencies = [
     { name = "fastapi" },
     { name = "httpx2" },
     { name = "kiwipiepy" },
+    { name = "olefile" },
     { name = "pdfplumber" },
     { name = "pgvector" },
     { name = "psycopg", extra = ["binary"] },
@@ -1069,6 +1079,7 @@ dev = [
     { name = "pytest-cov" },
     { name = "reportlab" },
     { name = "ruff" },
+    { name = "types-olefile" },
     { name = "types-pyyaml" },
 ]
 
@@ -1079,6 +1090,7 @@ requires-dist = [
     { name = "fastapi", specifier = ">=0.162.2" },
     { name = "httpx2", specifier = ">=2.16.0" },
     { name = "kiwipiepy", specifier = ">=0.24.1" },
+    { name = "olefile", specifier = ">=0.47" },
     { name = "pdfplumber", specifier = ">=0.11.10" },
     { name = "pgvector", specifier = ">=0.5.1" },
     { name = "psycopg", extras = ["binary"], specifier = ">=3.3.8" },
@@ -1101,6 +1113,7 @@ dev = [
     { name = "pytest-cov", specifier = ">=7.1.0" },
     { name = "reportlab", specifier = ">=5.1.0" },
     { name = "ruff", specifier = ">=0.17.4" },
+    { name = "types-olefile", specifier = ">=0.47.0.20260508" },
     { name = "types-pyyaml", specifier = ">=6.0.12.20261103" },
 ]
 
@@ -1474,6 +1487,15 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/ad/8f/21021859316f44289101638dc74d82e13d722d8533e4b8708a3ab7c8461a/typer-0.28.0.tar.gz", hash = "sha256:69ab84ef79fd601cff071bbd2566d855ecadfd93adbc4b3360b9924359bdd857", size = 205415, upload-time = "2026-11-06T08:37:19.779Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/19/98/8ef60c7cd773dbab9d276a4c7bff505913a25b61acd8a9ef01ceeb70f554/typer-0.28.0-py3-none-any.whl", hash = "sha256:afd18929180b706c5e9a239f53c3c8136903553c0c2d460598bbaa924191d4ab", size = 123253, upload-time = "2026-11-06T08:37:18.611Z" },
+]
+
+[[package]]
+name = "types-olefile"
+version = "0.47.0.20260508"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/86/c6/7efcaba079309d7f29a238f1ffbe810c4952f9e0303aa9353b80e74ec1c9/types_olefile-0.47.0.20260508.tar.gz", hash = "sha256:02131a421b0e90d3ca61770c89c0d7ea2095a13560a87e7add26a42c10ab7a0e", size = 9089, upload-time = "2026-05-08T04:48:05.447Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/f4/a3/1811204ac3b74f42863f8de0635d0e3663502d24f66b7f6d5f44c09e4934/types_olefile-0.47.0.20260508-py3-none-any.whl", hash = "sha256:d9d799fe07e5c8afcfcfc7437737a4d78beff9eccb712c96a61231ac1bdc1c3e", size = 9494, upload-time = "2026-05-08T04:48:04.294Z" },
 ]
 
 [[package]]

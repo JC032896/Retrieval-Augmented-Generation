@@ -14,7 +14,7 @@ import { levelName } from "../ui/format";
 import { Recipients, usePreview } from "../ui/Recipients";
 import styles from "./DocumentForm.module.css";
 
-const ACCEPT = ".pdf,.docx,.md";
+const ACCEPT = ".pdf,.docx,.md,.hwp,.hwpx";
 
 type Org = { departments: string[]; roles: string[] };
 
@@ -72,8 +72,8 @@ export function DocumentNew({ me }: { me: Me }) {
         <div>
           <h1>문서 올리기</h1>
           <p>
-            PDF, DOCX, Markdown을 올리면 바로 검색에 들어갑니다. 볼 수 있는 사람은 저장 전에
-            확인합니다.
+            PDF, DOCX, HWP(한글), Markdown을 올리면 바로 검색에 들어갑니다. 볼 수 있는 사람은 저장
+            전에 확인합니다.
           </p>
         </div>
         <Link to="/documents" className={c.button}>
